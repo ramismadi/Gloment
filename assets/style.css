@@ -192,7 +192,7 @@ body {
   margin-top: 18px;
 }
 
-.p-quotes  { grid-column: span 8; }
+.p-quotes  { grid-column: span 8; align-self: start; }
 .p-engine  { grid-column: span 4; }
 .p-banks   { grid-column: span 8; }
 .p-cal     { grid-column: span 4; }
@@ -244,8 +244,18 @@ body {
   font-size: 0.68rem;
   color: var(--grey);
   font-style: italic;
-  white-space: nowrap;
 }
+.src a,
+.wire-headline a {
+  color: var(--sky-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold-deep);
+  text-underline-offset: 2px;
+}
+.src a:hover,
+.wire-headline a:hover { color: var(--gold-deep); }
+.src a:focus-visible,
+.wire-headline a:focus-visible { outline: 2px solid var(--sky-ink); outline-offset: 2px; }
 
 /* ---------- quotes board ---------- */
 .live-dot {
@@ -269,6 +279,8 @@ body {
   grid-template-columns: 1fr 1fr;
   gap: 6px 14px;
 }
+
+.quotes-board > .meta { grid-column: 1 / -1; margin: 0; }
 
 .qrow {
   display: grid;
@@ -321,6 +333,7 @@ body {
 
 .engine-head {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: baseline;
   gap: 10px;
@@ -328,6 +341,7 @@ body {
 }
 
 .engine-title {
+  flex: 0 0 auto;
   font-weight: 700;
   font-size: 0.86rem;
   color: var(--sky-ink);

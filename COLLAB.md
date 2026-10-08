@@ -42,6 +42,21 @@ advice.
   `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
   "sources":[]}]}`.
 
+## Clickable sources (for whoever writes `data/*.json`)
+Source labels now link to the original article/page when a URL is supplied.
+Links open in a new tab (`rel="noopener noreferrer"`); only `http(s)` URLs are
+honoured. Everything is backward compatible: with no URL, the label renders as
+plain text exactly as before. Never guess or fabricate a URL — link the actual
+article/series page you used, or leave the URL out.
+- `engine.json` rows and `story.json` chapters: keep `"source"` (string) and add
+  `"source_url"` for a single source, or use `"sources": [{"label","url"}, ...]`
+  (items may also be plain strings) when a row cites several.
+- `latest.json` items: `"sources"` may hold `{"label","url"}` objects (or
+  strings, as before); optional `"url"` on the item makes the headline itself
+  a link.
+- Deep links beat homepages: prefer the specific article, FRED series page,
+  or release over a publisher front page.
+
 ## How updates happen (Hercules' automation — do not fight it)
 - Daily ~2:00 AM CT cron (`fx-outlook-daily-refresh`): rebuilds `story.json`
   and `engine.json` from fresh market data and pushes to `main`. It also folds

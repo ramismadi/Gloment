@@ -43,8 +43,43 @@
     if (t) t.appendChild(el('p', 'meta', msg));
   }
 
-  function srcLabel(source) {
-    return el('span', 'src', 'src: ' + source);
+  /* Only plain http(s) URLs become links; anything else renders as text. */
+  function safeUrl(u) {
+    try {
+      var x = new URL(u);
+      return (x.protocol === 'http:' || x.protocol === 'https:') ? x.href : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /* Source label. `source` may be a string, a {label, url} object, or an
+     array of either; `url` is an optional link for a single string source.
+     Linked sources open the original article in a new tab. */
+  function srcLabel(source, url) {
+    var list = Array.isArray(source) ? source : [source];
+    var wrap = el('span', 'src');
+    wrap.appendChild(document.createTextNode('src: '));
+    var shown = 0;
+    list.forEach(function (s) {
+      if (s == null || s === '') return;
+      var label = typeof s === 'object' ? s.label : s;
+      var href = safeUrl(typeof s === 'object' ? s.url : (list.length === 1 ? url : null));
+      if (!label) return;
+      if (shown++) wrap.appendChild(document.createTextNode(', '));
+      if (href) {
+        var a = el('a', null, label);
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.title = 'Open source: ' + new URL(href).hostname;
+        wrap.appendChild(a);
+      } else {
+        wrap.appendChild(document.createTextNode(label));
+      }
+    });
+    if (!shown) wrap.appendChild(document.createTextNode('n/a'));
+    return wrap;
   }
 
   /* ---------------- status bar: clocks + sessions ---------------- */
@@ -215,7 +250,7 @@
       var r = el('div', 'engine-row');
       var head = el('div', 'engine-head');
       head.appendChild(el('span', 'engine-title', row.title));
-      head.appendChild(srcLabel(row.source || 'n/a'));
+      head.appendChild(srcLabel(row.sources || row.source, row.source_url));
       r.appendChild(head);
       r.appendChild(el('p', 'engine-figure', row.figure));
       r.appendChild(el('p', 'engine-read', row.read));
@@ -267,7 +302,7 @@
         c.appendChild(sc);
       }
 
-      c.appendChild(srcLabel(ch.source || 'n/a'));
+      c.appendChild(srcLabel(ch.sources || ch.source, ch.source_url));
       box.appendChild(c);
     });
   }
@@ -286,12 +321,22 @@
       var w = el('div', 'wire-item');
       w.appendChild(el('div', 'wire-ts', fmtDateTime(it.ts)));
       var body = el('div', null);
-      body.appendChild(el('div', 'wire-headline', it.headline));
+      var hl = el('div', 'wire-headline');
+      var hlUrl = safeUrl(it.url);
+      if (hlUrl) {
+        var ha = el('a', null, it.headline);
+        ha.href = hlUrl;
+        ha.target = '_blank';
+        ha.rel = 'noopener noreferrer';
+        hl.appendChild(ha);
+      } else {
+        hl.textContent = it.headline;
+      }
+      body.appendChild(hl);
       var ul = el('ul', null);
       (it.bullets || []).forEach(function (b) { ul.appendChild(el('li', null, b)); });
       body.appendChild(ul);
-      var s = (it.sources || []).join(', ') || 'n/a';
-      body.appendChild(srcLabel(s));
+      body.appendChild(srcLabel(it.sources || []));
       w.appendChild(body);
       box.appendChild(w);
     });
