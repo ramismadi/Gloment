@@ -20,7 +20,11 @@
     { id: 'dusk',      name: 'Dusk',      desc: 'Plum & champagne',       sw: ['#f5f2f5', '#4b2f5c', '#a8884f'] },
     { id: 'midnight',  name: 'Midnight',  desc: 'Dark navy & sky',        sw: ['#0d1320', '#7cbcf0', '#d9b56a'], dark: true },
     { id: 'onyx',      name: 'Onyx',      desc: 'Black & champagne',      sw: ['#0f0f10', '#e2c98f', '#6cc794'], dark: true },
-    { id: 'forest',    name: 'Forest',    desc: 'Dark green & brass',     sw: ['#0e1714', '#9fd0b5', '#d2b072'], dark: true }
+    { id: 'forest',    name: 'Forest',    desc: 'Dark green & brass',     sw: ['#0e1714', '#9fd0b5', '#d2b072'], dark: true },
+    { id: 'velvet',    name: 'Velvet',    desc: 'Oxblood, rosé & gold',   sw: ['#1e1216', '#e8a9a0', '#d6ad62'], dark: true },
+    { id: 'study',     name: 'Study',     desc: 'Espresso, brass & cognac', sw: ['#1d1914', '#e3c27e', '#d08a62'], dark: true },
+    { id: 'ink',       name: 'Ink',       desc: 'Ink, ivory & copper',    sw: ['#131a26', '#e9dcbc', '#cf9259'], dark: true },
+    { id: 'moss',      name: 'Moss',      desc: 'Olive, sand & sage',     sw: ['#1b1e17', '#d8c79a', '#a9c08f'], dark: true }
   ];
   var story = null;      // story.json, once loaded
   var chapterIdx = 0;    // chapter shown in the Story tab
@@ -177,7 +181,9 @@
 
     // Build the menu: light themes, then dark.
     [['Light', false], ['Dark', true]].forEach(function (g) {
-      list.appendChild(el('div', 'tl-group', g[0]));
+      var col = el('div', 'tl-col');
+      col.appendChild(el('div', 'tl-group', g[0]));
+      list.appendChild(col);
       THEMES.filter(function (t) { return !!t.dark === g[1]; }).forEach(function (t) {
         var item = el('button', 'tl-item');
         item.type = 'button';
@@ -191,7 +197,7 @@
         txt.appendChild(el('span', 'tl-desc', t.desc));
         item.appendChild(txt);
         item.appendChild(el('span', 'tl-check', '\u2713'));
-        list.appendChild(item);
+        col.appendChild(item);
       });
     });
     applyTheme(cur, false);
