@@ -19,7 +19,18 @@ advice.
   https://open.er-api.com/v6/latest/USD (free, no key) and renders 10 pairs;
   fetches `data/*.json` via relative paths and renders each section. All DOM
   built with textContent (no HTML injection). Graceful fallback if the quote
-  fetch fails.
+  fetch fails. Also drives the JS-rendered dashboard chrome: sticky status bar
+  (live local/UTC clocks, TYO/LDN/NYC session chips), scrolling ticker tape,
+  and day-change % pills (computed vs previous ECB fixing via frankfurter.app,
+  labeled in-page).
+- Dashboard panels (structure in `index.html`, styling in `assets/style.css`):
+  live quotes board, macro engine, central-bank scorecard (policy
+  rate / next meeting / priced move / bias — only the Fed row is data-backed;
+  other banks show "—" when not in the current edition), economic calendar
+  (CT times, currently hardcoded from the catalyst seed), breaking wire
+  (from `data/latest.json`), and the story chapters (from `data/story.json`).
+  The scorecard/calendar/ticker are presentational — they are NOT fed by
+  `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
   `{"updated": "<ISO-8601>", "rows": [{"id","title","figure","read"}]}`.
   Row ids: `policy`, `growth`, `inflation`, `risk`, `terms`, `positioning`.
