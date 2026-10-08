@@ -53,8 +53,9 @@ advice.
   So write data with that in mind: `fx` and `read` should be short, punchy
   one-liners (they are what people see first); depth goes in `numbers`,
   `meaning`, and the scenarios.
-- Central banks + calendar are hand-seeded in `index.html` (NOT fed by
-  `data/*.json`) — update by hand when stale. Calendar entries with
+- Central banks are fed by `data/banks.json` (see schema below). The
+  calendar is still hand-seeded in `index.html` — update by hand when
+  stale. Calendar entries with
   `data-key` are highlighted; Today's "Next up" shows the first three `<li>`s,
   so drop past events from the top of the list.
 - `data/engine.json` — six macro pillars:
@@ -67,6 +68,24 @@ advice.
 - `data/latest.json` — breaking items, reverse-chronological:
   `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
   "sources":[]}]}`.
+- `data/banks.json` — central-bank scorecard (**Hercules: please own and
+  fill this feed**). Seeded 2026-10-08 with only what the site already
+  showed (Fed row + meeting dates); every other bank renders as a compact
+  "date only" card until its fields are filled.
+  `{"updated":"<ISO-8601>","banks":[{"id","short","name","ccy",
+  "rate":"2.50%" | null, "rate_label":"Deposit facility rate",
+  "last_move":{"date":"YYYY-MM-DD","bp":25 | -25 | 0} | null,
+  "next_meeting":{"start":"YYYY-MM-DD","end":"YYYY-MM-DD"?} | null,
+  "priced":"Oct hike ~60%" | null,
+  "bias":"hawkish" | "neutral" | "dovish" | null,
+  "sources":[{"label","url"}]}]}`.
+  A bank counts as covered (full card) once it has `rate`, `priced` or
+  `bias`. Cards sort by soonest `next_meeting`; the "Next decision" strip
+  picks the earliest upcoming one. Use the bank's headline policy rate
+  (Fed: target range, e.g. "3.50–3.75%"; ECB: deposit facility) and say
+  which in `rate_label`. Verify every rate and date against the central
+  bank's own site and link it in `sources` — secondary sites disagreed
+  widely when Claude checked on 2026-10-08.
 
 ## Clickable sources (for whoever writes `data/*.json`)
 Source labels now link to the original article/page when a URL is supplied.

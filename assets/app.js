@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '11';
+  var ASSET_VERSION = '12';
 
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -54,6 +54,9 @@
     }).catch(function () {
       note('#engine-rows', 'Macro engine data unavailable.');
       note('#today-pulse', 'Macro engine data unavailable.');
+    });
+    fetchJSON('data/banks.json').then(renderBanks).catch(function () {
+      note('#bank-grid', 'Central bank data unavailable.');
     });
     fetchJSON('data/latest.json').then(renderWire).catch(function () {
       note('#latest-items', 'No wire items.');
@@ -586,6 +589,126 @@
       c.appendChild(sourceChips(row.sources || row.source, row.source_url));
       box.appendChild(c);
     });
+  }
+
+  /* ---------------- central banks ----------------
+     data/banks.json → one card per bank, soonest decision first. Banks with
+     no data yet sink to the end as compact "not covered" cards. */
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  function ymd(str) {               // "2026-10-27" -> local Date at midnight
+    var p = (str || '').split('-');
+    return p.length === 3 ? new Date(+p[0], +p[1] - 1, +p[2]) : null;
+  }
+
+  function fmtMeeting(m) {
+    var a = ymd(m.start), b = ymd(m.end);
+    if (!a) return '';
+    var out = MONTHS[a.getMonth()] + ' ' + a.getDate();
+    if (b && +b !== +a) out += '–' + (b.getMonth() === a.getMonth() ? '' : MONTHS[b.getMonth()] + ' ') + b.getDate();
+    return out;
+  }
+
+  /* Days from today to the meeting; null if it has passed. */
+  function daysUntil(m) {
+    var a = ymd(m.start), b = ymd(m.end) || a;
+    if (!a) return null;
+    var t = new Date(); t = new Date(t.getFullYear(), t.getMonth(), t.getDate());
+    if (b < t) return null;
+    return Math.max(0, Math.round((a - t) / 864e5));
+  }
+
+  function inDays(n) {
+    return n === 0 ? 'today' : n === 1 ? 'tomorrow' : 'in ' + n + ' days';
+  }
+
+  function moveChip(mv) {
+    if (!mv || mv.bp == null) return null;
+    var d = ymd(mv.date), when = d ? ' · ' + MONTHS[d.getMonth()] + ' ' + d.getDate() : '';
+    if (mv.bp > 0) return el('span', 'move up', 'Hiked +' + mv.bp + 'bp' + when);
+    if (mv.bp < 0) return el('span', 'move dn', 'Cut ' + mv.bp + 'bp' + when);
+    return el('span', 'move flat', 'Held' + when);
+  }
+
+  var BIAS = { hawkish: ['Hawkish', 'hawk'], dovish: ['Dovish', 'dove'], neutral: ['Neutral', 'neutral'] };
+
+  function renderBanks(d) {
+    if (d.updated) setText('#banks-updated', fmtDateTime(d.updated, true));
+    var grid = $('#bank-grid');
+    var banks = (d.banks || []).map(function (b) {
+      var nm = b.next_meeting && b.next_meeting.start ? b.next_meeting : null;
+      return { b: b, nm: nm, days: nm ? daysUntil(nm) : null, covered: !!(b.rate || b.priced || b.bias) };
+    });
+    // Covered first, then by soonest meeting; unknown dates last.
+    banks.sort(function (x, y) {
+      if (x.covered !== y.covered) return x.covered ? -1 : 1;
+      var dx = x.days == null ? 1e9 : x.days, dy = y.days == null ? 1e9 : y.days;
+      return dx - dy;
+    });
+
+    var thin = [];
+    banks.forEach(function (o) {
+      var b = o.b;
+      var c = el('article', 'card bank' + (o.covered ? '' : ' thin'));
+      var head = el('div', 'bank-head');
+      head.appendChild(el('span', 'bank-short', b.short));
+      head.appendChild(el('span', 'bank-ccy mono', b.ccy || ''));
+      if (b.bias && BIAS[b.bias]) head.appendChild(el('span', 'bias ' + BIAS[b.bias][1], BIAS[b.bias][0]));
+      c.appendChild(head);
+      c.appendChild(el('p', 'bank-name', b.name));
+
+      if (o.covered) {
+        var rate = el('div', 'bank-rate');
+        rate.appendChild(el('span', 'rate-val', b.rate || '—'));
+        if (b.rate_label) rate.appendChild(el('span', 'rate-lbl', b.rate_label));
+        c.appendChild(rate);
+        var mc = moveChip(b.last_move);
+        if (mc) c.appendChild(mc);
+      }
+
+      var meet = el('div', 'bank-meet');
+      meet.appendChild(el('span', 'meet-lbl', 'Next decision'));
+      if (o.nm) {
+        var when = el('span', 'meet-when');
+        when.appendChild(el('b', null, fmtMeeting(o.nm)));
+        if (o.days != null) when.appendChild(el('span', 'meet-in', inDays(o.days)));
+        meet.appendChild(when);
+      } else {
+        meet.appendChild(el('span', 'meet-when muted', 'Date to come'));
+      }
+      c.appendChild(meet);
+
+      if (b.priced) {
+        var pr = el('div', 'bank-priced');
+        pr.appendChild(el('span', 'meet-lbl', 'Market pricing'));
+        pr.appendChild(el('span', null, b.priced));
+        c.appendChild(pr);
+      }
+
+      if (o.covered) {
+        if ((b.sources || []).length) c.appendChild(sourceChips(b.sources));
+      } else {
+        thin.push(b.short);
+      }
+      grid.appendChild(c);
+    });
+
+    // Headline strip: the very next decision across all banks.
+    var next = banks.filter(function (o) { return o.days != null; })
+      .sort(function (x, y) { return x.days - y.days; })[0];
+    var strip = $('#bank-next');
+    if (next && strip) {
+      strip.textContent = '';
+      strip.appendChild(el('span', 'kicker', 'Next decision'));
+      var line = el('p', 'bank-next-line');
+      line.appendChild(el('b', null, next.b.name));
+      line.appendChild(document.createTextNode(' · ' + fmtMeeting(next.nm) + ' · ' + inDays(next.days)));
+      strip.appendChild(line);
+      strip.hidden = false;
+    }
+    setText('#bank-foot', thin.length
+      ? 'Rates and pricing for ' + thin.join(', ') + ' arrive as the data feed covers them.'
+      : '');
   }
 
   /* ---------------- breaking wire ----------------
