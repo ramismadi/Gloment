@@ -1,104 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="alpine">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gloment — Global fundamentals for FX</title>
-<meta name="description" content="Gloment: a pro-grade FX macro desk — central-bank scorecard, six-pillar macro engine, breaking wire, and the story behind the moves.">
+<meta name="description" content="Gloment: a premium FX macro desk — the daily story behind the moves, a six-pillar macro engine, central-bank scorecard, calendar and breaking wire.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232a86d0'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
 <link rel="stylesheet" href="assets/style.css">
+<script>
+  /* Apply the saved theme before first paint (no flash). */
+  try {
+    var t = localStorage.getItem('gloment-theme');
+    if (t) document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
 <script src="assets/app.js" defer></script>
 </head>
 <body>
 
-<!-- persistent terminal status bar -->
-<div class="statusbar" role="banner">
-  <div class="wrap sb-inner">
-    <span class="sb-word">GLOMENT</span>
-    <span class="sb-sep">|</span>
-    <span class="sb-clock"><span class="sb-lbl">LOCAL</span> <span id="clock-local" class="mono">--:--:--</span></span>
-    <span class="sb-clock"><span class="sb-lbl">UTC</span> <span id="clock-utc" class="mono">--:--:--</span></span>
-    <span class="sb-sep">|</span>
-    <span id="sessions" class="sb-sessions" aria-label="FX session status"></span>
+<!-- masthead: brand, edition, market clocks, theme picker -->
+<header class="masthead">
+  <div class="wrap mh-inner">
+    <div class="brand">
+      <span class="wordmark">GLOMENT</span>
+      <span class="brand-sub">Global fundamentals for FX</span>
+    </div>
+    <div class="mh-right">
+      <span class="edition">Edition <b id="edition-date">—</b></span>
+      <span class="clock mono" id="clock-utc" title="UTC time">--:-- UTC</span>
+      <span id="sessions" class="sessions" aria-label="FX session status"></span>
+      <div class="theme-picker" role="radiogroup" aria-label="Color theme" id="theme-picker">
+        <button type="button" role="radio" data-theme-opt="alpine"   title="Alpine — sky &amp; gold"   aria-label="Alpine theme"></button>
+        <button type="button" role="radio" data-theme-opt="ivory"    title="Ivory — navy &amp; brass"  aria-label="Ivory theme"></button>
+        <button type="button" role="radio" data-theme-opt="sage"     title="Sage — forest &amp; sand"  aria-label="Sage theme"></button>
+        <button type="button" role="radio" data-theme-opt="midnight" title="Midnight — dark desk"      aria-label="Midnight theme"></button>
+      </div>
+    </div>
   </div>
-</div>
 
-<header class="site-header">
-  <div class="wrap">
-    <div class="wordmark">GLOMENT</div>
-    <p class="tagline">Global fundamentals for FX</p>
-    <p class="edition">Edition <span id="edition-date">—</span></p>
-  </div>
+  <!-- primary navigation -->
+  <nav class="tabbar" aria-label="Sections">
+    <div class="wrap">
+      <div class="tabs" role="tablist" id="tabs">
+        <a role="tab" href="#today"    data-tab="today"    id="tab-today">Today</a>
+        <a role="tab" href="#story"    data-tab="story"    id="tab-story">Story</a>
+        <a role="tab" href="#engine"   data-tab="engine"   id="tab-engine">Macro engine</a>
+        <a role="tab" href="#banks"    data-tab="banks"    id="tab-banks">Central banks</a>
+        <a role="tab" href="#calendar" data-tab="calendar" id="tab-calendar">Calendar</a>
+        <a role="tab" href="#wire"     data-tab="wire"     id="tab-wire">Wire <span class="badge" id="wire-count" hidden></span></a>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <main class="wrap">
 
-  <section id="story" class="panel" aria-label="The story">
-    <h2><span class="sec-tag">//</span> The Story</h2>
-    <p id="story-headline" class="headline"></p>
-    <div id="story-chapters"></div>
+  <!-- ============ TODAY: the one-screen brief ============ -->
+  <section class="view" id="view-today" role="tabpanel" aria-labelledby="tab-today">
+    <div class="hero">
+      <p class="kicker">Today's read</p>
+      <h1 id="today-headline" class="display">Loading the edition…</h1>
+    </div>
+
+    <h2 class="section-label">The four things moving FX</h2>
+    <div class="takeaways" id="today-takeaways"></div>
+
+    <div class="today-grid">
+      <div class="card">
+        <div class="card-head">
+          <h2 class="section-label">Macro pulse</h2>
+          <a class="more" href="#engine">Full engine →</a>
+        </div>
+        <ul class="pulse" id="today-pulse"></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2 class="section-label">Next up</h2>
+          <a class="more" href="#calendar">Calendar →</a>
+        </div>
+        <ul class="nextup" id="today-next"></ul>
+      </div>
+    </div>
+
+    <a class="card wire-teaser" id="today-wire" href="#wire" hidden></a>
   </section>
 
-  <div class="dash">
+  <!-- ============ STORY: one chapter at a time ============ -->
+  <section class="view" id="view-story" role="tabpanel" aria-labelledby="tab-story" hidden>
+    <div class="story-layout">
+      <ol class="chapter-rail" id="chapter-rail" aria-label="Chapters"></ol>
+      <article class="chapter-view card" id="chapter-view" aria-live="polite"></article>
+    </div>
+  </section>
 
-    <section id="engine" class="panel p-engine" aria-label="Macro engine">
-      <h2><span class="sec-tag">//</span> Macro Engine</h2>
-      <p class="meta">Updated <span id="engine-updated">—</span></p>
-      <div id="engine-rows"></div>
-    </section>
+  <!-- ============ MACRO ENGINE ============ -->
+  <section class="view" id="view-engine" role="tabpanel" aria-labelledby="tab-engine" hidden>
+    <div class="view-head">
+      <h1 class="view-title">Macro engine</h1>
+      <p class="meta">Six pillars · updated <span id="engine-updated">—</span></p>
+    </div>
+    <div class="engine-grid" id="engine-rows"></div>
+  </section>
 
-    <section id="banks" class="panel p-banks" aria-label="Central bank scorecard">
-      <h2><span class="sec-tag">//</span> Central Banks</h2>
+  <!-- ============ CENTRAL BANKS (hand-seeded) ============ -->
+  <section class="view" id="view-banks" role="tabpanel" aria-labelledby="tab-banks" hidden>
+    <div class="view-head">
+      <h1 class="view-title">Central banks</h1>
+      <p class="meta">Policy rate, next meeting and what the market prices.</p>
+    </div>
+    <div class="card table-card">
       <div class="table-wrap">
-      <table class="banks">
-        <thead>
-          <tr><th>Bank</th><th class="num">Policy rate</th><th>Next meeting</th><th>Priced move</th><th>Bias</th></tr>
-        </thead>
-        <tbody>
-          <tr><td class="bname">Fed</td><td class="num">3.75%</td><td>Oct 27&ndash;28</td><td>Dec hike ~80%</td><td><span class="bias hawk">Hawkish</span></td></tr>
-          <tr><td class="bname">ECB</td><td class="num">&mdash;</td><td>Oct 29</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">BoE</td><td class="num">&mdash;</td><td>&mdash;</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">BoJ</td><td class="num">&mdash;</td><td>Oct 29&ndash;30</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">SNB</td><td class="num">&mdash;</td><td>&mdash;</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">RBA</td><td class="num">&mdash;</td><td>&mdash;</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">BoC</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          <tr><td class="bname">RBNZ</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-        </tbody>
-      </table>
+        <table class="banks">
+          <thead>
+            <tr><th>Bank</th><th class="num">Policy rate</th><th>Next meeting</th><th>Priced move</th><th>Bias</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="bname">Fed</td><td class="num">3.75%</td><td>Oct 27&ndash;28</td><td>Dec hike ~80%</td><td><span class="bias hawk">Hawkish</span></td></tr>
+            <tr class="thin"><td class="bname">ECB</td><td class="num">&mdash;</td><td>Oct 29</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
+            <tr class="thin"><td class="bname">BoJ</td><td class="num">&mdash;</td><td>Oct 29&ndash;30</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
+            <tr class="thin"><td class="bname">BoC</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
+            <tr class="thin"><td class="bname">RBNZ</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
+          </tbody>
+        </table>
       </div>
-      <p class="meta">&mdash; = not in the current edition. Fed rate: FRED FEDFUNDS (Sep 2026); priced move: CME FedWatch via Reuters.</p>
-    </section>
+      <p class="meta foot">Not covered this edition: BoE, SNB, RBA. &mdash; = not in the current edition.
+        Fed rate: <a href="https://fred.stlouisfed.org/series/FEDFUNDS" target="_blank" rel="noopener noreferrer">FRED FEDFUNDS</a> (Sep 2026);
+        priced move: <a href="https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html" target="_blank" rel="noopener noreferrer">CME FedWatch</a> via Reuters.</p>
+    </div>
+  </section>
 
-    <section id="catalysts" class="panel p-cal" aria-label="Economic calendar">
-      <h2><span class="sec-tag">//</span> Calendar</h2>
-      <ul class="cal">
-        <li><span class="cal-day">Thu Oct 8</span><span>US jobless claims <b>7:30 CT</b> · 30-yr auction <b>12:00 CT</b><br>Fed: Musalem <b>12:40 CT</b>, Waller, Kashkari · ECB&rsquo;s Lane, BoE&rsquo;s Pill</span></li>
-        <li><span class="cal-day">Fri Oct 9</span><span>U. Michigan sentiment <b>9:00 CT</b></span></li>
-        <li><span class="cal-day">Tue Oct 14</span><span>US CPI <b>7:30 CT</b></span></li>
-        <li><span class="cal-day">Oct 27&ndash;28</span><span>FOMC decision</span></li>
-        <li><span class="cal-day">Oct 28</span><span>BoC &amp; RBNZ decisions</span></li>
-        <li><span class="cal-day">Oct 29</span><span>ECB decision</span></li>
-        <li><span class="cal-day">Oct 29&ndash;30</span><span>BoJ decision</span></li>
-      </ul>
-    </section>
+  <!-- ============ CALENDAR (hand-seeded; Today's "Next up" reads this list) ============ -->
+  <section class="view" id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+    <div class="view-head">
+      <h1 class="view-title">Calendar</h1>
+      <p class="meta">Catalysts ahead · times in CT</p>
+    </div>
+    <ol class="timeline" id="cal-list">
+      <li data-key="1"><span class="t-day">Thu Oct 8</span><div><b>US jobless claims</b> <span class="t-time">7:30</span> · 30-yr auction <span class="t-time">12:00</span><small>Fed: Musalem 12:40, Waller, Kashkari · ECB&rsquo;s Lane, BoE&rsquo;s Pill</small></div></li>
+      <li><span class="t-day">Fri Oct 9</span><div><b>U. Michigan sentiment</b> <span class="t-time">9:00</span></div></li>
+      <li data-key="1"><span class="t-day">Tue Oct 14</span><div><b>US CPI</b> <span class="t-time">7:30</span><small>The swing factor for December hike odds</small></div></li>
+      <li data-key="1"><span class="t-day">Oct 27&ndash;28</span><div><b>FOMC decision</b></div></li>
+      <li><span class="t-day">Oct 28</span><div><b>BoC &amp; RBNZ decisions</b></div></li>
+      <li><span class="t-day">Oct 29</span><div><b>ECB decision</b></div></li>
+      <li><span class="t-day">Oct 29&ndash;30</span><div><b>BoJ decision</b></div></li>
+    </ol>
+  </section>
 
-    <section id="latest" class="panel p-latest" aria-label="Breaking wire">
-      <h2><span class="sec-tag">//</span> Wire</h2>
-      <div id="latest-items"></div>
-    </section>
-
-  </div><!-- /dash -->
-
+  <!-- ============ WIRE ============ -->
+  <section class="view" id="view-wire" role="tabpanel" aria-labelledby="tab-wire" hidden>
+    <div class="view-head">
+      <h1 class="view-title">Wire</h1>
+      <p class="meta">Breaking items that move FX · newest first</p>
+    </div>
+    <div class="wire" id="latest-items"></div>
+  </section>
 
 </main>
 
 <footer>
   <div class="wrap">
-    <p class="disclaimer">Indicative quotes only, not executable prices. Market context, not financial advice.</p>
-    <p class="meta">Gloment · edition data: FRED, Reuters, CME FedWatch, NY Fed</p>
+    <p class="disclaimer">Market context only — not financial advice, not trade recommendations.</p>
+    <p class="meta">Gloment · edition data: FRED, Reuters, CME FedWatch, NY Fed, CFTC</p>
   </div>
 </footer>
 

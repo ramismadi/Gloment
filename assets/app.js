@@ -1,31 +1,60 @@
-/* Gloment — pro terminal desk renderer. Plain static JS, no build step.
-   On load: status-bar clocks + FX session indicator, and edition data
-   (macro engine, story, wire) from local JSON files. textContent-only DOM,
-   no HTML injection. */
+/* Gloment — premium desk renderer. Plain static JS, no build step.
+   Tabbed views (hash-routed: #today, #story, #story/2, #engine, #banks,
+   #calendar, #wire), a theme picker, and edition data (story, macro engine,
+   wire) from local JSON files. textContent-only DOM, no HTML injection. */
 
 (function () {
   'use strict';
 
+  var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
+  var THEMES = ['alpine', 'ivory', 'sage', 'midnight'];
+  var story = null;      // story.json, once loaded
+  var chapterIdx = 0;    // chapter shown in the Story tab
+
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
-    startClocks();
-    fetchJSON('data/engine.json').then(renderEngine).catch(function () {
-      note('#engine-rows', 'Macro engine data unavailable.');
+    initTheme();
+    initTabs();
+    startClock();
+    renderNextUp();
+
+    fetchJSON('data/story.json').then(function (d) {
+      story = d;
+      renderEdition(d);
+      renderTakeaways(d);
+      renderRail(d);
+      route();
+    }).catch(function () {
+      note('#today-takeaways', 'Story unavailable.');
+      note('#chapter-view', 'Story unavailable.');
+      setText('#today-headline', 'Edition unavailable');
     });
-    fetchJSON('data/story.json').then(renderStory).catch(function () {
-      note('#story-chapters', 'Story unavailable.');
+    fetchJSON('data/engine.json').then(function (d) {
+      renderEngine(d);
+      renderPulse(d);
+    }).catch(function () {
+      note('#engine-rows', 'Macro engine data unavailable.');
+      note('#today-pulse', 'Macro engine data unavailable.');
     });
     fetchJSON('data/latest.json').then(renderWire).catch(function () {
       note('#latest-items', 'No wire items.');
     });
   }
 
+  /* ---------------- helpers ---------------- */
   function fetchJSON(path) {
     return fetch(path).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     });
+  }
+
+  function $(sel) { return document.querySelector(sel); }
+
+  function setText(sel, txt) {
+    var n = $(sel);
+    if (n) n.textContent = txt;
   }
 
   /* Small DOM helper — textContent only, no HTML injection. */
@@ -37,7 +66,7 @@
   }
 
   function note(sel, msg) {
-    var t = document.querySelector(sel);
+    var t = $(sel);
     if (t) t.appendChild(el('p', 'meta', msg));
   }
 
@@ -51,63 +80,150 @@
     }
   }
 
-  /* Source label. `source` may be a string, a {label, url} object, or an
-     array of either; `url` is an optional link for a single string source.
-     Linked sources open the original article in a new tab. */
-  function srcLabel(source, url) {
+  function extLink(label, href) {
+    var a = el('a', null, label);
+    a.href = href;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    return a;
+  }
+
+  /* Normalise a source field to [{label, url}]. `source` may be a string,
+     a {label, url} object, or an array of either; `url` links a single
+     string source. */
+  function sourceList(source, url) {
     var list = Array.isArray(source) ? source : [source];
-    var wrap = el('span', 'src');
-    wrap.appendChild(document.createTextNode('src: '));
-    var shown = 0;
+    var out = [];
     list.forEach(function (s) {
       if (s == null || s === '') return;
       var label = typeof s === 'object' ? s.label : s;
-      var href = safeUrl(typeof s === 'object' ? s.url : (list.length === 1 ? url : null));
       if (!label) return;
-      if (shown++) wrap.appendChild(document.createTextNode(', '));
-      if (href) {
-        var a = el('a', null, label);
-        a.href = href;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.title = 'Open source: ' + new URL(href).hostname;
-        wrap.appendChild(a);
-      } else {
-        wrap.appendChild(document.createTextNode(label));
-      }
+      var href = safeUrl(typeof s === 'object' ? s.url : (list.length === 1 ? url : null));
+      out.push({ label: label, url: href });
     });
-    if (!shown) wrap.appendChild(document.createTextNode('n/a'));
+    return out;
+  }
+
+  /* Compact source chips: each linked source opens the article in a new tab. */
+  function sourceChips(source, url) {
+    var list = sourceList(source, url);
+    var wrap = el('div', 'sources');
+    wrap.appendChild(el('span', 'sources-lbl', list.length > 1 ? 'Sources' : 'Source'));
+    if (!list.length) wrap.appendChild(el('span', 'chip muted', 'n/a'));
+    list.forEach(function (s) {
+      var chip;
+      if (s.url) {
+        chip = extLink(s.label, s.url);
+        chip.className = 'chip';
+        chip.title = 'Open on ' + new URL(s.url).hostname;
+      } else {
+        chip = el('span', 'chip muted', s.label);
+      }
+      wrap.appendChild(chip);
+    });
     return wrap;
   }
 
-  /* ---------------- status bar: clocks + sessions ---------------- */
-  function startClocks() {
+  /* "2026-10-08T02:00:00-05:00" -> "Oct 8, 2:00 AM CT" */
+  function fmtDateTime(iso, withYear) {
+    try {
+      var o = { timeZone: 'America/Chicago', month: 'short', day: 'numeric',
+                hour: 'numeric', minute: '2-digit' };
+      if (withYear) o.year = 'numeric';
+      return new Date(iso).toLocaleString('en-US', o) + ' CT';
+    } catch (e) {
+      return iso;
+    }
+  }
+
+  function relTime(iso) {
+    var mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+    if (!isFinite(mins) || mins < 0) return fmtDateTime(iso);
+    if (mins < 60) return mins + 'm ago';
+    if (mins < 24 * 60) return Math.round(mins / 60) + 'h ago';
+    return fmtDateTime(iso);
+  }
+
+  /* ---------------- theme picker ---------------- */
+  function initTheme() {
+    var cur = document.documentElement.getAttribute('data-theme') || 'alpine';
+    if (THEMES.indexOf(cur) < 0) cur = 'alpine';
+    applyTheme(cur, false);
+    var picker = $('#theme-picker');
+    if (!picker) return;
+    picker.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-theme-opt]');
+      if (b) applyTheme(b.getAttribute('data-theme-opt'), true);
+    });
+  }
+
+  function applyTheme(name, save) {
+    document.documentElement.setAttribute('data-theme', name);
+    var btns = document.querySelectorAll('[data-theme-opt]');
+    Array.prototype.forEach.call(btns, function (b) {
+      b.setAttribute('aria-checked', b.getAttribute('data-theme-opt') === name ? 'true' : 'false');
+    });
+    if (save) {
+      try { localStorage.setItem('gloment-theme', name); } catch (e) { /* private mode */ }
+    }
+  }
+
+  /* ---------------- tabs / routing ---------------- */
+  function initTabs() {
+    window.addEventListener('hashchange', route);
+    var bar = $('#tabs');
+    // Arrow-key navigation between tabs.
+    bar.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var tabs = Array.prototype.slice.call(bar.querySelectorAll('[role=tab]'));
+      var i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      var next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+      next.focus();
+      next.click();
+      e.preventDefault();
+    });
+    route();
+  }
+
+  function route() {
+    var h = (location.hash || '#today').slice(1).split('/');
+    var tab = TABS.indexOf(h[0]) >= 0 ? h[0] : 'today';
+    TABS.forEach(function (t) {
+      var v = $('#view-' + t), a = $('#tab-' + t);
+      var on = t === tab;
+      if (v) v.hidden = !on;
+      if (a) {
+        a.setAttribute('aria-selected', on ? 'true' : 'false');
+        a.tabIndex = on ? 0 : -1;
+      }
+    });
+    if (tab === 'story' && story) {
+      var n = parseInt(h[1], 10);
+      showChapter(isFinite(n) ? n - 1 : chapterIdx);
+    }
+    var active = $('#tab-' + tab);
+    if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------------- clock + sessions ---------------- */
+  function startClock() {
     function tick() {
       var now = new Date();
-      var lc = document.querySelector('#clock-local');
-      var uc = document.querySelector('#clock-utc');
-      if (lc) {
-        lc.textContent = now.toLocaleTimeString('en-US', {
-          hour: '2-digit', minute: '2-digit', second: '2-digit',
-          timeZoneName: 'short'
-        });
-      }
-      if (uc) {
-        uc.textContent = now.toLocaleTimeString('en-GB', {
-          hour: '2-digit', minute: '2-digit', second: '2-digit',
-          timeZone: 'UTC'
-        }) + ' UTC';
-      }
+      setText('#clock-utc', now.toLocaleTimeString('en-GB', {
+        hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
+      }) + ' UTC');
       renderSessions(now);
     }
     tick();
-    setInterval(tick, 1000);
+    setInterval(tick, 15000);
   }
 
   /* FX sessions from UTC hour. Tokyo 00–09, London 08–17, New York 13–22.
      Weekends: market closed. */
   function renderSessions(now) {
-    var box = document.querySelector('#sessions');
+    var box = $('#sessions');
     if (!box) return;
     var h = now.getUTCHours() + now.getUTCMinutes() / 60;
     var d = now.getUTCDay();
@@ -119,83 +235,186 @@
     ];
     box.textContent = '';
     defs.forEach(function (s) {
-      var chip = el('span', 'sess' + (s.open ? ' open' : ''));
-      chip.appendChild(el('span', 'dot'));
-      chip.appendChild(document.createTextNode(s.code + ' ' + (s.open ? 'OPEN' : 'SHUT')));
-      chip.title = weekend ? 'Weekend — FX market closed' : (s.open ? 'Session open' : 'Session closed');
+      var chip = el('span', 'sess' + (s.open ? ' open' : ''), s.code);
+      chip.title = weekend ? 'Weekend — FX market closed'
+        : (s.code + ' session ' + (s.open ? 'open' : 'closed'));
       box.appendChild(chip);
     });
   }
 
-  /* ---------------- macro engine ---------------- */
-  function renderEngine(d) {
-    var upd = document.querySelector('#engine-updated');
-    if (d.updated) upd.textContent = fmtDateTime(d.updated);
-    var box = document.querySelector('#engine-rows');
+  /* ---------------- edition / today ---------------- */
+  function renderEdition(d) {
+    if (d.date) {
+      var p = d.date.split('-');
+      var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      setText('#edition-date', months[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]);
+    }
+    setText('#today-headline', d.headline || 'Today’s edition');
+  }
+
+  /* One card per chapter: title + the FX line. Click → that chapter. */
+  function renderTakeaways(d) {
+    var box = $('#today-takeaways');
+    (d.chapters || []).forEach(function (ch, i) {
+      var a = el('a', 'takeaway card');
+      a.href = '#story/' + (i + 1);
+      a.appendChild(el('span', 'tk-num mono', String(i + 1).padStart(2, '0')));
+      a.appendChild(el('h3', 'tk-title', ch.title));
+      a.appendChild(el('p', 'tk-fx', ch.fx));
+      a.appendChild(el('span', 'tk-cta', 'Read the chapter →'));
+      box.appendChild(a);
+    });
+  }
+
+  /* Macro pulse: pillar title + its one-line read. */
+  function renderPulse(d) {
+    var box = $('#today-pulse');
     (d.rows || []).forEach(function (row) {
-      var r = el('div', 'engine-row');
-      var head = el('div', 'engine-head');
-      head.appendChild(el('span', 'engine-title', row.title));
-      head.appendChild(srcLabel(row.sources || row.source, row.source_url));
-      r.appendChild(head);
-      r.appendChild(el('p', 'engine-figure', row.figure));
-      r.appendChild(el('p', 'engine-read', row.read));
-      box.appendChild(r);
+      var li = el('li');
+      li.appendChild(el('span', 'p-title', row.title));
+      li.appendChild(el('span', 'p-read', row.read));
+      box.appendChild(li);
+    });
+  }
+
+  /* Next up: the first three calendar entries, marked key ones first-class. */
+  function renderNextUp() {
+    var box = $('#today-next');
+    var items = document.querySelectorAll('#cal-list > li');
+    Array.prototype.slice.call(items, 0, 3).forEach(function (li) {
+      var row = el('li', li.hasAttribute('data-key') ? 'key' : null);
+      row.appendChild(el('span', 'n-day mono', li.querySelector('.t-day').textContent));
+      row.appendChild(el('span', 'n-what', li.querySelector('b').textContent));
+      box.appendChild(row);
     });
   }
 
   /* ---------------- story ---------------- */
-  function renderStory(d) {
-    // Edition date shown in the header, e.g. "2026-10-08" -> "October 8, 2026".
-    if (d.date) {
-      var parts = d.date.split('-');
-      var months = ['January','February','March','April','May','June','July',
-                    'August','September','October','November','December'];
-      document.querySelector('#edition-date').textContent =
-        months[parseInt(parts[1], 10) - 1] + ' ' + parseInt(parts[2], 10) + ', ' + parts[0];
+  function renderRail(d) {
+    var rail = $('#chapter-rail');
+    (d.chapters || []).forEach(function (ch, i) {
+      var li = el('li');
+      var a = el('a');
+      a.href = '#story/' + (i + 1);
+      a.appendChild(el('span', 'r-num mono', String(i + 1).padStart(2, '0')));
+      a.appendChild(el('span', 'r-title', ch.title));
+      li.appendChild(a);
+      rail.appendChild(li);
+    });
+  }
+
+  function showChapter(i) {
+    var chs = story.chapters || [];
+    if (!chs.length) return;
+    chapterIdx = Math.max(0, Math.min(chs.length - 1, i));
+    var ch = chs[chapterIdx];
+
+    Array.prototype.forEach.call(document.querySelectorAll('#chapter-rail a'), function (a, k) {
+      if (k === chapterIdx) a.setAttribute('aria-current', 'true');
+      else a.removeAttribute('aria-current');
+    });
+
+    var v = $('#chapter-view');
+    v.textContent = '';
+    v.appendChild(el('p', 'kicker', 'Chapter ' + (chapterIdx + 1) + ' of ' + chs.length));
+    v.appendChild(el('h1', 'display', ch.title));
+
+    // The FX takeaway leads — it's the point of the chapter.
+    var fx = el('div', 'fx-callout');
+    fx.appendChild(el('span', 'callout-lbl', 'What it means for FX'));
+    fx.appendChild(el('p', null, ch.fx));
+    v.appendChild(fx);
+
+    v.appendChild(el('p', 'lede', ch.meaning));
+
+    if ((ch.numbers || []).length) {
+      v.appendChild(el('h2', 'section-label', 'The numbers'));
+      var ul = el('ul', 'numbers');
+      ch.numbers.forEach(function (n) { ul.appendChild(el('li', null, n)); });
+      v.appendChild(ul);
     }
-    if (d.headline) {
-      document.querySelector('#story-headline').textContent = d.headline;
+
+    if (ch.scenarios) v.appendChild(scenarioSwitch(ch.scenarios));
+
+    v.appendChild(sourceChips(ch.sources || ch.source, ch.source_url));
+
+    // Prev / next
+    var nav = el('div', 'chapter-nav');
+    if (chapterIdx > 0) {
+      var p = el('a', 'btn ghost', '← ' + chs[chapterIdx - 1].title);
+      p.href = '#story/' + chapterIdx;
+      nav.appendChild(p);
+    } else {
+      nav.appendChild(el('span'));
     }
-    var box = document.querySelector('#story-chapters');
-    (d.chapters || []).forEach(function (ch) {
-      var c = el('div', 'chapter');
-      c.appendChild(el('h3', null, ch.title));
+    if (chapterIdx < chs.length - 1) {
+      var n = el('a', 'btn', chs[chapterIdx + 1].title + ' →');
+      n.href = '#story/' + (chapterIdx + 2);
+      nav.appendChild(n);
+    }
+    v.appendChild(nav);
+  }
 
-      var nums = el('ul', null);
-      (ch.numbers || []).forEach(function (n) { nums.appendChild(el('li', null, n)); });
-      c.appendChild(nums);
+  /* Base / Bull / Bear as a segmented control: one scenario visible at a time. */
+  function scenarioSwitch(sc) {
+    var box = el('div', 'scenarios');
+    var head = el('div', 'sc-head');
+    head.appendChild(el('h2', 'section-label', 'Scenarios'));
+    var seg = el('div', 'segmented');
+    seg.setAttribute('role', 'tablist');
+    seg.setAttribute('aria-label', 'Scenario');
+    head.appendChild(seg);
+    box.appendChild(head);
+    var body = el('p', 'sc-body');
+    body.setAttribute('aria-live', 'polite');
+    box.appendChild(body);
 
-      var pm = el('p', null);
-      pm.appendChild(el('span', 'lbl', 'Meaning — '));
-      pm.appendChild(document.createTextNode(ch.meaning));
-      c.appendChild(pm);
+    var keys = [['base', 'Base'], ['bull', 'Bull'], ['bear', 'Bear']].filter(function (k) {
+      return sc[k[0]];
+    });
+    function pick(key) {
+      Array.prototype.forEach.call(seg.children, function (b) {
+        b.setAttribute('aria-selected', b.getAttribute('data-k') === key ? 'true' : 'false');
+      });
+      body.className = 'sc-body sc-' + key;
+      body.textContent = sc[key];
+    }
+    keys.forEach(function (k) {
+      var b = el('button', 'seg sc-' + k[0], k[1]);
+      b.type = 'button';
+      b.setAttribute('role', 'tab');
+      b.setAttribute('data-k', k[0]);
+      b.addEventListener('click', function () { pick(k[0]); });
+      seg.appendChild(b);
+    });
+    if (keys.length) pick(keys[0][0]);
+    return box;
+  }
 
-      var pf = el('p', null);
-      pf.appendChild(el('span', 'lbl', 'FX — '));
-      pf.appendChild(document.createTextNode(ch.fx));
-      c.appendChild(pf);
-
-      if (ch.scenarios) {
-        var sc = el('ul', 'scenarios');
-        [['base', 'Base'], ['bull', 'Bull'], ['bear', 'Bear']].forEach(function (k) {
-          if (!ch.scenarios[k[0]]) return;
-          var li = el('li', null);
-          li.appendChild(el('span', 'sc-lbl', k[1]));
-          li.appendChild(document.createTextNode(ch.scenarios[k[0]]));
-          sc.appendChild(li);
-        });
-        c.appendChild(sc);
-      }
-
-      c.appendChild(srcLabel(ch.sources || ch.source, ch.source_url));
+  /* ---------------- macro engine ---------------- */
+  function renderEngine(d) {
+    if (d.updated) setText('#engine-updated', fmtDateTime(d.updated, true));
+    var box = $('#engine-rows');
+    (d.rows || []).forEach(function (row) {
+      var c = el('div', 'card pillar');
+      c.appendChild(el('span', 'pillar-title', row.title));
+      c.appendChild(el('p', 'pillar-read', row.read));
+      c.appendChild(el('p', 'pillar-figure mono', row.figure));
+      c.appendChild(sourceChips(row.sources || row.source, row.source_url));
       box.appendChild(c);
     });
   }
 
-  /* ---------------- breaking wire ---------------- */
+  /* ---------------- breaking wire ----------------
+     Bullets prefixed "Numbers:", "Meaning:", "FX:" are split into labelled
+     parts. The FX line shows by default; the rest sits behind "Full detail". */
+  function splitBullet(b) {
+    var m = /^\s*(Numbers|Meaning|FX)\s*:\s*/i.exec(b);
+    return m ? { key: m[1].toLowerCase(), text: b.slice(m[0].length) } : { key: null, text: b };
+  }
+
   function renderWire(d) {
-    var box = document.querySelector('#latest-items');
+    var box = $('#latest-items');
     var items = (d.items || []).slice().sort(function (a, b) {
       return new Date(b.ts) - new Date(a.ts); // reverse-chronological
     });
@@ -203,41 +422,59 @@
       box.appendChild(el('p', 'meta', 'Nothing breaking right now.'));
       return;
     }
-    items.forEach(function (it) {
-      var w = el('div', 'wire-item');
-      w.appendChild(el('div', 'wire-ts', fmtDateTime(it.ts)));
-      var body = el('div', null);
-      var hl = el('div', 'wire-headline');
-      var hlUrl = safeUrl(it.url);
-      if (hlUrl) {
-        var ha = el('a', null, it.headline);
-        ha.href = hlUrl;
-        ha.target = '_blank';
-        ha.rel = 'noopener noreferrer';
-        hl.appendChild(ha);
-      } else {
-        hl.textContent = it.headline;
+    var badge = $('#wire-count');
+    if (badge) { badge.textContent = items.length; badge.hidden = false; }
+
+    items.forEach(function (it, i) {
+      var parts = (it.bullets || []).map(splitBullet);
+      var fxPart = parts.filter(function (p) { return p.key === 'fx'; })[0];
+      var rest = parts.filter(function (p) { return p !== fxPart; });
+
+      var w = el('article', 'card wire-item' + (i === 0 ? ' latest' : ''));
+      var meta = el('div', 'wire-meta');
+      if (i === 0) meta.appendChild(el('span', 'live-pill', 'Latest'));
+      var ts = el('time', 'mono', relTime(it.ts));
+      ts.dateTime = it.ts;
+      ts.title = fmtDateTime(it.ts, true);
+      meta.appendChild(ts);
+      w.appendChild(meta);
+
+      var h = el('h3', 'wire-headline');
+      var hu = safeUrl(it.url);
+      if (hu) h.appendChild(extLink(it.headline, hu)); else h.textContent = it.headline;
+      w.appendChild(h);
+
+      if (fxPart) {
+        var fx = el('div', 'fx-callout small');
+        fx.appendChild(el('span', 'callout-lbl', 'FX'));
+        fx.appendChild(el('p', null, fxPart.text));
+        w.appendChild(fx);
       }
-      body.appendChild(hl);
-      var ul = el('ul', null);
-      (it.bullets || []).forEach(function (b) { ul.appendChild(el('li', null, b)); });
-      body.appendChild(ul);
-      body.appendChild(srcLabel(it.sources || []));
-      w.appendChild(body);
+
+      if (rest.length) {
+        var det = el('details', 'more-detail');
+        det.appendChild(el('summary', null, 'Full detail'));
+        rest.forEach(function (p) {
+          var para = el('p');
+          if (p.key) para.appendChild(el('span', 'lbl', p.key === 'numbers' ? 'Numbers' : 'Meaning'));
+          para.appendChild(document.createTextNode(p.text));
+          det.appendChild(para);
+        });
+        w.appendChild(det);
+      }
+
+      w.appendChild(sourceChips(it.sources || []));
       box.appendChild(w);
     });
-  }
 
-  /* "2026-10-08T02:00:00-05:00" -> "Oct 8, 2026, 2:00 AM CT" */
-  function fmtDateTime(iso) {
-    try {
-      return new Date(iso).toLocaleString('en-US', {
-        timeZone: 'America/Chicago',
-        month: 'short', day: 'numeric', year: 'numeric',
-        hour: 'numeric', minute: '2-digit'
-      }) + ' CT';
-    } catch (e) {
-      return iso;
+    // Teaser on the Today tab.
+    var t = $('#today-wire');
+    if (t) {
+      t.textContent = '';
+      t.appendChild(el('span', 'live-pill', 'Wire · ' + relTime(items[0].ts)));
+      t.appendChild(el('span', 'teaser-hl', items[0].headline));
+      t.appendChild(el('span', 'tk-cta', 'Open →'));
+      t.hidden = false;
     }
   }
 })();
