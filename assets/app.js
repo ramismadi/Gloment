@@ -240,7 +240,11 @@
   function applyTheme(id, save) {
     var t = themeById(id) || THEMES[0];
     document.documentElement.setAttribute('data-theme', t.id);
-    setText('#theme-name', t.name);
+    var btn = $('#theme-btn');
+    if (btn) {
+      btn.setAttribute('aria-label', 'Color scheme: ' + t.name);
+      btn.title = 'Color scheme: ' + t.name;
+    }
     var sw = $('#theme-swatch');
     if (sw) sw.style.background = swatchBg(t);
     Array.prototype.forEach.call(document.querySelectorAll('.tl-item'), function (b) {
