@@ -1,0 +1,24 @@
+{
+  "updated": "2026-10-08T02:00:00-05:00",
+  "banks": [
+    {
+      "id": "fed", "short": "Fed", "name": "Federal Reserve", "ccy": "USD",
+      "rate": "3.75%", "rate_label": "Effective fed funds (Sep avg)",
+      "last_move": null,
+      "next_meeting": { "start": "2026-10-27", "end": "2026-10-28" },
+      "priced": "Dec hike ~80%",
+      "bias": "hawkish",
+      "sources": [
+        { "label": "FRED: FEDFUNDS", "url": "https://fred.stlouisfed.org/series/FEDFUNDS" },
+        { "label": "CME FedWatch", "url": "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html" }
+      ]
+    },
+    { "id": "ecb",  "short": "ECB",  "name": "European Central Bank",  "ccy": "EUR", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-29" }, "priced": null, "bias": null, "sources": [] },
+    { "id": "boj",  "short": "BoJ",  "name": "Bank of Japan",          "ccy": "JPY", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-29", "end": "2026-10-30" }, "priced": null, "bias": null, "sources": [] },
+    { "id": "boc",  "short": "BoC",  "name": "Bank of Canada",         "ccy": "CAD", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-28" }, "priced": null, "bias": null, "sources": [] },
+    { "id": "rbnz", "short": "RBNZ", "name": "Reserve Bank of New Zealand", "ccy": "NZD", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-28" }, "priced": null, "bias": null, "sources": [] },
+    { "id": "boe",  "short": "BoE",  "name": "Bank of England",        "ccy": "GBP", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] },
+    { "id": "snb",  "short": "SNB",  "name": "Swiss National Bank",    "ccy": "CHF", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] },
+    { "id": "rba",  "short": "RBA",  "name": "Reserve Bank of Australia", "ccy": "AUD", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] }
+  ]
+}

@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=11">
+<link rel="stylesheet" href="assets/style.css?v=12">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,7 +23,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=11" defer></script>
+<script src="assets/app.js?v=12" defer></script>
 </head>
 <body>
 
@@ -116,27 +116,11 @@
   <section class="view" id="view-banks" role="tabpanel" aria-labelledby="tab-banks" hidden>
     <div class="view-head">
       <h1 class="view-title">Central banks</h1>
-      <p class="meta">Policy rate, next meeting and what the market prices.</p>
+      <p class="meta">Policy rate, next decision and what the market prices · updated <span id="banks-updated">—</span></p>
     </div>
-    <div class="card table-card">
-      <div class="table-wrap">
-        <table class="banks">
-          <thead>
-            <tr><th>Bank</th><th class="num">Policy rate</th><th>Next meeting</th><th>Priced move</th><th>Bias</th></tr>
-          </thead>
-          <tbody>
-            <tr><td class="bname">Fed</td><td class="num">3.75%</td><td>Oct 27&ndash;28</td><td>Dec hike ~80%</td><td><span class="bias hawk">Hawkish</span></td></tr>
-            <tr class="thin"><td class="bname">ECB</td><td class="num">&mdash;</td><td>Oct 29</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-            <tr class="thin"><td class="bname">BoJ</td><td class="num">&mdash;</td><td>Oct 29&ndash;30</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-            <tr class="thin"><td class="bname">BoC</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-            <tr class="thin"><td class="bname">RBNZ</td><td class="num">&mdash;</td><td>Oct 28</td><td>&mdash;</td><td><span class="bias na">&mdash;</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="meta foot">Not covered this edition: BoE, SNB, RBA. &mdash; = not in the current edition.
-        Fed rate: <a href="https://fred.stlouisfed.org/series/FEDFUNDS" target="_blank" rel="noopener noreferrer">FRED FEDFUNDS</a> (Sep 2026);
-        priced move: <a href="https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html" target="_blank" rel="noopener noreferrer">CME FedWatch</a> via Reuters.</p>
-    </div>
+    <div class="bank-next card" id="bank-next" hidden></div>
+    <div class="bank-grid" id="bank-grid"></div>
+    <p class="meta bank-foot" id="bank-foot"></p>
   </section>
 
   <!-- ============ CALENDAR (hand-seeded; Today's "Next up" reads this list) ============ -->
