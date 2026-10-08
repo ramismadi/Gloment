@@ -15,20 +15,22 @@ advice.
   light greys, white surfaces. Airy daytime feel. Terminal-desk aesthetic
   (monospace tabular numerals, compact data rows). Keep it light — Rami
   rejected a darker version.
-- `assets/app.js` — on load: fetches live FX quotes from
-  https://open.er-api.com/v6/latest/USD (free, no key) and renders 10 pairs;
-  fetches `data/*.json` via relative paths and renders each section. All DOM
-  built with textContent (no HTML injection). Graceful fallback if the quote
-  fetch fails. Also drives the JS-rendered dashboard chrome: sticky status bar
-  (live local/UTC clocks, TYO/LDN/NYC session chips), scrolling ticker tape,
-  and day-change % pills (computed vs previous ECB fixing via frankfurter.app,
-  labeled in-page).
+- `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
+  each section. All DOM built with textContent (no HTML injection). Also drives
+  the JS-rendered dashboard chrome: sticky status bar (live local/UTC clocks,
+  TYO/LDN/NYC session chips). No live price widgets — Rami removed them
+  (unreliable feeds); this is a story/full-picture site, not a quote terminal.
+  Price levels appear only inside the narrative data.
+- Fonts: system sans stack (`-apple-system` first, so Apple devices render
+  San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
+  reserved strictly for tabular numerals: status-bar clocks, engine figures,
+  bank-table numbers, calendar times, wire timestamps. Everything else is sans.
 - Dashboard panels (structure in `index.html`, styling in `assets/style.css`):
-  live quotes board, macro engine, central-bank scorecard (policy
-  rate / next meeting / priced move / bias — only the Fed row is data-backed;
-  other banks show "—" when not in the current edition), economic calendar
-  (CT times, currently hardcoded from the catalyst seed), breaking wire
-  (from `data/latest.json`), and the story chapters (from `data/story.json`).
+  macro engine, central-bank scorecard (policy rate / next meeting /
+  priced move / bias — only the Fed row is data-backed; other banks show
+  "—" when not in the current edition), economic calendar (CT times,
+  currently hardcoded from the catalyst seed), breaking wire (from
+  `data/latest.json`), and the story chapters (from `data/story.json`).
   The scorecard/calendar/ticker are presentational — they are NOT fed by
   `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
@@ -41,21 +43,6 @@ advice.
 - `data/latest.json` — breaking items, reverse-chronological:
   `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
   "sources":[]}]}`.
-
-## Clickable sources (for whoever writes `data/*.json`)
-Source labels now link to the original article/page when a URL is supplied.
-Links open in a new tab (`rel="noopener noreferrer"`); only `http(s)` URLs are
-honoured. Everything is backward compatible: with no URL, the label renders as
-plain text exactly as before. Never guess or fabricate a URL — link the actual
-article/series page you used, or leave the URL out.
-- `engine.json` rows and `story.json` chapters: keep `"source"` (string) and add
-  `"source_url"` for a single source, or use `"sources": [{"label","url"}, ...]`
-  (items may also be plain strings) when a row cites several.
-- `latest.json` items: `"sources"` may hold `{"label","url"}` objects (or
-  strings, as before); optional `"url"` on the item makes the headline itself
-  a link.
-- Deep links beat homepages: prefer the specific article, FRED series page,
-  or release over a publisher front page.
 
 ## How updates happen (Hercules' automation — do not fight it)
 - Daily ~2:00 AM CT cron (`fx-outlook-daily-refresh`): rebuilds `story.json`
