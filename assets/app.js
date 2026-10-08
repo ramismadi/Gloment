@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '7';
+  var ASSET_VERSION = '8';
 
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -285,6 +285,15 @@
   /* ---------------- tabs / routing ---------------- */
   function initTabs() {
     window.addEventListener('hashchange', route);
+    window.addEventListener('popstate', route);
+    // Home links (wordmark, Today tab) go to the clean site URL, no #today.
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('a[data-home]');
+      if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
+      e.preventDefault();
+      if (location.hash) history.pushState(null, '', location.pathname + location.search);
+      route();
+    });
     var bar = $('#tabs');
     // Arrow-key navigation between tabs.
     bar.addEventListener('keydown', function (e) {
