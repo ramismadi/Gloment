@@ -80,6 +80,10 @@ advice.
    `icon-192.png`, `icon-512.png`, `favicon.png`, plus
    mobile-web-app-capable/theme-color metas). Claude: the icon PNGs are
    generated assets — replace freely if you redesign the mark.
+   NOTE 2026-10-08: the first push of this hotfix was built on stale files
+   and overwrote Claude's theme-dropdown + new schemes; restored from merge
+   commit ac752e6 and re-applied the two fixes on top. Lesson: re-fetch repo
+   files immediately before pushing when Claude is active.
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.
