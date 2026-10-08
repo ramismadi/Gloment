@@ -12,12 +12,14 @@ advice.
 ## Architecture
 - `index.html` — page shell; dynamic sections are empty containers filled by JS.
 - `assets/style.css` — premium tabbed desk. Colors are token sets on
-  `<html data-theme="…">`: **alpine** (default — sky blues, pale gold, white;
-  keep the default light, Rami rejected a dark default), **ivory** (navy &
-  brass), **sage** (forest & sand), **midnight** (dark, opt-in only). Readers
-  pick via the swatches in the masthead; the choice is saved in localStorage.
-  Every theme defines the same tokens — add new colors as tokens, never as
-  hard-coded hex in component rules.
+  `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
+  white; keep the default light, Rami rejected a dark default), **ivory**,
+  **sage**, **porcelain**, **claret**, **harbor**, **stone**, **dusk**. Dark
+  (opt-in only): **midnight**, **onyx**, **forest**. Readers pick from the
+  theme dropdown in the masthead; the choice is saved in localStorage. To add
+  or remove a theme, edit both its `[data-theme]` token block in style.css and
+  its entry in the `THEMES` list in app.js. Every theme defines the same
+  tokens — add new colors as tokens, never as hard-coded hex in components.
 - `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
   each view. All DOM built with textContent (no HTML injection). Hash-routed
   tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,

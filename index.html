@@ -32,11 +32,13 @@
       <span class="edition">Edition <b id="edition-date">—</b></span>
       <span class="clock mono" id="clock-utc" title="UTC time">--:-- UTC</span>
       <span id="sessions" class="sessions" aria-label="FX session status"></span>
-      <div class="theme-picker" role="radiogroup" aria-label="Color theme" id="theme-picker">
-        <button type="button" role="radio" data-theme-opt="alpine"   title="Alpine — sky &amp; gold"   aria-label="Alpine theme"></button>
-        <button type="button" role="radio" data-theme-opt="ivory"    title="Ivory — navy &amp; brass"  aria-label="Ivory theme"></button>
-        <button type="button" role="radio" data-theme-opt="sage"     title="Sage — forest &amp; sand"  aria-label="Sage theme"></button>
-        <button type="button" role="radio" data-theme-opt="midnight" title="Midnight — dark desk"      aria-label="Midnight theme"></button>
+      <div class="theme-menu" id="theme-menu">
+        <button type="button" class="theme-btn" id="theme-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-list" title="Color theme">
+          <span class="tm-swatch" id="theme-swatch" aria-hidden="true"></span>
+          <span class="tm-name" id="theme-name">Theme</span>
+          <svg class="tm-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="theme-list" id="theme-list" role="menu" aria-label="Color theme" hidden></div>
       </div>
     </div>
   </div>

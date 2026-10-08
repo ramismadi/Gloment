@@ -7,7 +7,21 @@
   'use strict';
 
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
-  var THEMES = ['alpine', 'ivory', 'sage', 'midnight'];
+  /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
+     Token values live in style.css under [data-theme="<id>"]. */
+  var THEMES = [
+    { id: 'alpine',    name: 'Alpine',    desc: 'Sky blue & gold',        sw: ['#f3f8fc', '#1668a3', '#d9a441'] },
+    { id: 'ivory',     name: 'Ivory',     desc: 'Navy & brass',           sw: ['#f6f2ea', '#1f3a5f', '#a07a32'] },
+    { id: 'sage',      name: 'Sage',      desc: 'Forest & sand',          sw: ['#f2f4ef', '#2f5d4a', '#c9ad7f'] },
+    { id: 'porcelain', name: 'Porcelain', desc: 'Slate & rose gold',      sw: ['#f4f5f7', '#3b4a63', '#b07a5e'] },
+    { id: 'claret',    name: 'Claret',    desc: 'Burgundy & cream',       sw: ['#f7f3ef', '#6e1f30', '#a8803c'] },
+    { id: 'harbor',    name: 'Harbor',    desc: 'Deep teal & copper',     sw: ['#f1f5f5', '#0f5560', '#b26b3c'] },
+    { id: 'stone',     name: 'Stone',     desc: 'Charcoal & terracotta',  sw: ['#f3f1ed', '#2f2e2b', '#b4613f'] },
+    { id: 'dusk',      name: 'Dusk',      desc: 'Plum & champagne',       sw: ['#f5f2f5', '#4b2f5c', '#a8884f'] },
+    { id: 'midnight',  name: 'Midnight',  desc: 'Dark navy & sky',        sw: ['#0d1320', '#7cbcf0', '#d9b56a'], dark: true },
+    { id: 'onyx',      name: 'Onyx',      desc: 'Black & champagne',      sw: ['#0f0f10', '#e2c98f', '#6cc794'], dark: true },
+    { id: 'forest',    name: 'Forest',    desc: 'Dark green & brass',     sw: ['#0e1714', '#9fd0b5', '#d2b072'], dark: true }
+  ];
   var story = null;      // story.json, once loaded
   var chapterIdx = 0;    // chapter shown in the Story tab
 
@@ -144,27 +158,96 @@
     return fmtDateTime(iso);
   }
 
-  /* ---------------- theme picker ---------------- */
+  /* ---------------- theme menu (dropdown) ---------------- */
+  function themeById(id) {
+    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i];
+    return null;
+  }
+
+  function swatchBg(t) {
+    return 'linear-gradient(135deg, ' + t.sw[0] + ' 0 34%, ' + t.sw[1] + ' 34% 67%, ' + t.sw[2] + ' 67%)';
+  }
+
   function initTheme() {
-    var cur = document.documentElement.getAttribute('data-theme') || 'alpine';
-    if (THEMES.indexOf(cur) < 0) cur = 'alpine';
+    var cur = document.documentElement.getAttribute('data-theme');
+    if (!themeById(cur)) cur = 'alpine';
+
+    var btn = $('#theme-btn'), list = $('#theme-list');
+    if (!btn || !list) { applyTheme(cur, false); return; }
+
+    // Build the menu: light themes, then dark.
+    [['Light', false], ['Dark', true]].forEach(function (g) {
+      list.appendChild(el('div', 'tl-group', g[0]));
+      THEMES.filter(function (t) { return !!t.dark === g[1]; }).forEach(function (t) {
+        var item = el('button', 'tl-item');
+        item.type = 'button';
+        item.setAttribute('role', 'menuitemradio');
+        item.setAttribute('data-theme-opt', t.id);
+        var sw = el('span', 'tm-swatch');
+        sw.style.background = swatchBg(t);
+        item.appendChild(sw);
+        var txt = el('span', 'tl-text');
+        txt.appendChild(el('span', 'tl-name', t.name));
+        txt.appendChild(el('span', 'tl-desc', t.desc));
+        item.appendChild(txt);
+        item.appendChild(el('span', 'tl-check', '\u2713'));
+        list.appendChild(item);
+      });
+    });
     applyTheme(cur, false);
-    var picker = $('#theme-picker');
-    if (!picker) return;
-    picker.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-theme-opt]');
-      if (b) applyTheme(b.getAttribute('data-theme-opt'), true);
+
+    function items() { return Array.prototype.slice.call(list.querySelectorAll('.tl-item')); }
+    function open() {
+      list.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      var sel = list.querySelector('[aria-checked="true"]') || items()[0];
+      if (sel) sel.focus();
+    }
+    function close(refocus) {
+      if (list.hidden) return;
+      list.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      if (refocus) btn.focus();
+    }
+
+    btn.addEventListener('click', function () { if (list.hidden) open(); else close(false); });
+    list.addEventListener('click', function (e) {
+      var it = e.target.closest('.tl-item');
+      if (!it) return;
+      applyTheme(it.getAttribute('data-theme-opt'), true);
+      close(true);
+    });
+    list.addEventListener('keydown', function (e) {
+      var all = items(), i = all.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        var n = all[(i + (e.key === 'ArrowDown' ? 1 : all.length - 1)) % all.length];
+        if (n) n.focus();
+        e.preventDefault();
+      } else if (e.key === 'Home' || e.key === 'End') {
+        all[e.key === 'Home' ? 0 : all.length - 1].focus();
+        e.preventDefault();
+      } else if (e.key === 'Escape') {
+        close(true);
+      } else if (e.key === 'Tab') {
+        close(false);
+      }
+    });
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('#theme-menu')) close(false);
     });
   }
 
-  function applyTheme(name, save) {
-    document.documentElement.setAttribute('data-theme', name);
-    var btns = document.querySelectorAll('[data-theme-opt]');
-    Array.prototype.forEach.call(btns, function (b) {
-      b.setAttribute('aria-checked', b.getAttribute('data-theme-opt') === name ? 'true' : 'false');
+  function applyTheme(id, save) {
+    var t = themeById(id) || THEMES[0];
+    document.documentElement.setAttribute('data-theme', t.id);
+    setText('#theme-name', t.name);
+    var sw = $('#theme-swatch');
+    if (sw) sw.style.background = swatchBg(t);
+    Array.prototype.forEach.call(document.querySelectorAll('.tl-item'), function (b) {
+      b.setAttribute('aria-checked', b.getAttribute('data-theme-opt') === t.id ? 'true' : 'false');
     });
     if (save) {
-      try { localStorage.setItem('gloment-theme', name); } catch (e) { /* private mode */ }
+      try { localStorage.setItem('gloment-theme', t.id); } catch (e) { /* private mode */ }
     }
   }
 
