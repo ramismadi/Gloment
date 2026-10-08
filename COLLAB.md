@@ -15,8 +15,8 @@ advice.
   `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
   white; keep the default light, Rami rejected a dark default), **ivory**,
   **sage**, **porcelain**, **claret**, **harbor**, **stone**, **dusk**. Dark
-  (opt-in only): **midnight**, **onyx**, **forest**, **velvet**, **study**,
-  **ink**, **moss**. Readers pick from the
+  (opt-in only): **midnight**, **onyx**, **forest**, **velvet**,
+  **ink**. Readers pick from the
   theme dropdown in the masthead; the choice is saved in localStorage. To add
   or remove a theme, edit both its `[data-theme]` token block in style.css and
   its entry in the `THEMES` list in app.js. Every theme defines the same
