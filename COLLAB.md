@@ -25,12 +25,10 @@ advice.
   San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
   reserved strictly for tabular numerals: status-bar clocks, engine figures,
   bank-table numbers, calendar times, wire timestamps. Everything else is sans.
-- Dashboard panels (structure in `index.html`, styling in `assets/style.css`):
-  macro engine, central-bank scorecard (policy rate / next meeting /
-  priced move / bias — only the Fed row is data-backed; other banks show
-  "—" when not in the current edition), economic calendar (CT times,
-  currently hardcoded from the catalyst seed), breaking wire (from
-  `data/latest.json`), and the story chapters (from `data/story.json`).
+- Layout order (top to bottom): sticky status bar → hero header → **The Story**
+  (the core: daily narrative from `data/story.json`) → dashboard grid (macro
+  engine, central-bank scorecard, economic calendar, breaking wire) → footer.
+  The story is the product; everything else supports it.
   The scorecard/calendar/ticker are presentational — they are NOT fed by
   `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
