@@ -6,6 +6,9 @@
 (function () {
   'use strict';
 
+  /* Must equal the ?v= on app.js in index.html — bump both together. */
+  var ASSET_VERSION = '6';
+
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
      Token values live in style.css under [data-theme="<id>"]. */
@@ -32,6 +35,7 @@
   document.addEventListener('DOMContentLoaded', init);
 
   function init() {
+    checkFreshness();
     initTheme();
     initTabs();
     startClock();
@@ -58,6 +62,25 @@
     fetchJSON('data/latest.json').then(renderWire).catch(function () {
       note('#latest-items', 'No wire items.');
     });
+  }
+
+  /* Self-update: home-screen web apps and browser caches can keep serving an
+     old index.html (and therefore old assets). Re-fetch the page from the
+     network; if it references a newer asset version, reload once. */
+  function checkFreshness() {
+    if (!window.fetch) return;
+    fetch('index.html', { cache: 'reload' }).then(function (r) {
+      return r.ok ? r.text() : '';
+    }).then(function (html) {
+      var m = /assets\/app\.js\?v=([\w.-]+)/.exec(html);
+      if (!m || m[1] === ASSET_VERSION) return;
+      var key = 'gloment-reloaded-' + m[1];
+      try {
+        if (sessionStorage.getItem(key)) return; // already tried once
+        sessionStorage.setItem(key, '1');
+      } catch (e) { return; }
+      location.reload();
+    }).catch(function () { /* offline — keep the current page */ });
   }
 
   /* ---------------- helpers ---------------- */
