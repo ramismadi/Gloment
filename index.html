@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=7">
+<link rel="stylesheet" href="assets/style.css?v=8">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,14 +23,14 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=7" defer></script>
+<script src="assets/app.js?v=8" defer></script>
 </head>
 <body>
 
 <!-- masthead: brand, edition, market clocks, theme picker -->
 <header class="masthead">
   <div class="wrap mh-inner">
-    <a class="brand" href="#today" aria-label="Gloment — back to Today">
+    <a class="brand" href="./" data-home aria-label="Gloment — back to Today">
       <span class="wordmark">GLOMENT</span>
       <span class="brand-sub">Global fundamentals for FX</span>
     </a>
@@ -52,7 +52,7 @@
   <nav class="tabbar" aria-label="Sections">
     <div class="wrap">
       <div class="tabs" role="tablist" id="tabs">
-        <a role="tab" href="#today"    data-tab="today"    id="tab-today">Today</a>
+        <a role="tab" href="./" data-home data-tab="today"    id="tab-today">Today</a>
         <a role="tab" href="#story"    data-tab="story"    id="tab-story">Story</a>
         <a role="tab" href="#engine"   data-tab="engine"   id="tab-engine">Macro engine</a>
         <a role="tab" href="#banks"    data-tab="banks"    id="tab-banks">Central banks</a>

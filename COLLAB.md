@@ -14,7 +14,7 @@ advice.
 - `assets/style.css` — premium tabbed desk. Colors are token sets on
   `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
   white; keep the default light, Rami rejected a dark default), **ivory**,
-  **sage**, **porcelain**, **claret**, **harbor**, **stone**, **dusk**. Dark
+  **sage**, **porcelain**, **claret**, **harbor**, **dusk**. Dark
   (opt-in only): **midnight**, **onyx**, **forest**, **velvet**,
   **ink**. Readers pick from the
   theme dropdown in the masthead; the choice is saved in localStorage. To add
