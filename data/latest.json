@@ -1,1 +1,46 @@
-{"items":[{"bullets":["Numbers: Brent spiked 5.7% intraday to $105.91, WTI to $93.20, on reports the White House asked the Pentagon for limited Iran strike options; both faded by midday (Brent $103.63, WTI $90.87). Nine tankers attacked in/around the Strait of Hormuz this week — most since the war began Feb 28. Reuters reported US strikes Wednesday on an Iranian drone-control site near Bandar Abbas.","Meaning: fresh supply-shock premium layered onto a tight oil market; Trump then ruled out new strikes before the Nov 3 midterms, helping oil give back ~$2. IEA agreed to accelerate release of 100M barrels from emergency stocks. Markets price escalation-with-a-ceiling: tail risk up, no open-ended strike path yet.","FX: CAD bid via terms of trade (loonie led G10 intraday); USD bid near 18-month highs on risk-off flows and inflation repricing (DXY ~102.2–102.4, US 10Y ~5.35%); EUR pinned near 17-month lows (~$1.12) on the energy-cost drag; JPY supported by haven flows but capped by wide yield differentials (USD/JPY ~158.2)"],"headline":"US–Iran escalation: strike options drawn up, Iran threatens Hormuz blockade — oil spikes 5%","sources":[{"label":"Reuters: Iran vows to block more Hormuz routes","url":"https://www.reuters.com/world/asia-pacific/attack-risks-rise-tankers-iran-vows-block-more-hormuz-routes-2026-10-08/"},{"label":"USA Today: Trump rules out new strikes before midterms","url":"https://www.usatoday.com/story/news/world/2026/10/08/trump-iran-attack-midterm-election/92154585007/"},{"label":"FXStreet/Reuters: US strikes on Iranian military site","url":"https://www.fxstreet.com/news/us-military-carries-out-new-strikes-on-an-iranian-military-site-reuters-202605272351"},{"label":"TradingNews: Brent/WTI fade from 5% spike","url":"https://www.tradingnews.com/news/brent-103-usd-and-wti-90-usd-fade-from-5-percent-spike-as-none-tanker-attack"}],"ts":"2026-10-08T16:32:00-05:00"},{"bullets":["Numbers: Brent +4.4% intraday to ~$104.7; Houthi attacks on shipping; Hurricane Isaias in the mix","Meaning: fresh supply-shock premium layered onto an already tight oil market","FX: CAD bid via terms of trade; USD bid on risk-off flows; JPY/CHF supported"],"headline":"Brent spikes 4.4% to ~$104.7 on tanker strike off Qatar","sources":["Reuters"],"ts":"2026-10-08T09:30:00-05:00"}]}
+{
+  "items": [
+    {
+      "bullets": [
+        "Numbers: Brent spiked 5.7% intraday to $105.91, WTI to $93.20, on reports the White House asked the Pentagon for limited Iran strike options; both faded by midday (Brent $103.63, WTI $90.87). Nine tankers attacked in/around the Strait of Hormuz this week \u2014 most since the war began Feb 28. Reuters reported US strikes Wednesday on an Iranian drone-control site near Bandar Abbas.",
+        "Meaning: fresh supply-shock premium layered onto a tight oil market; Trump then ruled out new strikes before the Nov 3 midterms, helping oil give back ~$2. IEA agreed to accelerate release of 100M barrels from emergency stocks. Markets price escalation-with-a-ceiling: tail risk up, no open-ended strike path yet.",
+        "FX: CAD bid via terms of trade (loonie led G10 intraday); USD bid near 18-month highs on risk-off flows and inflation repricing (DXY ~102.2\u2013102.4, US 10Y ~5.35%); EUR pinned near 17-month lows (~$1.12) on the energy-cost drag; JPY supported by haven flows but capped by wide yield differentials (USD/JPY ~158.2)"
+      ],
+      "headline": "US\u2013Iran escalation: strike options drawn up, Iran threatens Hormuz blockade \u2014 oil spikes 5%",
+      "sources": [
+        {
+          "label": "Reuters: Iran vows to block more Hormuz routes",
+          "url": "https://www.reuters.com/world/asia-pacific/attack-risks-rise-tankers-iran-vows-block-more-hormuz-routes-2026-10-08/"
+        },
+        {
+          "label": "USA Today: Trump rules out new strikes before midterms",
+          "url": "https://www.usatoday.com/story/news/world/2026/10/08/trump-iran-attack-midterm-election/92154585007/"
+        },
+        {
+          "label": "FXStreet/Reuters: US strikes on Iranian military site",
+          "url": "https://www.fxstreet.com/news/us-military-carries-out-new-strikes-on-an-iranian-military-site-reuters-202605272351"
+        },
+        {
+          "label": "TradingNews: Brent/WTI fade from 5% spike",
+          "url": "https://www.tradingnews.com/news/brent-103-usd-and-wti-90-usd-fade-from-5-percent-spike-as-none-tanker-attack"
+        }
+      ],
+      "ts": "2026-10-08T16:32:00-05:00"
+    },
+    {
+      "bullets": [
+        "Numbers: Brent +4.4% intraday to ~$104.7; Houthi attacks on shipping; Hurricane Isaias in the mix",
+        "Meaning: fresh supply-shock premium layered onto an already tight oil market",
+        "FX: CAD bid via terms of trade; USD bid on risk-off flows; JPY/CHF supported"
+      ],
+      "headline": "Brent spikes 4.4% to ~$104.7 on tanker strike off Qatar",
+      "sources": [
+        {
+          "label": "Reuters: Oil rises as Middle East supply concerns persist",
+          "url": "https://www.reuters.com/business/energy/oil-rises-middle-east-supply-concerns-persist-amid-shipping-attacks-2026-10-08/"
+        }
+      ],
+      "ts": "2026-10-08T09:30:00-05:00"
+    }
+  ]
+}
