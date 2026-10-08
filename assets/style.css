@@ -1,0 +1,324 @@
+/* Gloment — sunny alpine theme.
+   Bright sky blues, pale gold accents, light greys, white surfaces.
+   Airy daytime feel. Terminal-desk structure, light execution. */
+
+:root {
+  --sky: #3a9bdc;
+  --sky-deep: #1f7fc4;
+  --sky-ink: #1668a3;
+  --sky-pale: #e9f4fc;
+  --sky-wash: #f4f9fd;
+  --gold: #d9a441;
+  --gold-deep: #b9852f;
+  --gold-pale: #faf3e2;
+  --ink: #22303d;
+  --grey: #5f7183;
+  --grey-pale: #edf2f7;
+  --line: #d9e5f0;
+  --white: #ffffff;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: linear-gradient(180deg, var(--sky-wash) 0%, #eef5fa 100%);
+  line-height: 1.55;
+}
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ---------- header ---------- */
+.site-header {
+  background: linear-gradient(135deg, var(--sky-deep) 0%, var(--sky) 55%, #6db9e8 100%);
+  color: #fff;
+  padding: 44px 0 36px;
+  border-bottom: 4px solid var(--gold);
+}
+
+.wordmark {
+  font-family: var(--mono);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  margin: 0;
+}
+
+.tagline {
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  opacity: 0.95;
+}
+
+.edition {
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* ---------- panels ---------- */
+.panel {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(58, 155, 220, 0.08);
+  padding: 22px 24px;
+  margin: 22px 0;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--sky-ink);
+  border-left: 4px solid var(--gold);
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headline {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 18px;
+}
+
+.meta {
+  font-size: 0.8rem;
+  color: var(--grey);
+}
+
+.src {
+  font-size: 0.72rem;
+  color: var(--grey);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* ---------- quotes ---------- */
+.live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c3ccd4;
+  display: inline-block;
+}
+.live-dot.on {
+  background: #2fbf71;
+  box-shadow: 0 0 0 4px rgba(47, 191, 113, 0.18);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  50% { box-shadow: 0 0 0 7px rgba(47, 191, 113, 0.08); }
+}
+
+.quotes-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.quote {
+  background: var(--sky-pale);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.q-sym {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--sky-ink);
+}
+
+.q-val {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 2px;
+}
+
+/* ---------- macro engine ---------- */
+.engine-row {
+  border-top: 1px solid var(--line);
+  padding: 12px 0;
+}
+.engine-row:first-of-type { border-top: none; }
+
+.engine-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.engine-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--sky-ink);
+}
+
+.engine-figure {
+  margin: 4px 0;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92rem;
+}
+
+.engine-read {
+  margin: 4px 0 0;
+  font-size: 0.92rem;
+}
+.engine-read::before {
+  content: "▸ ";
+  color: var(--gold-deep);
+  font-weight: 700;
+}
+
+/* ---------- latest ---------- */
+.latest-item {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: 8px;
+  background: var(--gold-pale);
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+
+.latest-ts {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--grey);
+}
+
+.latest-headline {
+  margin: 4px 0 8px;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.latest-item ul {
+  margin: 0 0 8px;
+  padding-left: 20px;
+  font-size: 0.92rem;
+}
+
+/* ---------- story ---------- */
+.chapter {
+  border-top: 1px solid var(--line);
+  padding: 16px 0;
+}
+.chapter:first-of-type { border-top: none; }
+
+.chapter h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  color: var(--sky-deep);
+}
+
+.chapter ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+
+.lbl {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gold-deep);
+}
+
+.chapter p { margin: 6px 0; font-size: 0.95rem; }
+
+.scenarios {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 6px;
+  display: grid;
+  gap: 8px;
+}
+.scenarios li {
+  background: var(--sky-wash);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+.scenarios .sc-lbl {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sky-ink);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ---------- catalyst calendar ---------- */
+.cal {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+.cal li {
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 0.92rem;
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 8px;
+}
+.cal li:last-child { border-bottom: none; }
+.cal-day {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--sky-ink);
+  min-width: 96px;
+  flex-shrink: 0;
+}
+
+/* ---------- footer ---------- */
+footer {
+  margin-top: 34px;
+  padding: 24px 0 40px;
+  text-align: center;
+}
+.disclaimer {
+  font-size: 0.85rem;
+  color: var(--grey);
+  max-width: 640px;
+  margin: 0 auto 8px;
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 640px) {
+  .wordmark { font-size: 1.8rem; letter-spacing: 0.2em; }
+  .panel { padding: 16px; }
+  .quotes-strip { grid-template-columns: repeat(2, 1fr); }
+  .engine-head { flex-direction: column; gap: 2px; }
+  .cal li { flex-direction: column; gap: 2px; }
+}
