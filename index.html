@@ -4,8 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gloment — Global fundamentals for FX</title>
-<meta name="description" content="Gloment: a pro-grade FX macro desk — live quotes, central-bank scorecard, six-pillar macro engine, breaking wire, and the story behind the moves.">
+<meta name="description" content="Gloment: a pro-grade FX macro desk — central-bank scorecard, six-pillar macro engine, breaking wire, and the story behind the moves.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%232a86d0'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='700' text-anchor='middle' fill='%23fff'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/style.css">
 <script src="assets/app.js" defer></script>
 </head>
@@ -31,23 +34,9 @@
   </div>
 </header>
 
-<!-- scrolling ticker tape (populated by JS; CSS-only animation) -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track" id="ticker-track"></div>
-</div>
-
 <main class="wrap">
 
   <div class="dash">
-
-    <section id="quotes" class="panel p-quotes" aria-label="Live quotes">
-      <h2><span class="sec-tag">//</span> Quotes <span class="live-dot" id="live-dot" title="live"></span></h2>
-      <div id="quotes-board" class="quotes-board">
-        <p class="meta">Loading live quotes…</p>
-      </div>
-      <p id="quotes-meta" class="meta"></p>
-      <noscript><p class="meta">Enable JavaScript for live quotes.</p></noscript>
-    </section>
 
     <section id="engine" class="panel p-engine" aria-label="Macro engine">
       <h2><span class="sec-tag">//</span> Macro Engine</h2>
@@ -108,7 +97,7 @@
 <footer>
   <div class="wrap">
     <p class="disclaimer">Indicative quotes only, not executable prices. Market context, not financial advice.</p>
-    <p class="meta">Gloment · live quotes via open.er-api.com · edition data: FRED, Reuters, CME FedWatch, NY Fed</p>
+    <p class="meta">Gloment · edition data: FRED, Reuters, CME FedWatch, NY Fed</p>
   </div>
 </footer>
 
