@@ -19,7 +19,6 @@
     { id: 'porcelain', name: 'Porcelain', desc: 'Slate & rose gold',      sw: ['#f4f5f7', '#3b4a63', '#b07a5e'] },
     { id: 'claret',    name: 'Claret',    desc: 'Burgundy & cream',       sw: ['#f7f3ef', '#6e1f30', '#a8803c'] },
     { id: 'harbor',    name: 'Harbor',    desc: 'Deep teal & copper',     sw: ['#f1f5f5', '#0f5560', '#b26b3c'] },
-    { id: 'stone',     name: 'Stone',     desc: 'Charcoal & terracotta',  sw: ['#f3f1ed', '#2f2e2b', '#b4613f'] },
     { id: 'dusk',      name: 'Dusk',      desc: 'Plum & champagne',       sw: ['#f5f2f5', '#4b2f5c', '#a8884f'] },
     { id: 'midnight',  name: 'Midnight',  desc: 'Dark navy & sky',        sw: ['#0d1320', '#7cbcf0', '#d9b56a'], dark: true },
     { id: 'onyx',      name: 'Onyx',      desc: 'Black & champagne',      sw: ['#0f0f10', '#e2c98f', '#6cc794'], dark: true },

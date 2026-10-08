@@ -178,31 +178,6 @@
   color-scheme: light;
 }
 
-[data-theme="stone"] {
-  --bg: #f3f1ed;
-  --bg-2: #e9e5df;
-  --surface: #fffefb;
-  --surface-2: #f8f6f2;
-  --ink: #22211f;
-  --ink-2: #55524d;
-  --ink-3: #8a8680;
-  --line: #e3ded6;
-  --accent: #2f2e2b;
-  --accent-2: #57534d;
-  --accent-wash: #eeebe6;
-  --gold: #a9583a;
-  --gold-wash: #f7e9e2;
-  --bull: #2e7b52;
-  --bull-wash: #e7f2eb;
-  --bear: #b2413b;
-  --bear-wash: #f8eae8;
-  --mast-1: #2a2927;
-  --mast-2: #423f3b;
-  --mast-ink: #f3efe7;
-  --shadow: 0 1px 2px rgba(40, 35, 30, 0.05), 0 6px 24px rgba(40, 35, 30, 0.06);
-  color-scheme: light;
-}
-
 [data-theme="dusk"] {
   --bg: #f5f2f5;
   --bg-2: #ece7ec;
