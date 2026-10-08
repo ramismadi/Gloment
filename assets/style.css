@@ -376,7 +376,7 @@ table.banks {
 }
 
 /* ---------- story ---------- */
-#story { margin-top: 14px; }
+#story { margin-bottom: 18px; }
 
 .chapter {
   border-top: 1px solid var(--line);
