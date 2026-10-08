@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=4">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -17,7 +17,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js" defer></script>
+<script src="assets/app.js?v=4" defer></script>
 </head>
 <body>
 
@@ -33,9 +33,8 @@
       <span class="clock mono" id="clock-utc" title="UTC time">--:-- UTC</span>
       <span id="sessions" class="sessions" aria-label="FX session status"></span>
       <div class="theme-menu" id="theme-menu">
-        <button type="button" class="theme-btn" id="theme-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-list" title="Color theme">
+        <button type="button" class="theme-btn" id="theme-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-list" aria-label="Color scheme" title="Color scheme">
           <span class="tm-swatch" id="theme-swatch" aria-hidden="true"></span>
-          <span class="tm-name" id="theme-name">Theme</span>
           <svg class="tm-caret" width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="M2 3.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <div class="theme-list" id="theme-list" role="menu" aria-label="Color theme" hidden></div>

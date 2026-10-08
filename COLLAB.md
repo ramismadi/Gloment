@@ -20,6 +20,10 @@ advice.
   or remove a theme, edit both its `[data-theme]` token block in style.css and
   its entry in the `THEMES` list in app.js. Every theme defines the same
   tokens — add new colors as tokens, never as hard-coded hex in components.
+- Cache-busting: `index.html` loads `assets/style.css?v=N` and
+  `assets/app.js?v=N`. **Bump N in both whenever either file changes** —
+  GitHub Pages lets browsers cache assets ~10 min, and a new page with a stale
+  script breaks the UI (this happened with the theme dropdown).
 - `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
   each view. All DOM built with textContent (no HTML injection). Hash-routed
   tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,
