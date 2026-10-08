@@ -1,1 +1,95 @@
-{"rows":[{"figure":"Fed Dec hike priced ~80%; FOMC minutes: 'most' saw another hike likely by year-end; Chair Kevin Warsh","id":"policy","read":"USD-supportive; repricing risk is hawkish","source":"FOMC minutes / CME FedWatch via Reuters","title":"Policy divergence"},{"figure":"US payrolls +29k Sep, unrate 4.2%; Germany Aug industrial output beat; Japan real wages +1.5% YoY (8th straight)","id":"growth","read":"US resilient vs soft Europe — EUR/USD pressured","source":"FRED / Reuters","title":"Growth"},{"figure":"US CPI 3.35% YoY (Aug); NY Fed 1y expectations 3.9% (from 3.6%)","id":"inflation","read":"Sticky — keeps Fed hawkish","source":"FRED / NY Fed","title":"Inflation"},{"figure":"S&P/Nasdaq -0.2% overnight; 10y at 24-yr highs","id":"risk","read":"Risk-off tilt — USD, JPY, CHF bid; AUD/NZD soft","source":"Reuters","title":"Risk sentiment"},{"figure":"Brent ~$102.4, spiked +4.4% to ~$104.7 intraday on tanker strike off Qatar","id":"tot","read":"CAD supported; energy shock risk","source":"Reuters","title":"Terms of trade"},{"figure":"DXY at 18-month highs — long-USD crowded","id":"positioning","read":"Crowded longs raise reversal risk on any dovish surprise","source":"Market data via Reuters","title":"Positioning"}],"updated":"2026-10-08T02:00:00-05:00"}
+{
+  "rows": [
+    {
+      "figure": "Fed Dec hike priced ~80%; FOMC minutes: 'most' saw another hike likely by year-end; Chair Kevin Warsh",
+      "id": "policy",
+      "read": "USD-supportive; repricing risk is hawkish",
+      "source": "FOMC minutes / CME FedWatch via Reuters",
+      "title": "Policy divergence",
+      "sources": [
+        {
+          "label": "Reuters: Fed minutes point to another hike",
+          "url": "https://www.reuters.com/business/fed-minutes-show-some-officials-want-prepare-market-stress-2026-10-07/"
+        },
+        {
+          "label": "CME FedWatch",
+          "url": "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html"
+        }
+      ]
+    },
+    {
+      "figure": "US payrolls +29k Sep, unrate 4.2%; Germany Aug industrial output beat; Japan real wages +1.5% YoY (8th straight)",
+      "id": "growth",
+      "read": "US resilient vs soft Europe \u2014 EUR/USD pressured",
+      "source": "FRED / Reuters",
+      "title": "Growth",
+      "sources": [
+        {
+          "label": "FRED: PAYEMS",
+          "url": "https://fred.stlouisfed.org/series/PAYEMS"
+        },
+        {
+          "label": "FRED: UNRATE",
+          "url": "https://fred.stlouisfed.org/series/UNRATE"
+        }
+      ]
+    },
+    {
+      "figure": "US CPI 3.35% YoY (Aug); NY Fed 1y expectations 3.9% (from 3.6%)",
+      "id": "inflation",
+      "read": "Sticky \u2014 keeps Fed hawkish",
+      "source": "FRED / NY Fed",
+      "title": "Inflation",
+      "sources": [
+        {
+          "label": "FRED: CPIAUCSL",
+          "url": "https://fred.stlouisfed.org/series/CPIAUCSL"
+        },
+        {
+          "label": "NY Fed: Survey of Consumer Expectations",
+          "url": "https://www.newyorkfed.org/microeconomics/sce"
+        }
+      ]
+    },
+    {
+      "figure": "S&P/Nasdaq -0.2% overnight; 10y at 24-yr highs",
+      "id": "risk",
+      "read": "Risk-off tilt \u2014 USD, JPY, CHF bid; AUD/NZD soft",
+      "source": "Reuters",
+      "title": "Risk sentiment",
+      "sources": [
+        {
+          "label": "Reuters: Global markets (Asia)",
+          "url": "https://www.reuters.com/world/china/global-markets-global-markets-2026-10-08/"
+        }
+      ]
+    },
+    {
+      "figure": "Brent ~$102.4, spiked +4.4% to ~$104.7 intraday on tanker strike off Qatar",
+      "id": "tot",
+      "read": "CAD supported; energy shock risk",
+      "source": "Reuters",
+      "title": "Terms of trade",
+      "sources": [
+        {
+          "label": "Reuters: Oil rises as Middle East supply concerns persist",
+          "url": "https://www.reuters.com/business/energy/oil-rises-middle-east-supply-concerns-persist-amid-shipping-attacks-2026-10-08/"
+        }
+      ]
+    },
+    {
+      "figure": "DXY at 18-month highs \u2014 long-USD crowded",
+      "id": "positioning",
+      "read": "Crowded longs raise reversal risk on any dovish surprise",
+      "source": "Market data via Reuters",
+      "title": "Positioning",
+      "sources": [
+        {
+          "label": "CFTC: Commitments of Traders",
+          "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm"
+        }
+      ]
+    }
+  ],
+  "updated": "2026-10-08T02:00:00-05:00"
+}
