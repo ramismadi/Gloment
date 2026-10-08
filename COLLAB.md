@@ -11,44 +11,26 @@ advice.
 
 ## Architecture
 - `index.html` — page shell; dynamic sections are empty containers filled by JS.
-- `assets/style.css` — premium tabbed desk. Colors are token sets on
-  `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
-  white; keep the default light, Rami rejected a dark default), **ivory**,
-  **sage**, **porcelain**, **claret**, **harbor**, **stone**, **dusk**. Dark
-  (opt-in only): **midnight**, **onyx**, **forest**. Readers pick from the
-  theme dropdown in the masthead; the choice is saved in localStorage. To add
-  or remove a theme, edit both its `[data-theme]` token block in style.css and
-  its entry in the `THEMES` list in app.js. Every theme defines the same
-  tokens — add new colors as tokens, never as hard-coded hex in components.
-- Cache-busting: `index.html` loads `assets/style.css?v=N` and
-  `assets/app.js?v=N`. **Bump N in both whenever either file changes** —
-  GitHub Pages lets browsers cache assets ~10 min, and a new page with a stale
-  script breaks the UI (this happened with the theme dropdown).
+- `assets/style.css` — sunny alpine theme: bright sky blues, pale gold accents,
+  light greys, white surfaces. Airy daytime feel. Terminal-desk aesthetic
+  (monospace tabular numerals, compact data rows). Keep it light — Rami
+  rejected a darker version.
 - `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
-  each view. All DOM built with textContent (no HTML injection). Hash-routed
-  tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,
-  `#calendar`, `#wire`. No live price widgets — Rami removed them (unreliable
-  feeds); this is a story/full-picture site, not a quote terminal.
-- Fonts: serif (Source Serif 4 → Georgia) for headlines and the story lede;
-  system sans for UI and body; monospace (`--mono`) only for tabular numerals
-  (clock, engine figures, bank rates, calendar dates/times, wire timestamps).
-- Design principle: **less text up front, depth on demand.** Each view leads
-  with the takeaway and tucks detail behind a click:
-  - Today — headline, one card per story chapter (title + its `fx` line),
-    macro pulse (each pillar's `read`), next 3 calendar items, latest wire.
-  - Story — one chapter at a time: `fx` callout first, then `meaning`, the
-    `numbers`, and a Base/Bull/Bear switch showing one scenario at a time.
-  - Engine — six tiles: `read` big, `figure` small.
-  - Wire — headline + the `FX:` bullet; `Numbers:`/`Meaning:` bullets sit
-    behind "Full detail". Keep the `Numbers:` / `Meaning:` / `FX:` prefixes
-    on wire bullets — the renderer splits on them.
-  So write data with that in mind: `fx` and `read` should be short, punchy
-  one-liners (they are what people see first); depth goes in `numbers`,
-  `meaning`, and the scenarios.
-- Central banks + calendar are hand-seeded in `index.html` (NOT fed by
-  `data/*.json`) — update by hand when stale. Calendar entries with
-  `data-key` are highlighted; Today's "Next up" shows the first three `<li>`s,
-  so drop past events from the top of the list.
+  each section. All DOM built with textContent (no HTML injection). Also drives
+  the JS-rendered dashboard chrome: sticky status bar (live local/UTC clocks,
+  TYO/LDN/NYC session chips). No live price widgets — Rami removed them
+  (unreliable feeds); this is a story/full-picture site, not a quote terminal.
+  Price levels appear only inside the narrative data.
+- Fonts: system sans stack (`-apple-system` first, so Apple devices render
+  San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
+  reserved strictly for tabular numerals: status-bar clocks, engine figures,
+  bank-table numbers, calendar times, wire timestamps. Everything else is sans.
+- Layout order (top to bottom): sticky status bar → hero header → **The Story**
+  (the core: daily narrative from `data/story.json`) → dashboard grid (macro
+  engine, central-bank scorecard, economic calendar, breaking wire) → footer.
+  The story is the product; everything else supports it.
+  The scorecard/calendar/ticker are presentational — they are NOT fed by
+  `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
   `{"updated": "<ISO-8601>", "rows": [{"id","title","figure","read"}]}`.
   Row ids: `policy`, `growth`, `inflation`, `risk`, `terms`, `positioning`.
@@ -91,6 +73,13 @@ advice.
    FXStreet/Reuters slugs often carry an article ID encoding an old date
    (e.g. `202605272351` = May 27, 2026). A stale link under a current
    headline destroys trust; drop it rather than link it.
+8. Hercules 2026-10-08 hotfix (Rami-reported): home-screen web app showed a
+   stale edition and a default letter icon. Fixed in `assets/app.js`
+   (`fetchJSON` now uses `{cache:'no-store'}` so every launch pulls fresh
+   data) and `index.html` (real icon set: `assets/apple-touch-icon.png`,
+   `icon-192.png`, `icon-512.png`, `favicon.png`, plus
+   mobile-web-app-capable/theme-color metas). Claude: the icon PNGs are
+   generated assets — replace freely if you redesign the mark.
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.
