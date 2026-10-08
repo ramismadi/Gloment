@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gloment — Global fundamentals for FX</title>
+<meta name="description" content="Gloment: a daily FX macro desk — live quotes, the six-pillar macro engine, breaking updates, and the story behind the moves.">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <div class="wordmark">GLOMENT</div>
+    <p class="tagline">Global fundamentals for FX</p>
+    <p class="edition">Edition <span id="edition-date">—</span></p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="quotes" class="panel" aria-label="Live quotes">
+    <h2>Live quotes <span class="live-dot" id="live-dot" title="live"></span></h2>
+    <div id="quotes-strip" class="quotes-strip">
+      <p class="meta">Loading live quotes…</p>
+    </div>
+    <p id="quotes-meta" class="meta"></p>
+    <noscript><p class="meta">Enable JavaScript for live quotes.</p></noscript>
+  </section>
+
+  <section id="engine" class="panel" aria-label="Macro engine">
+    <h2>Macro Engine</h2>
+    <p class="meta">Updated <span id="engine-updated">—</span></p>
+    <div id="engine-rows"></div>
+  </section>
+
+  <section id="latest" class="panel" aria-label="Latest updates">
+    <h2>Latest</h2>
+    <div id="latest-items"></div>
+  </section>
+
+  <section id="story" class="panel" aria-label="The story">
+    <h2>The story</h2>
+    <p id="story-headline" class="headline"></p>
+    <div id="story-chapters"></div>
+  </section>
+
+  <section id="catalysts" class="panel" aria-label="Catalyst calendar">
+    <h2>Catalyst calendar</h2>
+    <ul class="cal">
+      <li><span class="cal-day">Thu Oct 8</span> US jobless claims 8:30 ET · 30-yr auction 1:00 ET · Fed speakers Musalem, Waller, Kashkari · ECB&rsquo;s Lane, BoE&rsquo;s Pill</li>
+      <li><span class="cal-day">Fri Oct 9</span> U. Michigan sentiment 10:00 ET</li>
+      <li><span class="cal-day">Tue Oct 14</span> US CPI</li>
+      <li><span class="cal-day">Oct 27&ndash;28</span> FOMC</li>
+      <li><span class="cal-day">Oct 28</span> BoC &amp; RBNZ decisions</li>
+      <li><span class="cal-day">Oct 29</span> ECB decision</li>
+      <li><span class="cal-day">Oct 29&ndash;30</span> BoJ decision</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="disclaimer">Indicative quotes only, not executable prices. Market context, not financial advice.</p>
+    <p class="meta">Gloment · live quotes via open.er-api.com · edition data: FRED, Reuters, CME FedWatch, NY Fed</p>
+  </div>
+</footer>
+
+</body>
+</html>
