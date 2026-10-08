@@ -1,24 +1,204 @@
 {
-  "updated": "2026-10-08T02:00:00-05:00",
+  "updated": "2026-10-08T18:30:00-05:00",
   "banks": [
     {
-      "id": "fed", "short": "Fed", "name": "Federal Reserve", "ccy": "USD",
-      "rate": "3.75%", "rate_label": "Effective fed funds (Sep avg)",
-      "last_move": null,
-      "next_meeting": { "start": "2026-10-27", "end": "2026-10-28" },
+      "id": "fed",
+      "short": "Fed",
+      "name": "Federal Reserve",
+      "ccy": "USD",
+      "rate": "3.75\u20134.00%",
+      "rate_label": "Fed funds target range",
+      "last_move": {
+        "date": "2026-09-16",
+        "bp": 25
+      },
+      "next_meeting": {
+        "start": "2026-10-27",
+        "end": "2026-10-28"
+      },
       "priced": "Dec hike ~80%",
       "bias": "hawkish",
       "sources": [
-        { "label": "FRED: FEDFUNDS", "url": "https://fred.stlouisfed.org/series/FEDFUNDS" },
-        { "label": "CME FedWatch", "url": "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html" }
+        {
+          "label": "FRED: FEDFUNDS",
+          "url": "https://fred.stlouisfed.org/series/FEDFUNDS"
+        },
+        {
+          "label": "CME FedWatch",
+          "url": "https://www.cmegroup.com/markets/interest-rates/cme-fedwatch-tool.html"
+        },
+        {
+          "label": "Reuters: FOMC minutes point to another hike",
+          "url": "https://www.reuters.com/business/fed-minutes-show-some-officials-want-prepare-market-stress-2026-10-07/"
+        }
       ]
     },
-    { "id": "ecb",  "short": "ECB",  "name": "European Central Bank",  "ccy": "EUR", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-29" }, "priced": null, "bias": null, "sources": [] },
-    { "id": "boj",  "short": "BoJ",  "name": "Bank of Japan",          "ccy": "JPY", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-29", "end": "2026-10-30" }, "priced": null, "bias": null, "sources": [] },
-    { "id": "boc",  "short": "BoC",  "name": "Bank of Canada",         "ccy": "CAD", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-28" }, "priced": null, "bias": null, "sources": [] },
-    { "id": "rbnz", "short": "RBNZ", "name": "Reserve Bank of New Zealand", "ccy": "NZD", "rate": null, "last_move": null, "next_meeting": { "start": "2026-10-28" }, "priced": null, "bias": null, "sources": [] },
-    { "id": "boe",  "short": "BoE",  "name": "Bank of England",        "ccy": "GBP", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] },
-    { "id": "snb",  "short": "SNB",  "name": "Swiss National Bank",    "ccy": "CHF", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] },
-    { "id": "rba",  "short": "RBA",  "name": "Reserve Bank of Australia", "ccy": "AUD", "rate": null, "last_move": null, "next_meeting": null, "priced": null, "bias": null, "sources": [] }
+    {
+      "id": "boc",
+      "short": "BoC",
+      "name": "Bank of Canada",
+      "ccy": "CAD",
+      "rate": "2.25%",
+      "rate_label": "Overnight target rate",
+      "last_move": {
+        "date": "2026-09-02",
+        "bp": 0
+      },
+      "next_meeting": {
+        "start": "2026-10-28"
+      },
+      "priced": null,
+      "bias": "neutral",
+      "sources": [
+        {
+          "label": "BoC: Policy interest rate",
+          "url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/"
+        }
+      ]
+    },
+    {
+      "id": "rbnz",
+      "short": "RBNZ",
+      "name": "Reserve Bank of New Zealand",
+      "ccy": "NZD",
+      "rate": "2.75%",
+      "rate_label": "Official Cash Rate",
+      "last_move": {
+        "date": "2026-09-02",
+        "bp": 25
+      },
+      "next_meeting": {
+        "start": "2026-10-28"
+      },
+      "priced": "Oct hike ~75% to 3.00%",
+      "bias": "hawkish",
+      "sources": [
+        {
+          "label": "Reuters: RBNZ raised OCR to 2.75%",
+          "url": "https://www.reuters.com/world/asia-pacific/new-zealand-central-bank-chief-sees-risks-economy-inflation-2026-09-22/"
+        }
+      ]
+    },
+    {
+      "id": "ecb",
+      "short": "ECB",
+      "name": "European Central Bank",
+      "ccy": "EUR",
+      "rate": "2.50%",
+      "rate_label": "Deposit facility rate",
+      "last_move": {
+        "date": "2026-09-10",
+        "bp": 25
+      },
+      "next_meeting": {
+        "start": "2026-10-29"
+      },
+      "priced": null,
+      "bias": "hawkish",
+      "sources": [
+        {
+          "label": "ECB: Monetary policy decision, 10 Sep 2026",
+          "url": "https://www.ecb.europa.eu/press/pr/date/2026/html/ecb.mp260910~314e508016.en.html"
+        }
+      ]
+    },
+    {
+      "id": "boj",
+      "short": "BoJ",
+      "name": "Bank of Japan",
+      "ccy": "JPY",
+      "rate": "1.25%",
+      "rate_label": "Policy rate (overnight call)",
+      "last_move": {
+        "date": "2026-09-18",
+        "bp": 25
+      },
+      "next_meeting": {
+        "start": "2026-10-29",
+        "end": "2026-10-30"
+      },
+      "priced": null,
+      "bias": "hawkish",
+      "sources": [
+        {
+          "label": "Reuters: BoJ debated faster hikes",
+          "url": "https://www.reuters.com/business/finance/bank-japan-debated-need-faster-rate-hikes-july-minutes-show-2026-09-28/"
+        }
+      ]
+    },
+    {
+      "id": "rba",
+      "short": "RBA",
+      "name": "Reserve Bank of Australia",
+      "ccy": "AUD",
+      "rate": "4.60%",
+      "rate_label": "Cash rate target",
+      "last_move": {
+        "date": "2026-09-29",
+        "bp": 25
+      },
+      "next_meeting": {
+        "start": "2026-11-02",
+        "end": "2026-11-03"
+      },
+      "priced": null,
+      "bias": "hawkish",
+      "sources": [
+        {
+          "label": "RBA: Cash rate target",
+          "url": "https://www.rba.gov.au/statistics/cash-rate/"
+        },
+        {
+          "label": "RBA: 2026 meeting dates",
+          "url": "https://www.rba.gov.au/media-releases/2025/mr-25-02.html"
+        }
+      ]
+    },
+    {
+      "id": "boe",
+      "short": "BoE",
+      "name": "Bank of England",
+      "ccy": "GBP",
+      "rate": "3.75%",
+      "rate_label": "Bank Rate",
+      "last_move": {
+        "date": "2026-09-17",
+        "bp": 0
+      },
+      "next_meeting": {
+        "start": "2026-11-05"
+      },
+      "priced": null,
+      "bias": "hawkish",
+      "sources": [
+        {
+          "label": "BoE: Bank Rate 3.75%",
+          "url": "https://www.bankofengland.co.uk/monetary-policy/the-interest-rate-bank-rate"
+        }
+      ]
+    },
+    {
+      "id": "snb",
+      "short": "SNB",
+      "name": "Swiss National Bank",
+      "ccy": "CHF",
+      "rate": "0.00%",
+      "rate_label": "SNB policy rate",
+      "last_move": {
+        "date": "2026-09-24",
+        "bp": 0
+      },
+      "next_meeting": {
+        "start": "2026-12-10"
+      },
+      "priced": null,
+      "bias": "neutral",
+      "sources": [
+        {
+          "label": "SNB: Assessment of 24 Sep 2026",
+          "url": "https://www.snb.ch/en/publications/communication/press-releases-restricted/pre_20260924"
+        }
+      ]
+    }
   ]
 }
