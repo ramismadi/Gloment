@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '9';
+  var ASSET_VERSION = '10';
 
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -339,27 +339,89 @@
       renderSessions(now);
     }
     tick();
-    setInterval(tick, 15000);
+    setInterval(tick, 30000);
   }
 
-  /* FX sessions from UTC hour. Tokyo 00–09, London 08–17, New York 13–22.
-     Weekends: market closed. */
+  /* FX sessions, each judged on its own city's clock so daylight-saving
+     shifts are handled automatically (Intl time zones):
+       Sydney 07:00–16:00, Tokyo 09:00–18:00, London 08:00–17:00,
+       New York 08:00–17:00 — local time, Monday–Friday.
+     On top of that the FX week runs Sunday 17:00 → Friday 17:00 New York
+     time, so nothing shows open over the weekend. Holidays are not modelled. */
+  var SESSIONS = [
+    { code: 'SYD', city: 'Sydney',   tz: 'Australia/Sydney', open: 7 * 60, close: 16 * 60 },
+    { code: 'TYO', city: 'Tokyo',    tz: 'Asia/Tokyo',       open: 9 * 60, close: 18 * 60 },
+    { code: 'LDN', city: 'London',   tz: 'Europe/London',    open: 8 * 60, close: 17 * 60 },
+    { code: 'NYC', city: 'New York', tz: 'America/New_York', open: 8 * 60, close: 17 * 60 }
+  ];
+  var WD = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+
+  /* Weekday (0–6) and minutes after midnight in a given time zone. */
+  function zoned(now, tz) {
+    var parts = {};
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).formatToParts(now).forEach(function (p) { parts[p.type] = p.value; });
+    return { wd: WD[parts.weekday], mins: (parseInt(parts.hour, 10) % 24) * 60 + parseInt(parts.minute, 10) };
+  }
+
+  function fxWeekOpen(now) {
+    var ny = zoned(now, 'America/New_York');
+    if (ny.wd === 6) return false;                       // Saturday
+    if (ny.wd === 0) return ny.mins >= 17 * 60;          // Sunday from 17:00
+    if (ny.wd === 5) return ny.mins < 17 * 60;           // Friday until 17:00
+    return true;
+  }
+
+  /* Minutes until the FX week reopens (Sunday 17:00 New York). */
+  function minsUntilMarketOpen(now) {
+    var ny = zoned(now, 'America/New_York');
+    var days = (7 - ny.wd) % 7;                          // to Sunday
+    return days * 1440 + 17 * 60 - ny.mins;
+  }
+
+  function hm(mins) {
+    if (mins >= 1440) return Math.floor(mins / 1440) + 'd ' + Math.floor((mins % 1440) / 60) + 'h';
+    var h = Math.floor(mins / 60), m = mins % 60;
+    return (h ? h + 'h ' : '') + m + 'm';
+  }
+
+  function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+  /* Minutes until this session next opens (local weekdays only). */
+  function minsUntilOpen(z, s) {
+    for (var d = 0; d <= 7; d++) {
+      var wd = (z.wd + d) % 7;
+      if (wd === 0 || wd === 6) continue;
+      if (d === 0 && z.mins >= s.open) continue;
+      return d * 1440 + s.open - z.mins;
+    }
+    return null;
+  }
+
   function renderSessions(now) {
     var box = $('#sessions');
     if (!box) return;
-    var h = now.getUTCHours() + now.getUTCMinutes() / 60;
-    var d = now.getUTCDay();
-    var weekend = (d === 0 || d === 6);
-    var defs = [
-      { code: 'TYO', open: !weekend && h >= 0 && h < 9 },
-      { code: 'LDN', open: !weekend && h >= 8 && h < 17 },
-      { code: 'NYC', open: !weekend && h >= 13 && h < 22 }
-    ];
+    var marketOpen = fxWeekOpen(now);
     box.textContent = '';
-    defs.forEach(function (s) {
-      var chip = el('span', 'sess' + (s.open ? ' open' : ''), s.code);
-      chip.title = weekend ? 'Weekend — FX market closed'
-        : (s.code + ' session ' + (s.open ? 'open' : 'closed'));
+    SESSIONS.forEach(function (s) {
+      var z = zoned(now, s.tz);
+      var weekday = z.wd >= 1 && z.wd <= 5;
+      var open = marketOpen && weekday && z.mins >= s.open && z.mins < s.close;
+      var hours = pad2(s.open / 60) + ':00–' + pad2(s.close / 60) + ':00 local';
+      var status;
+      if (open) {
+        status = 'open · closes in ' + hm(s.close - z.mins);
+      } else {
+        var wait = minsUntilOpen(z, s);
+        // Over the weekend a session can't open before the FX week does.
+        if (!marketOpen && wait != null) wait = Math.max(wait, minsUntilMarketOpen(now));
+        status = (marketOpen ? 'closed' : 'closed — FX market shut for the weekend') +
+          (wait != null ? ' · opens in ' + hm(wait) : '');
+      }
+      var chip = el('span', 'sess' + (open ? ' open' : ''), s.code);
+      chip.title = s.city + ' ' + hours + ' — ' + status;
+      chip.setAttribute('aria-label', s.city + ' session ' + status);
       box.appendChild(chip);
     });
   }

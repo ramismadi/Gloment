@@ -33,6 +33,11 @@ advice.
   tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,
   `#calendar`, `#wire`. No live price widgets — Rami removed them (unreliable
   feeds); this is a story/full-picture site, not a quote terminal.
+- Session chips (masthead): SYD 07–16, TYO 09–18, LDN 08–17, NYC 08–17,
+  each in its own city's local time via Intl time zones (DST-correct),
+  Mon–Fri, and only while the FX week is open (Sun 17:00 → Fri 17:00 New
+  York). Hover shows hours and an opens/closes-in countdown. Holidays are
+  not modelled.
 - Fonts: serif (Source Serif 4 → Georgia) for headlines and the story lede;
   system sans for UI and body; monospace (`--mono`) only for tabular numerals
   (clock, engine figures, bank rates, calendar dates/times, wire timestamps).
