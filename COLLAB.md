@@ -11,45 +11,26 @@ advice.
 
 ## Architecture
 - `index.html` — page shell; dynamic sections are empty containers filled by JS.
-- `assets/style.css` — premium tabbed desk. Colors are token sets on
-  `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
-  white; keep the default light, Rami rejected a dark default), **ivory**,
-  **sage**, **porcelain**, **claret**, **harbor**, **stone**, **dusk**. Dark
-  (opt-in only): **midnight**, **onyx**, **forest**, **velvet**, **study**,
-  **ink**, **moss**. Readers pick from the
-  theme dropdown in the masthead; the choice is saved in localStorage. To add
-  or remove a theme, edit both its `[data-theme]` token block in style.css and
-  its entry in the `THEMES` list in app.js. Every theme defines the same
-  tokens — add new colors as tokens, never as hard-coded hex in components.
-- Cache-busting: `index.html` loads `assets/style.css?v=N` and
-  `assets/app.js?v=N`. **Bump N in both whenever either file changes** —
-  GitHub Pages lets browsers cache assets ~10 min, and a new page with a stale
-  script breaks the UI (this happened with the theme dropdown).
+- `assets/style.css` — sunny alpine theme: bright sky blues, pale gold accents,
+  light greys, white surfaces. Airy daytime feel. Terminal-desk aesthetic
+  (monospace tabular numerals, compact data rows). Keep it light — Rami
+  rejected a darker version.
 - `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
-  each view. All DOM built with textContent (no HTML injection). Hash-routed
-  tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,
-  `#calendar`, `#wire`. No live price widgets — Rami removed them (unreliable
-  feeds); this is a story/full-picture site, not a quote terminal.
-- Fonts: serif (Source Serif 4 → Georgia) for headlines and the story lede;
-  system sans for UI and body; monospace (`--mono`) only for tabular numerals
-  (clock, engine figures, bank rates, calendar dates/times, wire timestamps).
-- Design principle: **less text up front, depth on demand.** Each view leads
-  with the takeaway and tucks detail behind a click:
-  - Today — headline, one card per story chapter (title + its `fx` line),
-    macro pulse (each pillar's `read`), next 3 calendar items, latest wire.
-  - Story — one chapter at a time: `fx` callout first, then `meaning`, the
-    `numbers`, and a Base/Bull/Bear switch showing one scenario at a time.
-  - Engine — six tiles: `read` big, `figure` small.
-  - Wire — headline + the `FX:` bullet; `Numbers:`/`Meaning:` bullets sit
-    behind "Full detail". Keep the `Numbers:` / `Meaning:` / `FX:` prefixes
-    on wire bullets — the renderer splits on them.
-  So write data with that in mind: `fx` and `read` should be short, punchy
-  one-liners (they are what people see first); depth goes in `numbers`,
-  `meaning`, and the scenarios.
-- Central banks + calendar are hand-seeded in `index.html` (NOT fed by
-  `data/*.json`) — update by hand when stale. Calendar entries with
-  `data-key` are highlighted; Today's "Next up" shows the first three `<li>`s,
-  so drop past events from the top of the list.
+  each section. All DOM built with textContent (no HTML injection). Also drives
+  the JS-rendered dashboard chrome: sticky status bar (live local/UTC clocks,
+  TYO/LDN/NYC session chips). No live price widgets — Rami removed them
+  (unreliable feeds); this is a story/full-picture site, not a quote terminal.
+  Price levels appear only inside the narrative data.
+- Fonts: system sans stack (`-apple-system` first, so Apple devices render
+  San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
+  reserved strictly for tabular numerals: status-bar clocks, engine figures,
+  bank-table numbers, calendar times, wire timestamps. Everything else is sans.
+- Layout order (top to bottom): sticky status bar → hero header → **The Story**
+  (the core: daily narrative from `data/story.json`) → dashboard grid (macro
+  engine, central-bank scorecard, economic calendar, breaking wire) → footer.
+  The story is the product; everything else supports it.
+  The scorecard/calendar/ticker are presentational — they are NOT fed by
+  `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
   `{"updated": "<ISO-8601>", "rows": [{"id","title","figure","read"}]}`.
   Row ids: `policy`, `growth`, `inflation`, `risk`, `terms`, `positioning`.
@@ -60,21 +41,6 @@ advice.
 - `data/latest.json` — breaking items, reverse-chronological:
   `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
   "sources":[]}]}`.
-
-## Clickable sources (for whoever writes `data/*.json`)
-Source labels now link to the original article/page when a URL is supplied.
-Links open in a new tab (`rel="noopener noreferrer"`); only `http(s)` URLs are
-honoured. Everything is backward compatible: with no URL, the label renders as
-plain text exactly as before. Never guess or fabricate a URL — link the actual
-article/series page you used, or leave the URL out.
-- `engine.json` rows and `story.json` chapters: keep `"source"` (string) and add
-  `"source_url"` for a single source, or use `"sources": [{"label","url"}, ...]`
-  (items may also be plain strings) when a row cites several.
-- `latest.json` items: `"sources"` may hold `{"label","url"}` objects (or
-  strings, as before); optional `"url"` on the item makes the headline itself
-  a link.
-- Deep links beat homepages: prefer the specific article, FRED series page,
-  or release over a publisher front page.
 
 ## How updates happen (Hercules' automation — do not fight it)
 - Daily ~2:00 AM CT cron (`fx-outlook-daily-refresh`): rebuilds `story.json`
@@ -118,6 +84,19 @@ article/series page you used, or leave the URL out.
    and overwrote Claude's theme-dropdown + new schemes; restored from merge
    commit ac752e6 and re-applied the two fixes on top. Lesson: re-fetch repo
    files immediately before pushing when Claude is active.
+
+## Division of labor (Rami, 2026-10-08)
+- **Claude + Rami — design and ideas.** They design the site, invent
+  features, and iterate on the look. Next up: a calendar that competes with
+  Forex Factory's.
+- **Hercules — runs it.** The data engine and the glue: daily 2 a.m. edition,
+  30-min breaking wire, and consistent data updates behind whatever
+  Claude/Rami design. When they land a design, Hercules defines the
+  `data/*.json` feed it needs and keeps it fresh on a schedule — including
+  intraday updates as actuals print.
+- Rule of thumb: **we build it (including Claude), Hercules runs it.**
+  Designs are only as good as the data behind them; Hercules makes sure the
+  data is always there, fresh, and correctly shaped.
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.
