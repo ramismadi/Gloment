@@ -68,6 +68,11 @@ advice.
    presented as executable; no trade recommendations, ever.
 6. Relative paths only (the site lives under `/Gloment/`). No build tools,
    no backend — plain static files.
+7. Source freshness: before linking any source, confirm the article's
+   published date matches the event — check `datePublished` on the page.
+   FXStreet/Reuters slugs often carry an article ID encoding an old date
+   (e.g. `202605272351` = May 27, 2026). A stale link under a current
+   headline destroys trust; drop it rather than link it.
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.
