@@ -1,0 +1,61 @@
+{
+  "_note": "Sample content for ?focus-demo=preview|live|recap. Not a data feed — never read by the live site otherwise. Times are shifted to 'now' at load; item offset_min is minutes after the print.",
+  "focus": {
+    "active": true,
+    "event_id": "us-cpi-20261014",
+    "phase": "preview",
+    "title": "US CPI (Sep)",
+    "ccy": ["USD"],
+    "chapter": 1,
+    "story_so_far": [
+      "August CPI surprised hot at 3.35% y/y",
+      "The Fed hiked in September — and the minutes said 'most' saw another hike by year-end",
+      "Then payrolls collapsed to +29k and took an October hike off the table",
+      "This print is the tiebreaker"
+    ],
+    "stakes": "Decides whether an October hike comes back to life.",
+    "setup": {
+      "consensus": "3.7% y/y; core 0.3% m/m",
+      "previous": "3.35% y/y",
+      "priced": "Oct hike ~17%, Dec ~70%"
+    },
+    "forks": [
+      { "if": "Core 0.2% m/m or below", "then": "Disinflation story holds — Dec odds slip, crowded USD longs get room to unwind." },
+      { "if": "Core 0.3% m/m in line", "then": "Status quo — Dec stays the base case, USD keeps its bid near 18-month highs." },
+      { "if": "Core 0.4% m/m or above", "then": "October is live again — front-end reprices hard, DXY makes fresh highs." }
+    ],
+    "watch": [
+      "7:30 AM CT — the print: core m/m first, headline y/y second",
+      "7:35–8:00 AM CT — FedWatch Oct/Dec odds and the 2y yield",
+      "USD/JPY near 159–160 — intervention risk if USD spikes",
+      "Fed speakers after the print"
+    ],
+    "thread": "us-cpi-20261014",
+    "recap": {
+      "outcome": "Core came in at 0.4% m/m — hot. October is back on the table.",
+      "actual": "3.9% y/y; core 0.4% m/m",
+      "expected": "3.7% y/y; core 0.3% m/m",
+      "pricing": "Oct hike ~17% → ~48%; Dec ~70% → ~92%",
+      "thesis": { "verdict": "confirms", "note": "The hawkish-Fed chapter holds: sticky inflation outweighs the payrolls scare, and the dollar's bid has fresh fuel." },
+      "fork": 2
+    }
+  },
+  "items": [
+    { "offset_min": 0, "headline": "CPI hot: core 0.4% m/m vs 0.3% expected, headline 3.9% y/y",
+      "bullets": ["FX: USD jumps across the board; USD/JPY tags 159.40 within a minute.",
+                  "Numbers: Headline 3.9% y/y (exp 3.7%), core 0.4% m/m (exp 0.3%). Shelter and services ex-housing led."],
+      "thread": "us-cpi-20261014", "ccy": ["USD", "JPY"], "pillar": "inflation" },
+    { "offset_min": 6, "headline": "October hike odds jump to ~48% on FedWatch",
+      "bullets": ["FX: DXY through 102.60 — a fresh 18-month high.",
+                  "Meaning: The tiebreaker broke hawkish — the payrolls miss is being read as noise against sticky prices."],
+      "thread": "us-cpi-20261014", "ccy": ["USD"], "pillar": "policy" },
+    { "offset_min": 19, "headline": "2y yield +14bp to 4.92%; EUR/USD loses 1.1161 support",
+      "bullets": ["FX: EUR/USD 1.1142 — the 1.1065 magnet from the euro chapter is now in play."],
+      "thread": "us-cpi-20261014", "ccy": ["USD", "EUR"], "pillar": "policy" },
+    { "offset_min": 34, "headline": "Japan's finance ministry: watching FX moves 'with a sense of urgency'",
+      "bullets": ["FX: USD/JPY eases to 158.90 off the jawboning.",
+                  "Meaning: Verbal intervention at 159.40 marks the line Tokyo is defending."],
+      "thread": "us-cpi-20261014", "ccy": ["JPY"], "pillar": "risk",
+      "next": "Next: Fed speakers this afternoon — any endorsement of an October move." }
+  ]
+}

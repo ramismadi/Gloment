@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '18';
+  var ASSET_VERSION = '19';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -43,6 +43,7 @@
       renderEdition(d);
       renderScenes(d);
       renderRail(d);
+      renderFocus();
       route();
       renderFx();
     }).catch(function () {
@@ -71,6 +72,7 @@
     });
     initCalendar();
     initFx();
+    initFocus();
     fetchJSON('data/currencies.json').then(function (d) {
       fx.data = d;
       renderFx();
@@ -80,6 +82,7 @@
       if (d.updated) setText('#cal-updated', fmtDateTime(d.updated, true));
       renderCalendar();
       renderFx();
+      renderFocus();
     }).catch(function () {
       note('#cal-list', 'Calendar data unavailable.');
       note('#today-next', 'Calendar data unavailable.');
@@ -130,7 +133,10 @@
   function watchUpdates() {
     var hiddenAt = 0;
     function check(autoReload) {
-      var paths = Object.keys(loaded);
+      // While a focus event is live, Focus Mode refreshes the wire in place.
+      var paths = Object.keys(loaded).filter(function (p) {
+        return !(p === 'data/latest.json' && focus.phase === 'live');
+      });
       if (!paths.length || !window.fetch) return;
       Promise.all(paths.map(function (p) {
         return fetch(p, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : loaded[p]; })
@@ -1289,7 +1295,9 @@
     row.appendChild(pips);
 
     var t = el('span', 'ev-title');
-    t.appendChild(el('span', 'ev-name', e.title));
+    var nm = el('span', 'ev-name', e.title);
+    if (e.focus) nm.appendChild(el('span', 'ev-focus', 'Focus'));
+    t.appendChild(nm);
     if (!up && e.outcome) t.appendChild(el('span', 'ev-outcome', e.outcome));
     if (up && w) {
       var cd = el('span', 'ev-cd', 'in ' + countdown(w - now));
@@ -1900,6 +1908,8 @@
     var box = $('#latest-items');
     box.textContent = '';
     var items = (d.items || []).slice();
+    focus.wire = items;
+    if (focus.data) renderFocus();
     if (!items.length) {
       box.appendChild(el('p', 'meta', 'Nothing breaking right now.'));
       return;
@@ -2009,6 +2019,501 @@
       tz.hidden = false;
     }
     renderFx();
+  }
+
+  /* ---------------- focus mode ----------------
+     Big event days (FOMC, CPI, payrolls) take over the top of Today in three
+     acts, driven by data/focus.json (Hercules) + the wire thread it names:
+       preview — story so far → stakes → setup → forks → what to watch, with
+                 a countdown to the print;
+       live    — the wire thread as a live blog, refreshed every minute;
+       recap   — outcome vs expected, pricing, what it does to the thesis.
+     Phase comes from the feed, except preview flips to live on this device
+     the moment the countdown hits zero (the feed catches up on its next push).
+     Event title / time / ccy / chapter join from calendar.json by event_id;
+     focus.json may override them. ?focus-demo=preview|live|recap renders
+     assets/focus-demo.json with times shifted to now (labelled as a demo). */
+  var focus = { data: null, sig: '', wire: [], seen: null, fresh: 0, phase: null,
+                demo: null, demoItems: null, timer: 0, title: document.title };
+  var FOCUS_ACTS = [['preview', 'Preview'], ['live', 'Live'], ['recap', 'Recap']];
+
+  function initFocus() {
+    var m = /[?&]focus-demo=(preview|live|recap)\b/.exec(location.search);
+    if (m) focus.demo = m[1];
+    pollFocus();
+    setInterval(tickFocus, 1000);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) return;
+      focus.fresh = 0;
+      focusTitle();
+      pollFocus();
+    });
+  }
+
+  /* Re-fetch focus.json (and the wire while live). Every minute while an event
+     is armed, every five otherwise; paused while the page is hidden. */
+  function pollFocus() {
+    clearTimeout(focus.timer);
+    var next = function () {
+      var armed = focus.data && focus.data.active;
+      focus.timer = setTimeout(function () { if (!document.hidden) pollFocus(); else next(); },
+        armed ? 60000 : 300000);
+    };
+    if (focus.demo) {
+      if (!focus.data) loadDemo();
+      return;
+    }
+    fetch('data/focus.json', { cache: 'no-store' }).then(function (r) {
+      return r.ok ? r.text() : '{"active":false}';
+    }).catch(function () { return null; }).then(function (txt) {
+      if (txt == null) return null;   // offline — keep what's on screen
+      var changed = txt !== focus.sig;
+      focus.sig = txt;
+      if (changed) {
+        try { focus.data = JSON.parse(txt); } catch (e) { focus.data = null; }
+      }
+      // While live, pull the wire too (new thread items are the live blog).
+      if (focus.data && focus.data.active && focusPhase(focus.data) === 'live') {
+        return fetchJSON('data/latest.json').then(renderWire).catch(function () {
+          if (changed) renderFocus();
+        });
+      }
+      if (changed) renderFocus();
+    }).then(next, next);
+  }
+
+  function loadDemo() {
+    fetch('assets/focus-demo.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      var f = d.focus, now = Date.now();
+      var print = now + (focus.demo === 'preview' ? 3 * 3600e3 + 25 * 60e3 : -42 * 60e3);
+      f.phase = focus.demo;
+      f.ts = new Date(print).toISOString();
+      f.demo = true;
+      focus.demoItems = focus.demo === 'preview' ? [] : (d.items || []).map(function (it) {
+        var c = JSON.parse(JSON.stringify(it));
+        c.ts = new Date(print + c.offset_min * 60e3).toISOString();
+        return c;
+      }).filter(function (it) { return focus.demo === 'recap' || new Date(it.ts) <= now; });
+      focus.data = f;
+      renderFocus();
+    }).catch(function () { /* no demo file */ });
+  }
+
+  function focusEvent(f) {
+    var evs = (cal.data && cal.data.events) || [];
+    for (var i = 0; i < evs.length; i++) if (evs[i].id === f.event_id) return evs[i];
+    return {};
+  }
+
+  /* Merge the feed with its calendar event. */
+  function focusMeta(f) {
+    var ev = focusEvent(f);
+    var ccy = f.ccy || ev.ccy || [];
+    return {
+      title: f.title || ev.title || 'Focus event',
+      ts: f.ts || ev.ts || null,
+      ccy: Array.isArray(ccy) ? ccy : [ccy],
+      chapter: f.chapter || ev.chapter || null,
+      ev: ev
+    };
+  }
+
+  function focusPhase(f) {
+    var p = f.phase === 'live' || f.phase === 'recap' ? f.phase : 'preview';
+    var ts = focusMeta(f).ts;
+    if (p === 'preview' && ts && Date.now() >= new Date(ts).getTime()) p = 'live';
+    return p;
+  }
+
+  /* Thread items for the live blog / recap, newest first. */
+  function focusItems(f) {
+    if (f.demo) return (focus.demoItems || []).slice().sort(function (a, b) { return new Date(b.ts) - new Date(a.ts); });
+    var tid = f.thread || f.event_id;
+    return (focus.wire || []).filter(function (it) { return tid && it.thread === tid; })
+      .sort(function (a, b) { return new Date(b.ts) - new Date(a.ts); });
+  }
+  function itemKey(it) { return it.ts + '|' + it.headline; }
+
+  function renderFocus() {
+    var box = $('#focus'), view = $('#view-today'), badge = $('#focus-badge');
+    if (!box) return;
+    var f = focus.data;
+    if (!f || !f.active) {
+      box.hidden = true;
+      box.textContent = '';
+      if (view) view.classList.remove('focus-on');
+      if (badge) badge.hidden = true;
+      focus.phase = null;
+      focusTitle();
+      return;
+    }
+    var phase = focusPhase(f), meta = focusMeta(f), items = focusItems(f);
+
+    // New live updates since the last render (first render seeds silently).
+    var keys = items.map(itemKey), freshKeys = {};
+    if (focus.seen) keys.forEach(function (k) { if (!focus.seen[k]) freshKeys[k] = true; });
+    var nFresh = Object.keys(freshKeys).length;
+    if (nFresh && document.hidden) focus.fresh += nFresh;
+    focus.seen = {};
+    keys.forEach(function (k) { focus.seen[k] = true; });
+
+    // Act change: animate in, and keep the class through the re-renders that
+    // follow straight after (wire refresh) so the animation isn't cut.
+    if (focus.phase && focus.phase !== phase) focus.flipAt = Date.now();
+    focus.phase = phase;
+    box.className = 'focus phase-' + phase + (Date.now() - (focus.flipAt || 0) < 1500 ? ' flipped' : '');
+    box.textContent = '';
+    box.hidden = false;
+    if (view) view.classList.add('focus-on');
+    if (badge) {
+      badge.textContent = phase === 'live' ? 'Live' : phase === 'recap' ? 'Recap' : 'Focus';
+      badge.className = 'badge focus-badge ' + phase;
+      badge.hidden = false;
+    }
+
+    if (f.demo) {
+      box.appendChild(el('p', 'focus-demo', 'Demo with sample data — not a real event. Real focus days run from data/focus.json.'));
+    }
+    box.appendChild(focusHead(f, meta, phase));
+    if (phase === 'preview') focusPreview(box, f, meta);
+    else if (phase === 'live') focusLive(box, f, meta, items, freshKeys);
+    else focusRecap(box, f, meta, items);
+
+    var tail = el('div', 'focus-tail');
+    tail.appendChild(el('span', 'kicker', 'Today’s edition'));
+    tail.appendChild(el('span', 'meta', 'The rest of the day’s read continues below'));
+    box.appendChild(tail);
+
+    focusTitle();
+    tickFocus();
+    measureScenes();
+    queueScroll();
+  }
+
+  function focusTitle() {
+    var p = focus.phase;
+    var pre = p === 'live' ? (focus.fresh ? '(' + focus.fresh + ') ' : '') + '● LIVE · ' : '';
+    document.title = pre + focus.title;
+  }
+
+  /* Head: act stepper, title, stakes, print time — and the clock for the act. */
+  function focusHead(f, meta, phase) {
+    var head = el('header', 'focus-head');
+    var acts = el('ol', 'focus-acts');
+    acts.setAttribute('aria-label', 'Focus mode acts');
+    var at = FOCUS_ACTS.map(function (a) { return a[0]; }).indexOf(phase);
+    FOCUS_ACTS.forEach(function (a, i) {
+      var li = el('li', i < at ? 'done' : i === at ? 'now' : null);
+      li.appendChild(el('span', 'mono', String(i + 1)));
+      li.appendChild(document.createTextNode(' ' + a[1]));
+      if (i === at) li.setAttribute('aria-current', 'step');
+      acts.appendChild(li);
+    });
+    head.appendChild(acts);
+
+    var kick = el('p', 'kicker focus-kicker');
+    kick.appendChild(el('span', 'focus-pill ' + phase, phase === 'live' ? 'Live' : phase === 'recap' ? 'Recap' : 'Focus'));
+    meta.ccy.forEach(function (c) {
+      var a = el('a', 'tag ccy mono', c);
+      a.href = '#fx/' + c;
+      kick.appendChild(a);
+    });
+    head.appendChild(kick);
+    head.appendChild(el('h1', 'display focus-title', meta.title));
+    if (f.stakes) head.appendChild(el('p', 'focus-stakes', f.stakes));
+
+    if (meta.ts) {
+      var w = new Date(meta.ts);
+      var when = el('p', 'focus-when');
+      var ct = w.toLocaleString('en-US', { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' CT';
+      var mine = fmtClock(w);
+      when.appendChild(el('span', null, (phase === 'preview' ? 'Prints ' : 'Printed ') + ct));
+      if (tzOpt() || ct.indexOf(mine) < 0) when.appendChild(el('span', 'meta', ' · ' + mine + ' your time'));
+      head.appendChild(when);
+
+      if (phase === 'preview') {
+        var cd = el('div', 'focus-cd');
+        cd.id = 'focus-cd';
+        cd.setAttribute('data-focus-ts', w.getTime());   // ticked by tickFocus
+        cd.setAttribute('role', 'timer');
+        [['d', 'days'], ['h', 'hrs'], ['m', 'min'], ['s', 'sec']].forEach(function (u) {
+          var c = el('span', 'cd-cell');
+          c.appendChild(el('b', 'mono cd-' + u[0], '--'));
+          c.appendChild(el('small', null, u[1]));
+          cd.appendChild(c);
+        });
+        head.appendChild(cd);
+      } else {
+        var el2 = el('p', 'focus-elapsed mono');
+        el2.id = 'focus-elapsed';
+        el2.setAttribute('data-focus-ts', w.getTime());
+        head.appendChild(el2);
+      }
+    }
+    return head;
+  }
+
+  function focusSection(cls, label, sub) {
+    var s = el('section', 'focus-sec ' + cls);
+    s.setAttribute('data-reveal', '');
+    s.appendChild(el('h2', 'section-label', label));
+    if (sub) s.appendChild(el('p', 'meta focus-sub', sub));
+    return s;
+  }
+
+  function beatsList(beats) {
+    var ol = el('ol', 'beats');
+    beats.forEach(function (b, i) {
+      var li = el('li', i === beats.length - 1 ? 'last' : null);
+      withFigures(li, b);
+      ol.appendChild(li);
+    });
+    return ol;
+  }
+
+  function setupTiles(setup) {
+    var g = el('div', 'setup-tiles');
+    [['consensus', 'Consensus'], ['previous', 'Previous'], ['priced', 'Priced']].forEach(function (k) {
+      if (!setup || !setup[k[0]]) return;
+      var t = el('div', 'setup-tile');
+      t.appendChild(el('span', 'callout-lbl', k[1]));
+      t.appendChild(withFigures(el('p'), setup[k[0]]));
+      g.appendChild(t);
+    });
+    return g;
+  }
+
+  /* Forks: conditional branches, never a call. `played` marks the branch the
+     print took (recap). */
+  function forkCards(forks, played) {
+    var g = el('div', 'forks');
+    forks.forEach(function (fk, i) {
+      var c = el('div', 'fork' + (played == null ? '' : i === played ? ' played' : ' not-played'));
+      if (played === i) c.appendChild(el('span', 'fork-flag', 'Played out'));
+      var a = el('p', 'fork-if');
+      a.appendChild(el('span', 'callout-lbl', 'If'));
+      withFigures(a, fk['if'] || '');
+      c.appendChild(a);
+      var b = el('p', 'fork-then');
+      b.appendChild(el('span', 'callout-lbl', 'Then'));
+      b.appendChild(document.createTextNode(fk.then || ''));
+      c.appendChild(b);
+      g.appendChild(c);
+    });
+    return g;
+  }
+
+  function focusPreview(box, f, meta) {
+    if ((f.story_so_far || []).length) {
+      var s1 = focusSection('sec-story', 'How we got here');
+      s1.appendChild(beatsList(f.story_so_far));
+      box.appendChild(s1);
+    }
+    if (f.setup) {
+      var s2 = focusSection('sec-setup', 'The setup');
+      s2.appendChild(setupTiles(f.setup));
+      box.appendChild(s2);
+    }
+    if ((f.forks || []).length) {
+      var s3 = focusSection('sec-forks', 'The forks', 'Conditional branches, not a call — the board is set, you form the bias.');
+      s3.appendChild(forkCards(f.forks));
+      box.appendChild(s3);
+    }
+    if ((f.watch || []).length) {
+      var s4 = focusSection('sec-watch', 'What to watch');
+      var ul = el('ul', 'watch');
+      f.watch.forEach(function (w) { ul.appendChild(withFigures(el('li'), w)); });
+      s4.appendChild(ul);
+      box.appendChild(s4);
+    }
+    focusLinks(box, f, meta);
+  }
+
+  /* The board (setup + forks) stays one tap away while it breaks. */
+  function boardBlock(f, open) {
+    var d = el('details', 'focus-board');
+    if (open) d.open = true;
+    d.appendChild(el('summary', null, 'The board — setup & forks'));
+    if (f.setup) d.appendChild(setupTiles(f.setup));
+    if ((f.forks || []).length) d.appendChild(forkCards(f.forks));
+    return d;
+  }
+
+  function liveEntry(it, fresh) {
+    var li = el('li', 'blog-item' + (fresh ? ' fresh' : ''));
+    var t = el('time', 'blog-time mono');
+    var w = new Date(it.ts);
+    t.dateTime = it.ts;
+    t.title = fmtDateTime(it.ts, true);
+    t.appendChild(el('b', null, fmtClock(w)));
+    t.appendChild(el('small', null, relTime(it.ts)));
+    li.appendChild(t);
+    var body = el('div', 'blog-body');
+    if (fresh) body.appendChild(el('span', 'blog-new', 'New'));
+    var h = el('h3', 'blog-hl');
+    var hu = safeUrl(it.url);
+    if (hu) h.appendChild(extLink(it.headline, hu)); else h.textContent = it.headline;
+    body.appendChild(h);
+    var parts = fxPart(it);
+    if (parts.fx) {
+      var fx = el('div', 'fx-callout small');
+      fx.appendChild(el('span', 'callout-lbl', 'FX'));
+      fx.appendChild(withFigures(el('p'), parts.fx.text));
+      body.appendChild(fx);
+    }
+    parts.rest.forEach(function (p) {
+      var para = el('p', 'blog-p');
+      if (p.key) para.appendChild(el('span', 'lbl', p.key === 'numbers' ? 'Numbers' : 'Meaning'));
+      withFigures(para, p.text);
+      body.appendChild(para);
+    });
+    if ((it.sources || []).length) body.appendChild(sourceChips(it.sources));
+    li.appendChild(body);
+    return li;
+  }
+
+  function focusLive(box, f, meta, items, freshKeys) {
+    box.appendChild(boardBlock(f, window.innerWidth >= 760));
+    var sec = el('section', 'focus-sec sec-blog');
+    var hd = el('div', 'blog-head');
+    hd.appendChild(el('h2', 'section-label', 'Live'));
+    hd.appendChild(el('span', 'meta', f.demo ? 'Demo updates' : 'Updates appear here as it breaks · refreshes every minute'));
+    sec.appendChild(hd);
+    if (!items.length) {
+      sec.appendChild(el('p', 'blog-empty', 'Waiting for the first update — this page refreshes itself, no need to reload.'));
+    } else {
+      var ol = el('ol', 'liveblog');
+      items.forEach(function (it) { ol.appendChild(liveEntry(it, freshKeys[itemKey(it)])); });
+      sec.appendChild(ol);
+    }
+    var nx = items.length && items[0].next;
+    if (nx) {
+      var n = el('div', 'wire-next');
+      n.appendChild(el('span', 'callout-lbl', 'What’s next'));
+      var nt = nx.replace(/^Next:\s*/i, '');
+      n.appendChild(el('p', null, nt.charAt(0).toUpperCase() + nt.slice(1)));
+      sec.appendChild(n);
+    }
+    box.appendChild(sec);
+    if ((f.watch || []).length) {
+      var d = el('details', 'focus-board');
+      d.appendChild(el('summary', null, 'What to watch'));
+      var ul = el('ul', 'watch');
+      f.watch.forEach(function (w) { ul.appendChild(withFigures(el('li'), w)); });
+      d.appendChild(ul);
+      box.appendChild(d);
+    }
+  }
+
+  var VERDICTS = { confirms: 'Confirms the thesis', breaks: 'Breaks the thesis', mixed: 'Mixed for the thesis' };
+
+  function focusRecap(box, f, meta, items) {
+    var r = f.recap || {};
+    if (r.outcome) {
+      var o = el('p', 'recap-outcome');
+      withFigures(o, r.outcome);
+      o.setAttribute('data-reveal', '');
+      box.appendChild(o);
+    }
+    var s1 = focusSection('sec-result', 'Outcome vs expected');
+    var tiles = el('div', 'setup-tiles recap-tiles');
+    var exp = r.expected || (f.setup && f.setup.consensus);
+    [['Actual', r.actual, 'actual'], ['Expected', exp], ['Pricing', r.pricing, 'pricing']].forEach(function (t) {
+      if (!t[1]) return;
+      var d = el('div', 'setup-tile' + (t[2] ? ' ' + t[2] : ''));
+      d.appendChild(el('span', 'callout-lbl', t[0]));
+      d.appendChild(withFigures(el('p'), t[1]));
+      tiles.appendChild(d);
+    });
+    if (tiles.childNodes.length) { s1.appendChild(tiles); box.appendChild(s1); }
+
+    var th = r.thesis;
+    if (th && (th.verdict || th.note)) {
+      var s2 = focusSection('sec-thesis', 'The standing thesis');
+      var v = String(th.verdict || '').toLowerCase();
+      var card = el('div', 'thesis ' + (VERDICTS[v] ? v : 'mixed'));
+      card.appendChild(el('span', 'thesis-verdict', VERDICTS[v] || 'Thesis check'));
+      if (th.note) card.appendChild(el('p', null, th.note));
+      s2.appendChild(card);
+      box.appendChild(s2);
+    }
+    if ((f.forks || []).length) {
+      var played = typeof r.fork === 'number' ? r.fork : null;
+      var s3 = focusSection('sec-forks', 'The forks', played == null ? 'The branches set before the print.' : 'Which branch the print took.');
+      s3.appendChild(forkCards(f.forks, played));
+      box.appendChild(s3);
+    }
+    if (items.length) {
+      var s4 = focusSection('sec-unfold', 'How it unfolded');
+      var ol = el('ol', 'arc');
+      items.slice().reverse().forEach(function (u) {
+        var li = el('li');
+        var when = el('time', 'mono', fmtClock(new Date(u.ts)));
+        when.dateTime = u.ts;
+        when.title = fmtDateTime(u.ts, true);
+        li.appendChild(when);
+        var b = el('div', 'arc-body');
+        b.appendChild(el('p', 'arc-hl', u.headline));
+        var pp = fxPart(u);
+        if (pp.fx) b.appendChild(el('p', 'arc-fx', 'FX: ' + pp.fx.text));
+        li.appendChild(b);
+        ol.appendChild(li);
+      });
+      s4.appendChild(ol);
+      box.appendChild(s4);
+    }
+    if ((f.story_so_far || []).length) {
+      var d = el('details', 'focus-board');
+      d.appendChild(el('summary', null, 'How we got here'));
+      d.appendChild(beatsList(f.story_so_far));
+      box.appendChild(d);
+    }
+    focusLinks(box, f, meta);
+  }
+
+  function focusLinks(box, f, meta) {
+    var row = el('div', 'focus-links');
+    row.setAttribute('data-reveal', '');
+    if (meta.chapter && story && (story.chapters || [])[meta.chapter - 1]) {
+      var a = el('a', 'btn', 'In the world story: ' + story.chapters[meta.chapter - 1].title + ' →');
+      a.href = '#story/' + meta.chapter;
+      row.appendChild(a);
+    }
+    var c = el('a', 'btn ghost', 'On the calendar →');
+    c.href = '#calendar';
+    row.appendChild(c);
+    if ((f.sources || []).length) row.appendChild(sourceChips(f.sources));
+    box.appendChild(row);
+  }
+
+  /* Every second: countdown / elapsed clock, and the preview → live flip at
+     print time. */
+  function tickFocus() {
+    if (!focus.data || !focus.data.active) return;
+    if (focus.phase === 'preview' && focusPhase(focus.data) === 'live') {
+      renderFocus();
+      pollFocus();          // start pulling the wire right away
+      return;
+    }
+    var now = Date.now();
+    var cd = $('#focus-cd');
+    if (cd) {
+      var ms = Math.max(0, +cd.getAttribute('data-focus-ts') - now);
+      var s = Math.floor(ms / 1000);
+      var v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+      Object.keys(v).forEach(function (k) {
+        var n = cd.querySelector('.cd-' + k);
+        if (n) n.textContent = pad2(v[k]);
+      });
+      cd.classList.toggle('no-days', v.d === 0);
+      cd.classList.toggle('soon', ms < 15 * 60000);
+      cd.setAttribute('aria-label', 'Prints in ' + countdown(ms));
+    }
+    var ep = $('#focus-elapsed');
+    if (ep) {
+      var mins = Math.max(0, Math.floor((now - +ep.getAttribute('data-focus-ts')) / 60000));
+      ep.textContent = mins < 1 ? 'Just printed' : (mins < 60 ? mins + ' min' : Math.floor(mins / 60) + 'h ' + pad2(mins % 60) + 'm') + ' since the print';
+    }
   }
 
 })();
