@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-08T19:40:00-05:00",
+  "updated": "2026-10-09T02:35:00-05:00",
   "banks": [
     {
       "id": "fed",
       "short": "Fed",
       "name": "Federal Reserve",
       "ccy": "USD",
-      "rate": "3.75\u20134.00%",
+      "rate": "3.75–4.00%",
       "rate_label": "Fed funds target range",
       "last_move": {
         "date": "2026-09-16",
@@ -16,7 +16,7 @@
         "start": "2026-10-27",
         "end": "2026-10-28"
       },
-      "priced": "Dec hike ~80%",
+      "priced": "Dec hike ~83% (Oct ~17-19%)",
       "bias": "hawkish",
       "sources": [
         {
@@ -121,7 +121,7 @@
       "bias": "hawkish",
       "sources": [
         {
-          "label": "BoJ: Sep 18, 2026 statement \u2014 policy rate to 1.25%",
+          "label": "BoJ: Sep 18, 2026 statement — policy rate to 1.25%",
           "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
         }
       ]
