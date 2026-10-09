@@ -14,6 +14,7 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 |---|---|---|
 | Today | `/` (also `#today`) | story, engine, calendar, latest |
 | Story | `#story`, `#story/2` = chapter 2 | `data/story.json` |
+| Currencies | `#fx`, `#fx/AUD` = currency page | `data/currencies.json` (+ banks, calendar, story joins) |
 | Macro engine | `#engine` | `data/engine.json` + `data/pillars.json` |
 | Central banks | `#banks` | `data/banks.json` |
 | Calendar | `#calendar` | `data/calendar.json` (+ banks.json join) |
@@ -85,6 +86,35 @@ Row ids: `policy`, `growth`, `inflation`, `risk`, `tot`, `positioning`,
 example — refresh it when conditions change. A pillar without an entry simply
 has no "What is this?" button.
 
+### `data/currencies.json` — Currencies (strength board + pair picker)
+```
+{"updated":"<ISO-8601>","as_of":"YYYY-MM-DD",   // edition date
+ "method":"Score = sum of pillar scores (-1 / 0 / +1) ...",
+ "currencies":[{"ccy":"AUD","name":"Australian dollar","bank":"rba",
+   "chapter":3|null,                 // story chapter behind this currency
+   "summary":"one line — why it sits where it does",
+   "drivers":{"policy":{"score":1,"note":"RBA hiked +25bp Sep 29 to 4.60%"},
+              "risk":{"score":-1,"note":"Risk-off tilt — AUD soft"}, ...}}],
+ "history":[{"date":"YYYY-MM-DD","scores":{"USD":3,"EUR":-2,...}}],
+ "pairs":{}}                         // reserved: per-pair notes / typical range
+```
+- Pillar keys match the engine: `policy`, `growth`, `inflation`, `risk`,
+  `tot`, `positioning`, `fiscal`. Omit a pillar (or score 0) when it isn't a
+  driver; every non-zero score needs a one-line `note`.
+- The site computes the score (sum of drivers), ranks the board, and builds
+  the pair picker: for "bullish X" each counterpart Y is ranked by
+  `score(X) − score(Y)` (Best ≥ 2, Good 1, No edge 0, Avoid < 0), shown in
+  market convention (EUR > GBP > AUD > NZD > USD > CAD > CHF > JPY), with
+  carry from `banks.json` rates and high-impact events in the next 14 days
+  from `calendar.json`.
+- **Daily (2 a.m. edition):** rewrite `drivers`/`summary` from that morning's
+  engine reads and banks, set `as_of`, and **append** one
+  `{"date","scores"}` snapshot to `history` (keep ~60 days). History is what
+  draws each currency's trend line and the ▲/▼ change on the board — never
+  rewrite past entries.
+- Scoring is v1 on purpose (Rami + Claude will refine weights/pillars over
+  time); keep the method string accurate if it changes.
+
 ### `data/latest.json` — Wire
 ```
 {"items":[{"ts":"<ISO-8601>","headline","url"?,"bullets":[],"sources":[]}]}
@@ -124,6 +154,10 @@ the rate from the bank's own site (Fed target range: FRED `DFEDTARU` /
   "bank":"fed",                    // joins banks.json for decisions, optional
   "sources":[]}]}
 ```
+Past events may carry `"outcome"`: one line on what the print meant (shown
+under the title and as "What it meant" in the briefing). The feed keeps a
+7-day lookback; the "Last 7 days" range shows it.
+
 How it renders: times shown in the reader's chosen zone (local by default),
 grouped by day, filterable by range / impact / currency, live countdowns, a
 "Now" marker, actual vs forecast coloured beat/miss using `better`, and an

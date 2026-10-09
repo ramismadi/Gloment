@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=14">
+<link rel="stylesheet" href="assets/style.css?v=15">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,7 +23,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=14" defer></script>
+<script src="assets/app.js?v=15" defer></script>
 </head>
 <body>
 
@@ -54,6 +54,7 @@
       <div class="tabs" role="tablist" id="tabs">
         <a role="tab" href="./" data-home data-tab="today"    id="tab-today">Today</a>
         <a role="tab" href="#story"    data-tab="story"    id="tab-story">Story</a>
+        <a role="tab" href="#fx"       data-tab="fx"       id="tab-fx">Currencies</a>
         <a role="tab" href="#engine"   data-tab="engine"   id="tab-engine">Macro engine</a>
         <a role="tab" href="#banks"    data-tab="banks"    id="tab-banks">Central banks</a>
         <a role="tab" href="#calendar" data-tab="calendar" id="tab-calendar">Calendar</a>
@@ -103,6 +104,32 @@
     </div>
   </section>
 
+  <!-- ============ CURRENCIES: strength board, currency detail, pair picker ============ -->
+  <section class="view" id="view-fx" role="tabpanel" aria-labelledby="tab-fx" hidden>
+    <div class="view-head">
+      <h1 class="view-title">Currencies</h1>
+      <p class="meta">Strength board, strongest to weakest · edition <span id="fx-asof">—</span> · tap a currency for what's driving it</p>
+    </div>
+    <div id="fx-detail" hidden></div>
+    <div class="fx-grid">
+      <section class="card fx-board" aria-label="Strength board">
+        <h2 class="section-label">Strength board</h2>
+        <ol class="board" id="fx-board"></ol>
+        <p class="meta fx-method" id="fx-method"></p>
+      </section>
+      <section class="card fx-picker" id="fx-picker" aria-label="Pair picker">
+        <h2 class="section-label">Pair picker</h2>
+        <p class="picker-q">I&rsquo;m <span class="segmented" role="tablist" aria-label="Direction" id="fx-dir">
+          <button type="button" class="seg" data-dir="bull">Bullish</button>
+          <button type="button" class="seg" data-dir="bear">Bearish</button>
+        </span> on</p>
+        <div class="chip-row" id="fx-ccy" aria-label="Currency"></div>
+        <p class="meta picker-sub" id="fx-sub"></p>
+        <ol class="picks" id="fx-picks"></ol>
+      </section>
+    </div>
+  </section>
+
   <!-- ============ MACRO ENGINE ============ -->
   <section class="view" id="view-engine" role="tabpanel" aria-labelledby="tab-engine" hidden>
     <div class="view-head">
@@ -140,6 +167,7 @@
 
     <div class="cal-filters" id="cal-filters">
       <div class="segmented" role="tablist" aria-label="Date range" id="cal-range">
+        <button type="button" class="seg" data-range="past">Last 7 days</button>
         <button type="button" class="seg" data-range="today">Today</button>
         <button type="button" class="seg" data-range="week">This week</button>
         <button type="button" class="seg" data-range="next">Next week</button>

@@ -7,9 +7,9 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '14';
+  var ASSET_VERSION = '15';
 
-  var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
+  var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
      Token values live in style.css under [data-theme="<id>"]. */
   var THEMES = [
@@ -42,6 +42,7 @@
       renderTakeaways(d);
       renderRail(d);
       route();
+      renderFx();
     }).catch(function () {
       note('#today-takeaways', 'Story unavailable.');
       note('#chapter-view', 'Story unavailable.');
@@ -62,14 +63,21 @@
       renderBanks(d);
       (d.banks || []).forEach(function (b) { cal.banks[b.id] = b; });
       renderCalendar();
+      renderFx();
     }).catch(function () {
       note('#bank-grid', 'Central bank data unavailable.');
     });
     initCalendar();
+    initFx();
+    fetchJSON('data/currencies.json').then(function (d) {
+      fx.data = d;
+      renderFx();
+    }).catch(function () { note('#fx-board', 'Currency data unavailable.'); });
     fetchJSON('data/calendar.json').then(function (d) {
       cal.data = d;
       if (d.updated) setText('#cal-updated', fmtDateTime(d.updated, true));
       renderCalendar();
+      renderFx();
     }).catch(function () {
       note('#cal-list', 'Calendar data unavailable.');
       note('#today-next', 'Calendar data unavailable.');
@@ -341,6 +349,10 @@
     if (tab === 'story' && story) {
       var n = parseInt(h[1], 10);
       showChapter(isFinite(n) ? n - 1 : chapterIdx);
+    }
+    if (tab === 'fx') {
+      fx.focus = (h[1] || '').toUpperCase();
+      renderFx();
     }
     var active = $('#tab-' + tab);
     if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -959,7 +971,8 @@
     switch (cal.prefs.range) {
       case 'today': lo = hi = todayKey; break;
       case 'next': lo = keyAdd(monday, 7); hi = keyAdd(monday, 13); break;
-      case 'all': lo = monday; hi = '9999-12-31'; break;
+      case 'past': lo = keyAdd(todayKey, -7); hi = todayKey; break;
+      case 'all': lo = keyAdd(todayKey, -7) < monday ? keyAdd(todayKey, -7) : monday; hi = '9999-12-31'; break;
       default: lo = monday; hi = keyAdd(monday, 6);
     }
     return evs.filter(function (e) {
@@ -1053,6 +1066,7 @@
 
     var t = el('span', 'ev-title');
     t.appendChild(el('span', 'ev-name', e.title));
+    if (!up && e.outcome) t.appendChild(el('span', 'ev-outcome', e.outcome));
     if (up && w) {
       var cd = el('span', 'ev-cd', 'in ' + countdown(w - now));
       cd.setAttribute('data-ts', w.getTime());
@@ -1079,6 +1093,12 @@
     if (sp && sp !== 'inline') {
       det.appendChild(el('p', 'sp-note sp-' + sp, (sp === 'good' ? 'Beat' : 'Missed') + ' forecast — ' +
         (sp === 'good' ? 'supportive' : 'negative') + ' for ' + e.ccy));
+    }
+    if (e.outcome && !up) {
+      var oc = el('div', 'ev-outcome-box');
+      oc.appendChild(el('span', 'callout-lbl', 'What it meant'));
+      oc.appendChild(el('p', null, e.outcome));
+      det.appendChild(oc);
     }
     if (e.why) det.appendChild(el('p', 'ev-why', e.why));
     if (e.if_beat || e.if_miss) {
@@ -1230,6 +1250,358 @@
     document.body.appendChild(a);
     a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  /* ---------------- currencies ----------------
+     data/currencies.json → strength board (sum of pillar scores), currency
+     detail (#fx/AUD: breakdown, trend, story, bank, events, best crosses) and
+     a pair picker that ranks counterparts by divergence. Carry comes from
+     banks.json, event risk from calendar.json. */
+  var PILLARS = [
+    ['policy', 'Policy'], ['growth', 'Growth'], ['inflation', 'Inflation'], ['risk', 'Risk sentiment'],
+    ['tot', 'Terms of trade'], ['positioning', 'Positioning'], ['fiscal', 'Fiscal & sovereign']
+  ];
+  /* Market quoting convention: the higher-priority currency is the base. */
+  var PRIORITY = ['EUR', 'GBP', 'AUD', 'NZD', 'USD', 'CAD', 'CHF', 'JPY'];
+  var fx = { data: null, focus: '', dir: 'bull', ccy: 'AUD' };
+
+  function initFx() {
+    try {
+      var p = JSON.parse(localStorage.getItem('gloment-fx') || 'null');
+      if (p && p.dir) fx.dir = p.dir;
+      if (p && p.ccy) fx.ccy = p.ccy;
+    } catch (e) { /* defaults */ }
+    var dir = $('#fx-dir');
+    if (dir) dir.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-dir]');
+      if (b) { fx.dir = b.getAttribute('data-dir'); saveFx(); renderPicker(); }
+    });
+    var cc = $('#fx-ccy');
+    if (cc) {
+      CCYS.forEach(function (c) {
+        var b = el('button', 'fchip ccy', c);
+        b.type = 'button';
+        b.setAttribute('data-ccy', c);
+        cc.appendChild(b);
+      });
+      cc.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-ccy]');
+        if (b) { fx.ccy = b.getAttribute('data-ccy'); saveFx(); renderPicker(); }
+      });
+    }
+    // "Express it" shortcuts from a currency page preset the picker.
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest('[data-express]');
+      if (!a) return;
+      var v = a.getAttribute('data-express').split(':');
+      fx.dir = v[0]; fx.ccy = v[1]; saveFx();
+    });
+  }
+  function saveFx() {
+    try { localStorage.setItem('gloment-fx', JSON.stringify({ dir: fx.dir, ccy: fx.ccy })); } catch (e) {}
+  }
+
+  function fxList() { return (fx.data && fx.data.currencies) || []; }
+  function fxGet(c) {
+    var l = fxList();
+    for (var i = 0; i < l.length; i++) if (l[i].ccy === c) return l[i];
+    return null;
+  }
+  function fxScore(c) {
+    var d = (c && c.drivers) || {}, t = 0;
+    Object.keys(d).forEach(function (k) { t += +d[k].score || 0; });
+    return t;
+  }
+  function fxRanked() {
+    return fxList().slice().sort(function (a, b) {
+      return fxScore(b) - fxScore(a) || PRIORITY.indexOf(a.ccy) - PRIORITY.indexOf(b.ccy);
+    });
+  }
+  /* Score history for one currency, oldest first; today's live score appended
+     if the feed's history doesn't include this edition yet. */
+  function fxHistory(c) {
+    var h = ((fx.data && fx.data.history) || []).filter(function (x) { return x.scores && x.scores[c.ccy] != null; })
+      .map(function (x) { return { date: x.date, v: +x.scores[c.ccy] }; });
+    var asOf = fx.data.as_of;
+    if (!h.length || h[h.length - 1].date !== asOf) h.push({ date: asOf || 'today', v: fxScore(c) });
+    return h;
+  }
+  function fxDelta(c) {
+    var h = fxHistory(c);
+    return h.length > 1 ? h[h.length - 1].v - h[h.length - 2].v : null;
+  }
+  function signed(n) { return (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n); }
+
+  function rateNum(bankId) {
+    var b = cal.banks[bankId];
+    if (!b || !b.rate) return null;
+    var m = String(b.rate).match(/-?\d+(\.\d+)?/g);
+    if (!m) return null;
+    var v = m.map(Number);
+    return v.length > 1 ? (v[0] + v[1]) / 2 : v[0];
+  }
+
+  /* Upcoming high-impact events for a set of currencies within N days. */
+  function eventsFor(ccys, days) {
+    var now = new Date(), lim = now.getTime() + days * 864e5;
+    var todayKey = dayKeyOf(now);
+    return ((cal.data && cal.data.events) || []).filter(function (e) {
+      if (e.impact !== 'high' || ccys.indexOf(e.ccy) < 0 || !evUpcoming(e, now, todayKey)) return false;
+      var w = evWhen(e);
+      return w ? w.getTime() <= lim : true;
+    }).sort(function (a, b) { return evSort(a) - evSort(b); });
+  }
+
+  /* Rank the 7 crosses for a view, e.g. bullish AUD. */
+  function fxPicks(dir, X) {
+    var x = fxGet(X);
+    if (!x) return [];
+    var sx = fxScore(x);
+    return fxList().filter(function (y) { return y.ccy !== X; }).map(function (y) {
+      var sy = fxScore(y);
+      var gap = dir === 'bull' ? sx - sy : sy - sx;
+      var base = PRIORITY.indexOf(X) < PRIORITY.indexOf(y.ccy) ? X : y.ccy;
+      var quote = base === X ? y.ccy : X;
+      var longBase = dir === 'bull' ? base === X : base === y.ccy;
+      var rx = rateNum(x.bank), ry = rateNum(y.bank);
+      var carry = rx == null || ry == null ? null : (dir === 'bull' ? rx - ry : ry - rx);
+      return {
+        y: y, sy: sy, gap: gap, pair: base + '/' + quote, action: longBase ? 'Buy' : 'Sell', carry: carry,
+        rating: gap >= 2 ? ['Best', 'best'] : gap === 1 ? ['Good', 'good'] : gap === 0 ? ['No edge', 'flat'] : ['Avoid', 'avoid'],
+        events: eventsFor([X, y.ccy], 14)
+      };
+    }).sort(function (a, b) { return b.gap - a.gap || (b.carry || 0) - (a.carry || 0); });
+  }
+
+  /* Why this counterpart: its drivers pointing the useful way. */
+  function pickWhy(p, dir) {
+    var want = dir === 'bull' ? -1 : 1;      // bullish X wants a weak counterpart
+    var d = p.y.drivers || {};
+    var notes = PILLARS.filter(function (k) { return d[k[0]] && Math.sign(d[k[0]].score) === want; })
+      .map(function (k) { return d[k[0]].note; });
+    if (p.gap < 0) return p.y.ccy + ' is ' + (dir === 'bull' ? 'stronger' : 'weaker') + ' on the board (' + signed(p.sy) + ') — this cross fights your view.';
+    if (notes.length) return notes.slice(0, 2).join(' · ');
+    return p.y.summary || '';
+  }
+
+  function diverging(score, max) {
+    var bar = el('span', 'dbar');
+    bar.setAttribute('aria-hidden', 'true');
+    var fill = el('i', score >= 0 ? 'pos' : 'neg');
+    fill.style.width = (Math.min(Math.abs(score), max) / max * 50) + '%';
+    bar.appendChild(fill);
+    return bar;
+  }
+
+  function renderFx() {
+    if (!fx.data) return;
+    setText('#fx-asof', fx.data.as_of || '—');
+    setText('#fx-method', fx.data.method || '');
+    var ranked = fxRanked();
+    var max = Math.max(4, Math.max.apply(null, ranked.map(function (c) { return Math.abs(fxScore(c)); })));
+
+    var board = $('#fx-board');
+    board.textContent = '';
+    ranked.forEach(function (c, i) {
+      var li = el('li');
+      var a = el('a', 'board-row' + (fx.focus === c.ccy ? ' on' : ''));
+      a.href = '#fx/' + c.ccy;
+      a.appendChild(el('span', 'b-rank mono', String(i + 1)));
+      var id = el('span', 'b-id');
+      id.appendChild(el('b', 'mono', c.ccy));
+      id.appendChild(el('small', null, c.name));
+      a.appendChild(id);
+      a.appendChild(diverging(fxScore(c), max));
+      a.appendChild(el('span', 'b-score mono', signed(fxScore(c))));
+      var dl = fxDelta(c);
+      a.appendChild(el('span', 'b-delta mono' + (dl > 0 ? ' up' : dl < 0 ? ' dn' : ''),
+        dl == null ? '' : dl === 0 ? '=' : (dl > 0 ? '▲' : '▼') + Math.abs(dl)));
+      a.appendChild(el('span', 'b-sum', c.summary || ''));
+      li.appendChild(a);
+      board.appendChild(li);
+    });
+
+    renderFxDetail(ranked, max);
+    renderPicker();
+  }
+
+  function renderPicker() {
+    if (!fx.data) return;
+    Array.prototype.forEach.call(document.querySelectorAll('#fx-dir [data-dir]'), function (b) {
+      b.setAttribute('aria-selected', b.getAttribute('data-dir') === fx.dir ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#fx-ccy [data-ccy]'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-ccy') === fx.ccy ? 'true' : 'false');
+    });
+    var x = fxGet(fx.ccy);
+    setText('#fx-sub', x ? (fx.dir === 'bull' ? 'Bullish ' : 'Bearish ') + fx.ccy + ' (' + signed(fxScore(x)) +
+      ' on the board): crosses ranked by how far the other side sits ' + (fx.dir === 'bull' ? 'below' : 'above') + ' it.' : '');
+    var box = $('#fx-picks');
+    box.textContent = '';
+    fxPicks(fx.dir, fx.ccy).forEach(function (p) {
+      var li = el('li', 'pick ' + p.rating[1]);
+      var top = el('div', 'pick-top');
+      top.appendChild(el('span', 'pick-act ' + (p.action === 'Buy' ? 'buy' : 'sell'), p.action));
+      top.appendChild(el('b', 'pick-pair mono', p.pair));
+      top.appendChild(el('span', 'pick-rate ' + p.rating[1], p.rating[0]));
+      var gap = el('span', 'pick-gap mono', 'gap ' + signed(p.gap));
+      gap.title = 'Score divergence between the two sides';
+      top.appendChild(gap);
+      li.appendChild(top);
+      li.appendChild(el('p', 'pick-why', pickWhy(p, fx.dir)));
+      var meta = [];
+      if (p.carry != null) meta.push('carry ' + (p.carry >= 0 ? '+' : '−') + Math.abs(p.carry).toFixed(2) + '%' + (p.carry >= 0 ? ' (you earn)' : ' (you pay)'));
+      if (p.events.length) {
+        var e0 = p.events[0], w0 = evWhen(e0);
+        meta.push(p.events.length + ' high-impact in 14d — next ' + e0.ccy + ' ' + e0.title +
+          (w0 ? ' ' + MONTHS[new Date(w0).getMonth()] + ' ' + new Date(w0).getDate() : ''));
+      }
+      if (meta.length) li.appendChild(el('p', 'meta pick-meta', meta.join(' · ')));
+      box.appendChild(li);
+    });
+  }
+
+  function renderFxDetail(ranked, max) {
+    var box = $('#fx-detail');
+    var c = fxGet(fx.focus);
+    if (!c) { box.hidden = true; box.textContent = ''; return; }
+    box.hidden = false;
+    box.textContent = '';
+    var card = el('article', 'card fx-detail');
+
+    var back = el('a', 'more', '← All currencies');
+    back.href = '#fx';
+    card.appendChild(back);
+
+    var head = el('div', 'fd-head');
+    var t = el('div');
+    t.appendChild(el('p', 'kicker', '#' + (ranked.indexOf(c) + 1) + ' of ' + ranked.length + ' on the board'));
+    var h = el('h1', 'display');
+    h.appendChild(el('span', 'mono fd-code', c.ccy));
+    h.appendChild(document.createTextNode(' ' + c.name));
+    t.appendChild(h);
+    if (c.summary) t.appendChild(el('p', 'lede', c.summary));
+    head.appendChild(t);
+    var sc = el('div', 'fd-score');
+    sc.appendChild(el('span', 'fd-num mono', signed(fxScore(c))));
+    var dl = fxDelta(c);
+    sc.appendChild(el('span', 'meta', dl == null ? 'score' : 'score · ' + (dl === 0 ? 'unchanged' : signed(dl)) + ' vs prior edition'));
+    head.appendChild(sc);
+    card.appendChild(head);
+
+    var cols = el('div', 'fd-cols');
+
+    // Breakdown by pillar
+    var bd = el('section', 'fd-break');
+    bd.appendChild(el('h2', 'section-label', 'What’s driving it'));
+    var ul = el('ul', 'drivers');
+    PILLARS.forEach(function (k) {
+      var d = (c.drivers || {})[k[0]];
+      var s = d ? +d.score || 0 : 0;
+      var li = el('li', s > 0 ? 'pos' : s < 0 ? 'neg' : 'zero');
+      var a = el('a', 'dr-name', k[1]);
+      a.href = '#engine';
+      li.appendChild(a);
+      li.appendChild(el('span', 'dr-score mono', s === 0 ? '0' : signed(s)));
+      li.appendChild(el('span', 'dr-note', d && d.note ? d.note : 'Not a driver today'));
+      ul.appendChild(li);
+    });
+    bd.appendChild(ul);
+    cols.appendChild(bd);
+
+    var side = el('section', 'fd-side');
+    // Trend
+    side.appendChild(el('h2', 'section-label', 'Trend'));
+    side.appendChild(sparkline(fxHistory(c)));
+    // Story chapter
+    if (c.chapter && story && story.chapters && story.chapters[c.chapter - 1]) {
+      var sl = el('a', 'fd-story');
+      sl.href = '#story/' + c.chapter;
+      sl.appendChild(el('span', 'callout-lbl', 'The story behind it'));
+      sl.appendChild(el('span', null, story.chapters[c.chapter - 1].title + ' →'));
+      side.appendChild(sl);
+    }
+    // Central bank
+    var bk = cal.banks[c.bank];
+    if (bk) {
+      var bx = el('a', 'fd-bank');
+      bx.href = '#banks';
+      bx.appendChild(el('span', 'callout-lbl', bk.short));
+      bx.appendChild(el('span', null, (bk.rate || '') + (bk.bias ? ' · ' + bk.bias : '') +
+        (bk.next_meeting ? ' · next ' + fmtMeeting(bk.next_meeting) : '')));
+      side.appendChild(bx);
+    }
+    // Events
+    var evs = eventsFor([c.ccy], 45);
+    side.appendChild(el('h2', 'section-label', 'Next high-impact events'));
+    var el2 = el('ul', 'fd-events');
+    if (!evs.length) el2.appendChild(el('li', 'meta', 'None in the next 6 weeks.'));
+    evs.slice(0, 4).forEach(function (e) {
+      var w = evWhen(e), li = el('li');
+      li.appendChild(el('span', 'mono', w ? MONTHS[w.getMonth()] + ' ' + w.getDate() : e.date));
+      li.appendChild(el('span', null, e.title));
+      el2.appendChild(li);
+    });
+    side.appendChild(el2);
+    // Express it
+    side.appendChild(el('h2', 'section-label', 'Express it'));
+    [['bull', 'Bullish'], ['bear', 'Bearish']].forEach(function (d) {
+      var picks = fxPicks(d[0], c.ccy).filter(function (p) { return p.gap > 0; }).slice(0, 3);
+      var row = el('p', 'fd-express');
+      var lk = el('a', null, d[1] + ' ' + c.ccy + ':');
+      lk.href = '#fx';
+      lk.setAttribute('data-express', d[0] + ':' + c.ccy);
+      row.appendChild(lk);
+      row.appendChild(document.createTextNode(' ' + (picks.length
+        ? picks.map(function (p) { return p.action.toLowerCase() + ' ' + p.pair; }).join(', ')
+        : 'no cross with an edge today')));
+      side.appendChild(row);
+    });
+    cols.appendChild(side);
+    card.appendChild(cols);
+    box.appendChild(card);
+  }
+
+  /* Score trend over editions; needs at least two points to draw. */
+  function sparkline(h) {
+    var wrap = el('div', 'spark');
+    if (h.length < 2) {
+      wrap.appendChild(el('p', 'meta', 'Trend builds from the next edition — one point so far (' + signed(h[0].v) + ').'));
+      return wrap;
+    }
+    var W = 260, H = 64, pad = 6, lo = -4, hi = 4;
+    h.forEach(function (p) { lo = Math.min(lo, p.v); hi = Math.max(hi, p.v); });
+    var xs = function (i) { return pad + i * (W - 2 * pad) / (h.length - 1); };
+    var ys = function (v) { return pad + (hi - v) * (H - 2 * pad) / (hi - lo); };
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('class', 'spark-svg');
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Score trend: ' + h.map(function (p) { return p.date + ' ' + signed(p.v); }).join(', '));
+    var zero = document.createElementNS(NS, 'line');
+    zero.setAttribute('x1', pad); zero.setAttribute('x2', W - pad);
+    zero.setAttribute('y1', ys(0)); zero.setAttribute('y2', ys(0));
+    zero.setAttribute('class', 'spark-zero');
+    svg.appendChild(zero);
+    var line = document.createElementNS(NS, 'polyline');
+    line.setAttribute('points', h.map(function (p, i) { return xs(i) + ',' + ys(p.v); }).join(' '));
+    line.setAttribute('class', 'spark-line');
+    svg.appendChild(line);
+    h.forEach(function (p, i) {
+      var g = document.createElementNS(NS, 'circle');
+      g.setAttribute('cx', xs(i)); g.setAttribute('cy', ys(p.v));
+      g.setAttribute('r', i === h.length - 1 ? 4 : 8);
+      g.setAttribute('class', i === h.length - 1 ? 'spark-end' : 'spark-hit');
+      var tt = document.createElementNS(NS, 'title');
+      tt.textContent = p.date + ': ' + signed(p.v);
+      g.appendChild(tt);
+      svg.appendChild(g);
+    });
+    wrap.appendChild(svg);
+    var first = h[0], last = h[h.length - 1];
+    wrap.appendChild(el('p', 'meta', h.length + ' editions · ' + signed(first.v) + ' → ' + signed(last.v)));
+    return wrap;
   }
 
   /* ---------------- breaking wire ----------------
