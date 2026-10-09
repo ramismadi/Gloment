@@ -4,43 +4,18 @@
 Gloment (GLObal fundaMENTals) is Rami's FX macro desk — a static site on GitHub
 Pages at ramismadi.github.io/Gloment/. It publishes a daily story-format FX
 outlook (numbers → what they mean → what happens to the currencies), a
-six-pillar macro engine dashboard, breaking news, and live quotes. Audience:
+macro engine, central-bank scorecard, calendar and breaking wire. Audience:
 Rami and anyone he shares the link with. Content tone: direct, numbers-first,
 no ceremony. Market context only — never trade recommendations, never financial
 advice.
 
-## Architecture
-- `index.html` — page shell; dynamic sections are empty containers filled by JS.
-- `assets/style.css` — sunny alpine theme: bright sky blues, pale gold accents,
-  light greys, white surfaces. Airy daytime feel. Terminal-desk aesthetic
-  (monospace tabular numerals, compact data rows). Keep it light — Rami
-  rejected a darker version.
-- `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
-  each section. All DOM built with textContent (no HTML injection). Also drives
-  the JS-rendered dashboard chrome: sticky status bar (live local/UTC clocks,
-  TYO/LDN/NYC session chips). No live price widgets — Rami removed them
-  (unreliable feeds); this is a story/full-picture site, not a quote terminal.
-  Price levels appear only inside the narrative data.
-- Fonts: system sans stack (`-apple-system` first, so Apple devices render
-  San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
-  reserved strictly for tabular numerals: status-bar clocks, engine figures,
-  bank-table numbers, calendar times, wire timestamps. Everything else is sans.
-- Layout order (top to bottom): sticky status bar → hero header → **The Story**
-  (the core: daily narrative from `data/story.json`) → dashboard grid (macro
-  engine, central-bank scorecard, economic calendar, breaking wire) → footer.
-  The story is the product; everything else supports it.
-  The scorecard/calendar/ticker are presentational — they are NOT fed by
-  `data/*.json`, so update their seed values by hand when they go stale.
-- `data/engine.json` — six macro pillars:
-  `{"updated": "<ISO-8601>", "rows": [{"id","title","figure","read"}]}`.
-  Row ids: `policy`, `growth`, `inflation`, `risk`, `terms`, `positioning`.
-  One line per row: key figure + FX read-through.
-- `data/story.json` — daily edition:
-  `{"date":"YYYY-MM-DD","headline":"...","chapters":[{"title","numbers":[],
-  "meaning":"...","fx":"...","scenarios":{"base","bull","bear"}}]}`.
-- `data/latest.json` — breaking items, reverse-chronological:
-  `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
-  "sources":[]}]}`.
+## Architecture & data feeds → see DESIGN.md
+The design, build rules (incl. the `?v=N` cache-busting bump) and the exact
+schema of every `data/*.json` feed live in **`DESIGN.md`**, maintained by
+Claude. Read it before touching `data/*.json` or `assets/`. Please don't
+paste an older copy of this file over the whole thing — edit only the
+section you're changing, starting from the latest `main` (whole-file
+rewrites have wiped Claude's notes three times, which is why they moved).
 
 ## How updates happen (Hercules' automation — do not fight it)
 - Daily ~2:00 AM CT cron (`fx-outlook-daily-refresh`): rebuilds `story.json`
@@ -99,6 +74,9 @@ advice.
   data is always there, fresh, and correctly shaped.
 
 ## Pillar explainers (spec for Claude — Rami audit, 2026-10-08)
+**Shipped 2026-10-09.** The live copy is `data/pillars.json` (keyed by engine
+row id, `body` + `live`) — edit that file to update an explainer; the text
+below is the original brief.
 Rami wants each Macro Engine row to have a tap-to-expand "What is this?"
 The content below is Hercules's; Claude owns the interaction design.
 Keep each to ~3 lines: what it is, how it moves currencies, one live example.
@@ -110,6 +88,17 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
 5. **Terms of trade** — Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways — say which and why. *Live: Brent ~$103 supports CAD (exporter) and pressures JPY/EUR (importers).*
 6. **Positioning** — Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.
 7. **Fiscal & sovereign risk** — Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency. *Live: French 10y spread over Bunds >150bp, widest since 2011 — a euro headwind.*
+
+## Open requests for Hercules (from Claude, 2026-10-09)
+1. **banks.json sources** — swap in official links: Fed → FRED `DFEDTARU` /
+   `DFEDTARL` (target range; `FEDFUNDS` is the effective rate), RBNZ →
+   rbnz.govt.nz OCR decision, BoJ → boj.or.jp statement for Sep 18 (the
+   current Reuters link is about July minutes and doesn't show 1.25%).
+2. **calendar.json** — please own it. Schema and an ingestion recipe (FF's
+   weekly export feed + the Gloment layer: why / if_beat / if_miss / better)
+   are in DESIGN.md. Verify the seeded central-bank decision times, and fill
+   `actual` as prints land.
+3. **pillars.json** — refresh each `live` example when it goes stale.
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.

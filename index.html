@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=12">
+<link rel="stylesheet" href="assets/style.css?v=14">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,7 +23,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=12" defer></script>
+<script src="assets/app.js?v=14" defer></script>
 </head>
 <body>
 
@@ -107,7 +107,7 @@
   <section class="view" id="view-engine" role="tabpanel" aria-labelledby="tab-engine" hidden>
     <div class="view-head">
       <h1 class="view-title">Macro engine</h1>
-      <p class="meta">Six pillars · updated <span id="engine-updated">—</span></p>
+      <p class="meta"><span id="pillar-count">Six</span> pillars · tap “What is this?” on any pillar · updated <span id="engine-updated">—</span></p>
     </div>
     <div class="engine-grid" id="engine-rows"></div>
   </section>
@@ -125,19 +125,31 @@
 
   <!-- ============ CALENDAR (hand-seeded; Today's "Next up" reads this list) ============ -->
   <section class="view" id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
-    <div class="view-head">
-      <h1 class="view-title">Calendar</h1>
-      <p class="meta">Catalysts ahead · times in CT</p>
+    <div class="view-head cal-head">
+      <div>
+        <h1 class="view-title">Calendar</h1>
+        <p class="meta">Every catalyst, in your time zone · updated <span id="cal-updated">—</span></p>
+      </div>
+      <label class="tz-pick">
+        <span class="sr-only">Time zone</span>
+        <select id="cal-tz" aria-label="Time zone"></select>
+      </label>
     </div>
-    <ol class="timeline" id="cal-list">
-      <li data-key="1"><span class="t-day">Thu Oct 8</span><div><b>US jobless claims</b> <span class="t-time">7:30</span> · 30-yr auction <span class="t-time">12:00</span><small>Fed: Musalem 12:40, Waller, Kashkari · ECB&rsquo;s Lane, BoE&rsquo;s Pill</small></div></li>
-      <li><span class="t-day">Fri Oct 9</span><div><b>U. Michigan sentiment</b> <span class="t-time">9:00</span></div></li>
-      <li data-key="1"><span class="t-day">Tue Oct 14</span><div><b>US CPI</b> <span class="t-time">7:30</span><small>The swing factor for December hike odds</small></div></li>
-      <li data-key="1"><span class="t-day">Oct 27&ndash;28</span><div><b>FOMC decision</b></div></li>
-      <li><span class="t-day">Oct 28</span><div><b>BoC &amp; RBNZ decisions</b></div></li>
-      <li><span class="t-day">Oct 29</span><div><b>ECB decision</b></div></li>
-      <li><span class="t-day">Oct 29&ndash;30</span><div><b>BoJ decision</b></div></li>
-    </ol>
+
+    <div class="card cal-next" id="cal-next" hidden></div>
+
+    <div class="cal-filters" id="cal-filters">
+      <div class="segmented" role="tablist" aria-label="Date range" id="cal-range">
+        <button type="button" class="seg" data-range="today">Today</button>
+        <button type="button" class="seg" data-range="week">This week</button>
+        <button type="button" class="seg" data-range="next">Next week</button>
+        <button type="button" class="seg" data-range="all">All</button>
+      </div>
+      <div class="chip-row" id="cal-impact" aria-label="Impact"></div>
+      <div class="chip-row" id="cal-ccy" aria-label="Currencies"></div>
+    </div>
+
+    <div class="cal-list" id="cal-list"></div>
   </section>
 
   <!-- ============ WIRE ============ -->
