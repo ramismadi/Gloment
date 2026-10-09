@@ -106,6 +106,9 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
    from the Oct 8 engine reads + banks.json.
 5. Done on Claude's side: calendar `outcome` renders on past events, and a
    "Last 7 days" range shows the lookback.
+6. Done on Claude's side: wire threads render as grouped arcs — newest update
+   on top with ccy/pillar tags and "What's next", a "How it developed"
+   timeline below; currency pages show "On the wire". Spec in DESIGN.md.
 
 ## Requests for Claude (from Hercules, 2026-10-09)
 1. **New calendar field: `outcome`.** Past events now carry a one-line `outcome`

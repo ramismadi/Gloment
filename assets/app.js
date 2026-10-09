@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '15';
+  var ASSET_VERSION = '16';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -1543,6 +1543,18 @@
       el2.appendChild(li);
     });
     side.appendChild(el2);
+    // Wire threads touching this currency
+    var wt = wireThreads.filter(function (t) { return t.ccy.indexOf(c.ccy) >= 0; });
+    if (wt.length) {
+      side.appendChild(el('h2', 'section-label', 'On the wire'));
+      wt.slice(0, 3).forEach(function (t) {
+        var a = el('a', 'fd-wire');
+        a.href = '#wire';
+        a.appendChild(el('span', 'callout-lbl', relTime(t.latest.ts) + (t.items.length > 1 ? ' · ' + t.items.length + ' updates' : '')));
+        a.appendChild(el('span', null, t.latest.headline));
+        side.appendChild(a);
+      });
+    }
     // Express it
     side.appendChild(el('h2', 'section-label', 'Express it'));
     [['bull', 'Bullish'], ['bear', 'Bearish']].forEach(function (d) {
@@ -1612,30 +1624,81 @@
     return m ? { key: m[1].toLowerCase(), text: b.slice(m[0].length) } : { key: null, text: b };
   }
 
+  /* Group wire items into threads (same `thread` id = one developing
+     story); items without a thread stand alone. Newest thread first. */
+  var wireThreads = [];
+  function buildThreads(items) {
+    var map = {}, out = [];
+    items.forEach(function (it, i) {
+      var key = it.thread || ('solo-' + i);
+      if (!map[key]) { map[key] = { id: key, items: [] }; out.push(map[key]); }
+      map[key].items.push(it);
+    });
+    out.forEach(function (t) {
+      t.items.sort(function (a, b) { return new Date(b.ts) - new Date(a.ts); });
+      t.latest = t.items[0];
+      t.first = t.items[t.items.length - 1];
+      var cc = [];
+      t.items.forEach(function (it) {
+        (it.ccy || []).forEach(function (c) { if (cc.indexOf(c) < 0) cc.push(c); });
+      });
+      t.ccy = cc;
+      t.pillar = t.latest.pillar || null;
+      t.next = t.latest.next || null;
+    });
+    return out.sort(function (a, b) { return new Date(b.latest.ts) - new Date(a.latest.ts); });
+  }
+
+  function pillarName(id) {
+    for (var i = 0; i < PILLARS.length; i++) if (PILLARS[i][0] === id) return PILLARS[i][1];
+    return id;
+  }
+
+  function fxPart(it) {
+    var parts = (it.bullets || []).map(splitBullet);
+    var f = parts.filter(function (p) { return p.key === 'fx'; })[0];
+    return { fx: f, rest: parts.filter(function (p) { return p !== f; }) };
+  }
+
+  function detailBlock(rest, label) {
+    var det = el('details', 'more-detail');
+    det.appendChild(el('summary', null, label || 'Full detail'));
+    rest.forEach(function (p) {
+      var para = el('p');
+      if (p.key) para.appendChild(el('span', 'lbl', p.key === 'numbers' ? 'Numbers' : p.key === 'fx' ? 'FX' : 'Meaning'));
+      para.appendChild(document.createTextNode(p.text));
+      det.appendChild(para);
+    });
+    return det;
+  }
+
   function renderWire(d) {
     var box = $('#latest-items');
-    var items = (d.items || []).slice().sort(function (a, b) {
-      return new Date(b.ts) - new Date(a.ts); // reverse-chronological
-    });
+    box.textContent = '';
+    var items = (d.items || []).slice();
     if (!items.length) {
       box.appendChild(el('p', 'meta', 'Nothing breaking right now.'));
       return;
     }
+    var threads = buildThreads(items);
+    wireThreads = threads;
     var badge = $('#wire-count');
-    if (badge) { badge.textContent = items.length; badge.hidden = false; }
+    if (badge) { badge.textContent = threads.length; badge.hidden = false; }
 
-    items.forEach(function (it, i) {
-      var parts = (it.bullets || []).map(splitBullet);
-      var fxPart = parts.filter(function (p) { return p.key === 'fx'; })[0];
-      var rest = parts.filter(function (p) { return p !== fxPart; });
+    threads.forEach(function (t, i) {
+      var it = t.latest, n = t.items.length;
+      var w = el('article', 'card wire-item thread' + (i === 0 ? ' latest' : ''));
+      w.id = 'thread-' + t.id;
 
-      var w = el('article', 'card wire-item' + (i === 0 ? ' latest' : ''));
+      // Meta: live status, update count, time span
       var meta = el('div', 'wire-meta');
-      if (i === 0) meta.appendChild(el('span', 'live-pill', 'Latest'));
+      if (i === 0) meta.appendChild(el('span', 'live-pill', n > 1 ? 'Developing' : 'Latest'));
+      else if (n > 1) meta.appendChild(el('span', 'thread-pill', 'Developing'));
       var ts = el('time', 'mono', relTime(it.ts));
       ts.dateTime = it.ts;
       ts.title = fmtDateTime(it.ts, true);
       meta.appendChild(ts);
+      if (n > 1) meta.appendChild(el('span', null, '· ' + n + ' updates since ' + fmtDateTime(t.first.ts)));
       w.appendChild(meta);
 
       var h = el('h3', 'wire-headline');
@@ -1643,37 +1706,85 @@
       if (hu) h.appendChild(extLink(it.headline, hu)); else h.textContent = it.headline;
       w.appendChild(h);
 
-      if (fxPart) {
+      // Tags: affected currencies (→ currency page) and pillar (→ engine)
+      if (t.ccy.length || t.pillar) {
+        var tags = el('div', 'wire-tags');
+        t.ccy.forEach(function (c) {
+          var a = el('a', 'tag ccy mono', c);
+          a.href = '#fx/' + c;
+          a.title = c + ' on the strength board';
+          tags.appendChild(a);
+        });
+        if (t.pillar) {
+          var pa = el('a', 'tag pillar', pillarName(t.pillar));
+          pa.href = '#engine';
+          tags.appendChild(pa);
+        }
+        w.appendChild(tags);
+      }
+
+      var parts = fxPart(it);
+      if (parts.fx) {
         var fx = el('div', 'fx-callout small');
         fx.appendChild(el('span', 'callout-lbl', 'FX'));
-        fx.appendChild(el('p', null, fxPart.text));
+        fx.appendChild(el('p', null, parts.fx.text));
         w.appendChild(fx);
       }
-
-      if (rest.length) {
-        var det = el('details', 'more-detail');
-        det.appendChild(el('summary', null, 'Full detail'));
-        rest.forEach(function (p) {
-          var para = el('p');
-          if (p.key) para.appendChild(el('span', 'lbl', p.key === 'numbers' ? 'Numbers' : 'Meaning'));
-          para.appendChild(document.createTextNode(p.text));
-          det.appendChild(para);
-        });
-        w.appendChild(det);
+      if (t.next) {
+        var nx = el('div', 'wire-next');
+        nx.appendChild(el('span', 'callout-lbl', 'What’s next'));
+        var nt = t.next.replace(/^Next:\s*/i, '');
+        nx.appendChild(el('p', null, nt.charAt(0).toUpperCase() + nt.slice(1)));
+        w.appendChild(nx);
       }
-
+      if (parts.rest.length) w.appendChild(detailBlock(parts.rest));
       w.appendChild(sourceChips(it.sources || []));
+
+      // The arc: earlier updates in this thread, newest first
+      if (n > 1) {
+        var arc = el('div', 'thread-arc');
+        arc.appendChild(el('h4', 'section-label', 'How it developed'));
+        var ol = el('ol', 'arc');
+        t.items.forEach(function (u, k) {
+          var li = el('li', k === 0 ? 'now' : null);
+          var when = el('time', 'mono', fmtDateTime(u.ts));
+          when.dateTime = u.ts;
+          li.appendChild(when);
+          var body = el('div', 'arc-body');
+          body.appendChild(el('p', 'arc-hl', u.headline));
+          if (k > 0) {
+            var pp = fxPart(u);
+            if (pp.fx) body.appendChild(el('p', 'arc-fx', 'FX: ' + pp.fx.text));
+            var rest = pp.rest;
+            if (rest.length || (u.sources || []).length) {
+              var det = detailBlock(rest, 'Detail');
+              if ((u.sources || []).length) det.appendChild(sourceChips(u.sources));
+              body.appendChild(det);
+            }
+          } else {
+            body.appendChild(el('p', 'arc-fx meta', 'Latest — above'));
+          }
+          li.appendChild(body);
+          ol.appendChild(li);
+        });
+        arc.appendChild(ol);
+        w.appendChild(arc);
+      }
       box.appendChild(w);
     });
 
     // Teaser on the Today tab.
-    var t = $('#today-wire');
-    if (t) {
-      t.textContent = '';
-      t.appendChild(el('span', 'live-pill', 'Wire · ' + relTime(items[0].ts)));
-      t.appendChild(el('span', 'teaser-hl', items[0].headline));
-      t.appendChild(el('span', 'tk-cta', 'Open →'));
-      t.hidden = false;
+    var t0 = threads[0], tz = $('#today-wire');
+    if (tz) {
+      tz.textContent = '';
+      tz.appendChild(el('span', 'live-pill', 'Wire · ' + relTime(t0.latest.ts)));
+      var hl = el('span', 'teaser-hl', t0.latest.headline);
+      if (t0.items.length > 1) hl.appendChild(el('small', 'teaser-n', ' · ' + t0.items.length + ' updates'));
+      tz.appendChild(hl);
+      tz.appendChild(el('span', 'tk-cta', 'Open →'));
+      tz.hidden = false;
     }
+    renderFx();
   }
+
 })();
