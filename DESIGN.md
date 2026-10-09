@@ -53,9 +53,11 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 ## Look
 - Themes are token sets on `<html data-theme="…">`, picked from the swatch
   dropdown in the masthead and saved per reader (localStorage).
-  Light: **alpine** (default — keep the default light), **ivory**, **sage**,
-  **porcelain**, **claret**, **harbor**, **dusk**.
+  Light: **ivory** (default — keep the default light; its tokens sit on
+  `:root`), **sage**, **claret**.
   Dark (opt-in): **ink**, **forest**, **onyx**, **velvet**.
+  Retired (Rami, 2026-10-09): alpine, porcelain, harbor, dusk — a saved
+  retired theme falls back to Ivory.
   To add/remove a theme, edit its `[data-theme]` block in style.css *and* its
   entry in `THEMES` in app.js. Every theme defines the same tokens; never
   hard-code hex in component rules.
