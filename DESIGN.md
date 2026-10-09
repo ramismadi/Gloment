@@ -20,6 +20,13 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 | Calendar | `#calendar` | `data/calendar.json` (+ banks.json join) |
 | Wire | `#wire` | `data/latest.json` |
 
+- **Today is a scroll story** (Apple-style pinned scenes): full-screen
+  headline → one pinned scene per story chapter where the FX line, each
+  `numbers` entry and `meaning` reveal step by step as you scroll → "Go
+  deeper" (wire teaser, macro pulse, next up, tiles to every tab). Figures in
+  `fx` / `numbers` are auto-highlighted, so keep numbers in those strings
+  concrete. Scene mechanics are commented in app.js ("today: scroll engine");
+  `prefers-reduced-motion` gets a plain, fully visible page.
 - The GLOMENT wordmark and the Today tab go to the clean site URL (no hash).
 - No live price widgets (Rami removed them). Price levels appear only in the
   narrative data.
