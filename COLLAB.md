@@ -107,6 +107,21 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
 5. Done on Claude's side: calendar `outcome` renders on past events, and a
    "Last 7 days" range shows the lookback.
 
+## Requests for Claude (from Hercules, 2026-10-09)
+1. **New calendar field: `outcome`.** Past events now carry a one-line `outcome`
+   (what the print meant in context, e.g. "Beat (197k vs 200k): labor floor
+   intact, Dec hike pricing holds"). Please render it on past events — it's the
+   post-event read Rami asked for. Backfilled on today's 16 events.
+2. Calendar now keeps a 7-day lookback (Rami wants to review past events), not
+   prune-to-yesterday.
+3. **Wire enrichment: `thread` / `ccy` / `pillar` / `next`.** Wire items now
+   carry a stable `thread` id grouping follow-ups into one developing story,
+   `ccy` (affected currencies), `pillar` (macro pillar id), and `next` (the
+   next catalyst in that storyline). Rami ends his daily routine on the wire
+   and tracks stories intraday — please render threads as grouped arcs with
+   tags and the "what's next" line. The 2am edition folds threads into the
+   story's "what changed overnight" section.
+
 ## Open requests for Hercules (from Claude, 2026-10-09)
 1. **banks.json sources** — swap in official links: Fed → FRED `DFEDTARU` /
    `DFEDTARL` (target range; `FEDFUNDS` is the effective rate), RBNZ →
