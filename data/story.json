@@ -202,6 +202,50 @@
     }
    ],
    "teaser": "Kiwi firms on the softer dollar, but Westpac's RBNZ pause call breaks the October-hike lean."
+  },
+  {
+   "title": "Oil",
+   "teaser": "Brent eases to ~$102.90 as Trump's no-strikes pledge drains the war premium — relief for importers, a headwind for CAD.",
+   "meaning": "What changed: crude gave back another 1.3% today, extending the slide that started when Trump took fresh Iran strikes off the table before the midterms. The geopolitical premium that had Brent knocking on $105 is leaking out. Thread: oil has been the swing factor for CAD all week — every escalation headline lifted it, every de-escalation headline压ed it back down. What it means: this is a straight terms-of-trade transfer. Canada, the exporter, loses a tailwind just as its blowout jobs report (+60.4K) was building a hawkish BoC case — the two forces are now pulling CAD in opposite directions. Japan and the eurozone, the big importers, get the mirror image: cheaper energy eases their import bills and takes pressure off their trade balances, a quiet positive for JPY and EUR that never makes headlines.",
+   "numbers": [
+    "Brent ~$102.90 (-1.3% today)",
+    "Off the ~$105 war-premium highs",
+    "Canada jobs +60.4K vs ~5K expected (Oct 9)"
+   ],
+   "fx": "What to watch: whether the de-escalation holds — any fresh strike or shipping disruption re-prices the premium back in within hours. For CAD, the tug-of-war is jobs-hawkishness vs oil-softness; for JPY/EUR, sustained sub-$103 oil is a slow-burn positive that compounds if it lasts.",
+   "scenarios": {
+    "base": "Brent drifts $100–105 while the no-strikes pledge holds; CAD trades the jobs beat more than the oil tape.",
+    "bull": "A fresh escalation or Hormuz disruption spikes Brent back toward $110+; CAD rips, JPY/EUR sag on import-cost fears.",
+    "bear": "Ceasefire chatter or OPEC+ supply signals push Brent under $100; CAD gives back the jobs gains, importers breathe easier."
+   },
+   "sources": [
+    {
+     "label": "The Hindu BusinessLine — market highlights Oct 9",
+     "url": "https://www.thehindubusinessline.com/markets/sensex-nifty50-today-stock-market-live-updates-9th-october-2026/article71560336.ece"
+    }
+   ]
+  },
+  {
+   "title": "Gold",
+   "teaser": "Gold holds ~$4,189 as the softer dollar and easing yields revive the bid — still ~21% below January's $5,318 peak.",
+   "meaning": "What changed: gold firmed today alongside the dollar's slide, recovering as Treasury yields eased and the war premium leaked out of crude but lingered in haven demand. Thread: gold topped $5,318 in late January at the peak of the Iran escalation scare, then bled lower for months as the Fed's hawkish hold kept real yields elevated and the dollar ripped to 18-month highs. What it means: gold is trading as the anti-dollar right now, not the war hedge — it rises when the dollar softens and yields fall, which is exactly today's tape. For FX, firm gold is a soft headwind for USD and a quiet tell on risk appetite: when gold and equities rise together, the market is hedging the dollar, not fearing the world.",
+   "numbers": [
+    "Spot ~$4,189/oz",
+    "All-time high $5,318 (Jan 29, 2026)",
+    "~21% below the peak"
+   ],
+   "fx": "What to watch: a break back above $4,300 would signal the haven bid is broadening beyond dollar-weakness — historically a USD-negative, CHF/JPY-positive setup. Conversely, a hot CPI next Wednesday that revives hike bets would likely knock gold back as real yields climb.",
+   "scenarios": {
+    "base": "Gold consolidates $4,100–4,300 into Wednesday's CPI; direction comes from the print, not the metal.",
+    "bull": "CPI undershoots and hike bets collapse — gold breaks $4,300 and the anti-dollar trade broadens.",
+    "bear": "Hot CPI revives the October hike; real yields jump and gold slides back toward $4,000."
+   },
+   "sources": [
+    {
+     "label": "thegoldprice.net — spot gold Oct 9",
+     "url": "https://thegoldprice.net/us/prices/world-gold-spot?period=24h&ratio_period=7d&unit=tael_hk"
+    }
+   ]
   }
  ],
  "date": "2026-10-09",
