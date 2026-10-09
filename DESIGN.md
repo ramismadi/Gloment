@@ -234,9 +234,9 @@ the rate from the bank's own site (Fed target range: FRED `DFEDTARU` /
   "sources":[]}]}
 ```
 Past events may carry `"outcome"`: one line on what the print meant (shown
-under the title and as "What it meant" in the briefing). Once an event has
-both `actual` and `outcome`, the briefing drops the `if_beat`/`if_miss` boxes —
-the outcome supersedes them. Render-only: keep writing all fields. The feed keeps a
+under the title and as "What it meant" in the briefing). Once a past event has
+an `outcome`, the briefing drops the `if_beat`/`if_miss` boxes — the outcome
+supersedes them (speeches/minutes included, which never get an `actual`). Render-only: keep writing all fields. The feed keeps a
 7-day lookback; the "Last 7 days" range shows it.
 
 How it renders: times shown in the reader's chosen zone (local by default),

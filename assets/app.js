@@ -1442,9 +1442,9 @@
       det.appendChild(oc);
     }
     if (e.why) det.appendChild(el('p', 'ev-why', e.why));
-    // Once the print and its outcome are in, the outcome supersedes the
-    // beat/miss branches — render-only; the feed keeps all fields.
-    var settled = e.actual != null && e.actual !== '' && !!e.outcome;
+    // Once the outcome is in, it supersedes the beat/miss branches (speeches
+    // and minutes never get an actual) — render-only; the feed keeps all fields.
+    var settled = !!e.outcome && !up;
     if (!settled && (e.if_beat || e.if_miss)) {
       var cb = e.category === 'central-bank';
       var g = el('div', 'ev-scen');
