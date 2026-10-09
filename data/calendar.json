@@ -1,6 +1,152 @@
 {
-  "updated": "2026-10-08T19:50:00-05:00",
+  "updated": "2026-10-08T20:10:00-05:00",
   "events": [
+    {
+      "id": "us-nfp-20261002",
+      "ts": "2026-10-02T12:30:00Z",
+      "ccy": "USD",
+      "impact": "high",
+      "category": "jobs",
+      "title": "Nonfarm payrolls (Sep)",
+      "actual": "+29k (unrate 4.2%)",
+      "forecast": "+84k",
+      "previous": "+133k (rev)",
+      "better": "higher",
+      "why": "The print that took an October hike off the table \u2014 hiring stalled while inflation stayed hot.",
+      "if_beat": "Strong payrolls: Oct hike odds recover, USD bid.",
+      "if_miss": "Weak: hike pushed to December, USD soft.",
+      "outcome": "Big miss (+29k vs ~84k, -60k revisions, unrate 4.2%). Oct hike odds collapsed to ~23%; USD softened, then steadied as claims stayed low.",
+      "sources": [
+        {
+          "label": "Market Daily: September jobs report",
+          "url": "https://marketdaily.com/september-jobs-report-payrolls-rise-just-29000-as-unemployment-ticks-up-to-4-2/"
+        }
+      ]
+    },
+    {
+      "id": "us-3y-20261006",
+      "ts": "2026-10-06T17:00:00Z",
+      "ccy": "USD",
+      "impact": "low",
+      "category": "auction",
+      "title": "3y Treasury auction",
+      "actual": "4.932% (b/c 2.62)",
+      "forecast": null,
+      "previous": "4.474%",
+      "better": null,
+      "why": "First of the week's three auctions \u2014 tone-setter for long-end demand at multi-decade yields.",
+      "if_beat": "Strong demand: caps yields, risk breathes.",
+      "if_miss": "Weak: yields push higher into the 10y/30y sales.",
+      "outcome": "Decent (b/c 2.62). Set a steady tone ahead of the 10y and 30y.",
+      "sources": [
+        {
+          "label": "The Vault Report: auction results",
+          "url": "https://thevaultreport.com/treasury-auctions"
+        }
+      ]
+    },
+    {
+      "id": "us-10y-20261007",
+      "ts": "2026-10-07T17:00:00Z",
+      "ccy": "USD",
+      "impact": "medium",
+      "category": "auction",
+      "title": "10y Treasury auction",
+      "actual": "5.300% (b/c 2.77)",
+      "forecast": null,
+      "previous": "4.834%",
+      "better": null,
+      "why": "The benchmark auction \u2014 10y at 24-year highs, the market watching whether buyers show up.",
+      "if_beat": "Strong: 10y yield retreats from highs, USD cools.",
+      "if_miss": "Weak: 10y breaks higher, risk-off, USD bid.",
+      "outcome": "Strong demand (b/c 2.77, indirect 80.3%). Still left 10y near 24-yr highs \u2014 set up the 30y test the next day.",
+      "sources": [
+        {
+          "label": "The Vault Report: auction results",
+          "url": "https://thevaultreport.com/treasury-auctions"
+        }
+      ]
+    },
+    {
+      "id": "fomc-minutes-20261007",
+      "ts": "2026-10-07T18:00:00Z",
+      "ccy": "USD",
+      "impact": "high",
+      "category": "central-bank",
+      "title": "FOMC minutes (Sep 15\u201316)",
+      "actual": null,
+      "forecast": null,
+      "previous": null,
+      "better": null,
+      "why": "The Sep hike's internal debate \u2014 how many officials want more, and how soon.",
+      "if_beat": "Hawkish (more hikes flagged): Dec odds firm near 70%, USD bid.",
+      "if_miss": "Dovish: hike path questioned, USD soft.",
+      "outcome": "Hawkish: all 19 backed the hike, 'most' saw another likely by year-end. Cemented the Dec-hike base case (~70%).",
+      "bank": "fed",
+      "sources": [
+        {
+          "label": "Reuters: FOMC minutes point to another hike",
+          "url": "https://www.reuters.com/business/fed-minutes-show-some-officials-want-prepare-market-stress-2026-10-07/"
+        }
+      ]
+    },
+    {
+      "actual": null,
+      "forecast": null,
+      "previous": null,
+      "better": null,
+      "why": null,
+      "if_beat": null,
+      "if_miss": null,
+      "chapter": null,
+      "bank": null,
+      "sources": [],
+      "id": "speakers-20261008",
+      "date": "2026-10-08",
+      "ccy": "USD",
+      "impact": "low",
+      "category": "speech",
+      "title": "Fed\u2019s Waller & Kashkari speak",
+      "time_tbd": true
+    },
+    {
+      "actual": null,
+      "forecast": null,
+      "previous": null,
+      "better": null,
+      "why": null,
+      "if_beat": null,
+      "if_miss": null,
+      "chapter": null,
+      "bank": null,
+      "sources": [],
+      "id": "ecb-lane-20261008",
+      "date": "2026-10-08",
+      "ccy": "EUR",
+      "impact": "low",
+      "category": "speech",
+      "title": "ECB\u2019s Lane speaks",
+      "time_tbd": true
+    },
+    {
+      "actual": null,
+      "forecast": null,
+      "previous": null,
+      "better": null,
+      "why": null,
+      "if_beat": null,
+      "if_miss": null,
+      "chapter": null,
+      "bank": null,
+      "sources": [],
+      "id": "boe-pill-20261008",
+      "date": "2026-10-08",
+      "ccy": "GBP",
+      "impact": "low",
+      "category": "speech",
+      "title": "BoE\u2019s Pill speaks",
+      "time_tbd": true
+    },
     {
       "actual": "197k",
       "forecast": "200k",
@@ -72,63 +218,6 @@
       "category": "speech",
       "title": "Fed's Musalem speaks",
       "outcome": "Hawkish: Musalem said rates may need to climb 6-9 more months; Waller open to more hikes. Supports ~70% Dec hike pricing."
-    },
-    {
-      "actual": null,
-      "forecast": null,
-      "previous": null,
-      "better": null,
-      "why": null,
-      "if_beat": null,
-      "if_miss": null,
-      "chapter": null,
-      "bank": null,
-      "sources": [],
-      "id": "speakers-20261008",
-      "date": "2026-10-08",
-      "ccy": "USD",
-      "impact": "low",
-      "category": "speech",
-      "title": "Fed\u2019s Waller & Kashkari speak",
-      "time_tbd": true
-    },
-    {
-      "actual": null,
-      "forecast": null,
-      "previous": null,
-      "better": null,
-      "why": null,
-      "if_beat": null,
-      "if_miss": null,
-      "chapter": null,
-      "bank": null,
-      "sources": [],
-      "id": "ecb-lane-20261008",
-      "date": "2026-10-08",
-      "ccy": "EUR",
-      "impact": "low",
-      "category": "speech",
-      "title": "ECB\u2019s Lane speaks",
-      "time_tbd": true
-    },
-    {
-      "actual": null,
-      "forecast": null,
-      "previous": null,
-      "better": null,
-      "why": null,
-      "if_beat": null,
-      "if_miss": null,
-      "chapter": null,
-      "bank": null,
-      "sources": [],
-      "id": "boe-pill-20261008",
-      "date": "2026-10-08",
-      "ccy": "GBP",
-      "impact": "low",
-      "category": "speech",
-      "title": "BoE\u2019s Pill speaks",
-      "time_tbd": true
     },
     {
       "actual": null,
