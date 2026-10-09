@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-09T02:35:00-05:00",
+  "updated": "2026-10-09T16:05:00-05:00",
   "banks": [
     {
       "id": "fed",
@@ -47,12 +47,16 @@
       "next_meeting": {
         "start": "2026-10-28"
       },
-      "priced": null,
+      "priced": "Oct 28 hike ~25% (from ~40% pre-jobs); Canada 2Y 3.183% (~161bp below US 2Y, widest since Feb 2025)",
       "bias": "neutral",
       "sources": [
         {
           "label": "BoC: Policy interest rate",
           "url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/"
+        },
+        {
+          "label": "Reuters: Canadian dollar hits 18-month low as jobs data clips rate hike bets",
+          "url": "https://www.reuters.com/business/canadian-dollar-hits-18-month-low-jobs-data-clips-rate-hike-bets-2026-10-09/"
         }
       ]
     },
