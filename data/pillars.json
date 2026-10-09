@@ -1,0 +1,40 @@
+{
+ "note": "Static explainers for Macro Engine pillars, keyed by engine row id. Content: Hercules (COLLAB.md spec, 2026-10-08). Update `live` as conditions change.",
+ "pillars": {
+  "policy": {
+   "title": "Policy divergence",
+   "body": "Central banks moving in different directions. It is the gap between them that moves currencies: money flows toward higher rates.",
+   "live": "Fed 3.75–4.00% and still hiking vs SNB pinned at 0% — that gap underpins USD/CHF."
+  },
+  "growth": {
+   "title": "Growth differentials",
+   "body": "Who is accelerating, who is stalling (GDP, jobs, PMIs). Always comparative. Stronger growth pulls in capital and raises hike expectations.",
+   "live": "US resilient while Europe stalls on energy costs — weight on EUR/USD."
+  },
+  "inflation": {
+   "title": "Inflation",
+   "body": "CPI/PCE vs the central bank's target. High inflation alone strengthens nothing — what matters is what the bank does about it.",
+   "live": "UK inflation 3.1% vs 2% target is why the BoE is talking hikes, holding GBP up."
+  },
+  "risk": {
+   "title": "Risk sentiment",
+   "body": "Risk-on vs risk-off. Fear bids USD, JPY, CHF (havens) and sells AUD, NZD, GBP (risk proxies).",
+   "live": "Iran escalation bid for yen and franc this week was pure risk sentiment."
+  },
+  "tot": {
+   "title": "Terms of trade",
+   "body": "Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways — say which and why.",
+   "live": "Brent ~$103 supports CAD (exporter) and pressures JPY/EUR (importers)."
+  },
+  "positioning": {
+   "title": "Positioning",
+   "body": "Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.",
+   "live": null
+  },
+  "fiscal": {
+   "title": "Fiscal & sovereign risk",
+   "body": "Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency.",
+   "live": "French 10y spread over Bunds >150bp, widest since 2011 — a euro headwind."
+  }
+ }
+}

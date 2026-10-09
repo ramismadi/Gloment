@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '12';
+  var ASSET_VERSION = '14';
 
   var TABS = ['today', 'story', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -35,7 +35,6 @@
     initTheme();
     initTabs();
     startClock();
-    renderNextUp();
 
     fetchJSON('data/story.json').then(function (d) {
       story = d;
@@ -48,6 +47,10 @@
       note('#chapter-view', 'Story unavailable.');
       setText('#today-headline', 'Edition unavailable');
     });
+    fetchJSON('data/pillars.json').then(function (d) {
+      explainers = d.pillars || null;
+      attachExplainers();
+    }).catch(function () { /* explainers are optional */ });
     fetchJSON('data/engine.json').then(function (d) {
       renderEngine(d);
       renderPulse(d);
@@ -55,8 +58,21 @@
       note('#engine-rows', 'Macro engine data unavailable.');
       note('#today-pulse', 'Macro engine data unavailable.');
     });
-    fetchJSON('data/banks.json').then(renderBanks).catch(function () {
+    fetchJSON('data/banks.json').then(function (d) {
+      renderBanks(d);
+      (d.banks || []).forEach(function (b) { cal.banks[b.id] = b; });
+      renderCalendar();
+    }).catch(function () {
       note('#bank-grid', 'Central bank data unavailable.');
+    });
+    initCalendar();
+    fetchJSON('data/calendar.json').then(function (d) {
+      cal.data = d;
+      if (d.updated) setText('#cal-updated', fmtDateTime(d.updated, true));
+      renderCalendar();
+    }).catch(function () {
+      note('#cal-list', 'Calendar data unavailable.');
+      note('#today-next', 'Calendar data unavailable.');
     });
     fetchJSON('data/latest.json').then(renderWire).catch(function () {
       note('#latest-items', 'No wire items.');
@@ -463,18 +479,6 @@
     });
   }
 
-  /* Next up: the first three calendar entries, marked key ones first-class. */
-  function renderNextUp() {
-    var box = $('#today-next');
-    var items = document.querySelectorAll('#cal-list > li');
-    Array.prototype.slice.call(items, 0, 3).forEach(function (li) {
-      var row = el('li', li.hasAttribute('data-key') ? 'key' : null);
-      row.appendChild(el('span', 'n-day mono', li.querySelector('.t-day').textContent));
-      row.appendChild(el('span', 'n-what', li.querySelector('b').textContent));
-      box.appendChild(row);
-    });
-  }
-
   /* ---------------- story ---------------- */
   function renderRail(d) {
     var rail = $('#chapter-rail');
@@ -578,16 +582,65 @@
   }
 
   /* ---------------- macro engine ---------------- */
+  var NUMWORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+  var explainers = null;   // data/pillars.json, keyed by engine row id
+
   function renderEngine(d) {
     if (d.updated) setText('#engine-updated', fmtDateTime(d.updated, true));
+    var rows = d.rows || [];
+    setText('#pillar-count', NUMWORDS[rows.length] || String(rows.length));
     var box = $('#engine-rows');
-    (d.rows || []).forEach(function (row) {
-      var c = el('div', 'card pillar');
-      c.appendChild(el('span', 'pillar-title', row.title));
+    box.textContent = '';
+    // 3-up grid with no orphans: a remainder of 1 turns the last four tiles
+    // into two rows of halves (7 → 3+2+2); a remainder of 2 halves the last two.
+    var n = rows.length, rem = n % 3;
+    var halfFrom = rem === 1 && n >= 4 ? n - 4 : rem === 2 ? n - 2 : n;
+    rows.forEach(function (row, i) {
+      var c = el('div', 'card pillar' + (i >= halfFrom ? ' half' : ''));
+      c.setAttribute('data-pillar', row.id);
+      var head = el('div', 'pillar-head');
+      head.appendChild(el('span', 'pillar-title', row.title));
+      c.appendChild(head);
       c.appendChild(el('p', 'pillar-read', row.read));
       c.appendChild(el('p', 'pillar-figure mono', row.figure));
       c.appendChild(sourceChips(row.sources || row.source, row.source_url));
       box.appendChild(c);
+    });
+    attachExplainers();
+  }
+
+  /* "What is this?" toggle on each pillar that has an explainer. */
+  function attachExplainers() {
+    if (!explainers) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.pillar[data-pillar]'), function (c) {
+      var x = explainers[c.getAttribute('data-pillar')];
+      if (!x || c.querySelector('.explain-btn')) return;
+      var id = 'explain-' + c.getAttribute('data-pillar');
+      var btn = el('button', 'explain-btn');
+      btn.type = 'button';
+      btn.setAttribute('aria-expanded', 'false');
+      btn.setAttribute('aria-controls', id);
+      btn.appendChild(el('span', 'explain-i', 'i'));
+      btn.appendChild(document.createTextNode('What is this?'));
+      c.querySelector('.pillar-head').appendChild(btn);
+
+      var panel = el('div', 'explain');
+      panel.id = id;
+      panel.hidden = true;
+      panel.appendChild(el('p', null, x.body));
+      if (x.live) {
+        var live = el('div', 'explain-live');
+        live.appendChild(el('span', 'callout-lbl', 'Live example'));
+        live.appendChild(el('p', null, x.live));
+        panel.appendChild(live);
+      }
+      c.insertBefore(panel, c.querySelector('.pillar-read'));
+      btn.addEventListener('click', function () {
+        var open = panel.hidden;
+        panel.hidden = !open;
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        c.classList.toggle('explaining', open);
+      });
     });
   }
 
@@ -709,6 +762,474 @@
     setText('#bank-foot', thin.length
       ? 'Rates and pricing for ' + thin.join(', ') + ' arrive as the data feed covers them.'
       : '');
+  }
+
+  /* ---------------- calendar ----------------
+     data/calendar.json → filterable, time-zone-aware event list.
+     Each event: ts (UTC ISO) or date + time_tbd; ccy; impact; title;
+     actual/forecast/previous; better ("higher"/"lower" = good for the
+     currency); why / if_beat / if_miss; chapter (story link); bank (joins
+     banks.json); sources. Reader prefs persist in localStorage. */
+  var CCYS = ['USD', 'EUR', 'GBP', 'JPY', 'CHF', 'CAD', 'AUD', 'NZD'];
+  var IMPACTS = [['high', 'High'], ['medium', 'Medium'], ['low', 'Low']];
+  var TZS = [
+    ['local', 'Local time'], ['America/Chicago', 'Chicago (CT)'], ['America/New_York', 'New York (ET)'],
+    ['Europe/London', 'London'], ['Asia/Tokyo', 'Tokyo'], ['UTC', 'UTC']
+  ];
+  var cal = {
+    data: null,
+    banks: {},
+    open: {},
+    prefs: { range: 'week', impact: { high: true, medium: true, low: false }, ccy: [], tz: 'local' },
+    timer: null
+  };
+
+  function makePips(level) {
+    var p = el('span', 'pips pips-' + level);
+    for (var i = 0; i < 3; i++) p.appendChild(el('i'));
+    return p;
+  }
+
+  function loadCalPrefs() {
+    try {
+      var p = JSON.parse(localStorage.getItem('gloment-cal') || 'null');
+      if (p && typeof p === 'object') {
+        if (p.range) cal.prefs.range = p.range;
+        if (p.impact) cal.prefs.impact = p.impact;
+        if (Array.isArray(p.ccy)) cal.prefs.ccy = p.ccy;
+        if (p.tz) cal.prefs.tz = p.tz;
+      }
+    } catch (e) { /* defaults */ }
+  }
+  function saveCalPrefs() {
+    try { localStorage.setItem('gloment-cal', JSON.stringify(cal.prefs)); } catch (e) { /* private mode */ }
+  }
+
+  function tzOpt() { return cal.prefs.tz === 'local' ? undefined : cal.prefs.tz; }
+
+  function tzAbbr() {
+    try {
+      var parts = new Intl.DateTimeFormat('en-US', { timeZone: tzOpt(), timeZoneName: 'short' }).formatToParts(new Date());
+      for (var i = 0; i < parts.length; i++) if (parts[i].type === 'timeZoneName') return parts[i].value;
+    } catch (e) {}
+    return '';
+  }
+
+  /* "YYYY-MM-DD" of a Date in the chosen zone. */
+  function dayKeyOf(date) {
+    var parts = {};
+    new Intl.DateTimeFormat('en-CA', { timeZone: tzOpt(), year: 'numeric', month: '2-digit', day: '2-digit' })
+      .formatToParts(date).forEach(function (p) { parts[p.type] = p.value; });
+    return parts.year + '-' + parts.month + '-' + parts.day;
+  }
+  function keyAdd(key, n) {
+    var p = key.split('-'), d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + n));
+    return d.toISOString().slice(0, 10);
+  }
+  function keyDow(key) {
+    var p = key.split('-');
+    return new Date(Date.UTC(+p[0], +p[1] - 1, +p[2])).getUTCDay();
+  }
+  function keyLabel(key, todayKey) {
+    var p = key.split('-');
+    var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+    var lbl = d.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC' });
+    if (key === todayKey) return 'Today · ' + lbl;
+    if (key === keyAdd(todayKey, 1)) return 'Tomorrow · ' + lbl;
+    if (key === keyAdd(todayKey, -1)) return 'Yesterday · ' + lbl;
+    return lbl;
+  }
+  function fmtClock(date) {
+    return date.toLocaleTimeString('en-US', { timeZone: tzOpt(), hour: 'numeric', minute: '2-digit' });
+  }
+
+  function evWhen(e) { return e.ts ? new Date(e.ts) : null; }
+  function evKey(e) { var w = evWhen(e); return w ? dayKeyOf(w) : e.date; }
+  /* Sort value: timed events by instant; date-only events at the start of their day. */
+  function evSort(e) {
+    var w = evWhen(e);
+    if (w) return w.getTime();
+    var p = (e.date || '').split('-');
+    return Date.UTC(+p[0], +p[1] - 1, +p[2]) - 1;
+  }
+  function evUpcoming(e, now, todayKey) {
+    var w = evWhen(e);
+    return w ? w.getTime() >= now.getTime() : (e.date >= todayKey);
+  }
+
+  function num(v) {
+    if (v == null) return null;
+    var n = parseFloat(String(v).replace(/[,%$¥€£\s]/g, '').replace(/[KMBT]$/i, ''));
+    return isFinite(n) ? n : null;
+  }
+  /* 'good' | 'bad' | 'inline' | null — actual vs forecast, from the currency's view. */
+  function surprise(e) {
+    var a = num(e.actual), f = num(e.forecast);
+    if (a == null || f == null || !e.better) return null;
+    if (a === f) return 'inline';
+    var up = a > f;
+    return (e.better === 'higher' ? up : !up) ? 'good' : 'bad';
+  }
+
+  function countdown(ms) {
+    if (ms <= 0) return 'now';
+    var m = Math.floor(ms / 60000), d = Math.floor(m / 1440), h = Math.floor((m % 1440) / 60), mm = m % 60;
+    if (d) return d + 'd ' + h + 'h';
+    if (h) return h + 'h ' + mm + 'm';
+    var s = Math.floor((ms % 60000) / 1000);
+    return mm + 'm ' + (s < 10 ? '0' : '') + s + 's';
+  }
+
+  function initCalendar() {
+    loadCalPrefs();
+    var sel = $('#cal-tz');
+    if (sel) {
+      TZS.forEach(function (t) {
+        var o = el('option', null, t[1]);
+        o.value = t[0];
+        sel.appendChild(o);
+      });
+      sel.value = cal.prefs.tz;
+      sel.addEventListener('change', function () { cal.prefs.tz = sel.value; saveCalPrefs(); renderCalendar(); });
+    }
+    var range = $('#cal-range');
+    if (range) range.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-range]');
+      if (!b) return;
+      cal.prefs.range = b.getAttribute('data-range'); saveCalPrefs(); renderCalendar();
+    });
+    var imp = $('#cal-impact');
+    if (imp) {
+      IMPACTS.forEach(function (i) {
+        var b = el('button', 'fchip imp-' + i[0]);
+        b.type = 'button';
+        b.setAttribute('data-impact', i[0]);
+        b.appendChild(makePips(i[0]));
+        b.appendChild(document.createTextNode(i[1]));
+        imp.appendChild(b);
+      });
+      imp.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-impact]');
+        if (!b) return;
+        var k = b.getAttribute('data-impact');
+        cal.prefs.impact[k] = !cal.prefs.impact[k]; saveCalPrefs(); renderCalendar();
+      });
+    }
+    var cc = $('#cal-ccy');
+    if (cc) {
+      ['ALL'].concat(CCYS).forEach(function (c) {
+        var b = el('button', 'fchip ccy', c === 'ALL' ? 'All' : c);
+        b.type = 'button';
+        b.setAttribute('data-ccy', c);
+        cc.appendChild(b);
+      });
+      cc.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-ccy]');
+        if (!b) return;
+        var c = b.getAttribute('data-ccy');
+        if (c === 'ALL') cal.prefs.ccy = [];
+        else {
+          var i = cal.prefs.ccy.indexOf(c);
+          if (i >= 0) cal.prefs.ccy.splice(i, 1); else cal.prefs.ccy.push(c);
+          if (cal.prefs.ccy.length === CCYS.length) cal.prefs.ccy = [];
+        }
+        saveCalPrefs(); renderCalendar();
+      });
+    }
+    var list = $('#cal-list');
+    if (list) list.addEventListener('click', function (e) {
+      var ics = e.target.closest('[data-ics]');
+      if (ics) { downloadIcs(ics.getAttribute('data-ics')); return; }
+      var row = e.target.closest('.ev-row');
+      if (!row) return;
+      var id = row.getAttribute('data-id');
+      cal.open[id] = !cal.open[id];
+      row.setAttribute('aria-expanded', cal.open[id] ? 'true' : 'false');
+      var det = row.parentNode.querySelector('.ev-detail');
+      if (det) det.hidden = !cal.open[id];
+    });
+    if (!cal.timer) cal.timer = setInterval(tickCalendar, 1000);
+  }
+
+  function filtered(now) {
+    var evs = (cal.data && cal.data.events) || [];
+    var todayKey = dayKeyOf(now);
+    var monday = keyAdd(todayKey, -((keyDow(todayKey) + 6) % 7));
+    var lo, hi;
+    switch (cal.prefs.range) {
+      case 'today': lo = hi = todayKey; break;
+      case 'next': lo = keyAdd(monday, 7); hi = keyAdd(monday, 13); break;
+      case 'all': lo = monday; hi = '9999-12-31'; break;
+      default: lo = monday; hi = keyAdd(monday, 6);
+    }
+    return evs.filter(function (e) {
+      var k = evKey(e);
+      if (!k || k < lo || k > hi) return false;
+      if (!cal.prefs.impact[e.impact]) return false;
+      if (cal.prefs.ccy.length && cal.prefs.ccy.indexOf(e.ccy) < 0) return false;
+      return true;
+    }).sort(function (a, b) { return evSort(a) - evSort(b); });
+  }
+
+  function renderCalendar() {
+    if (!cal.data) return;
+    var now = new Date();
+    var todayKey = dayKeyOf(now);
+
+    // Controls reflect prefs.
+    Array.prototype.forEach.call(document.querySelectorAll('#cal-range [data-range]'), function (b) {
+      b.setAttribute('aria-selected', b.getAttribute('data-range') === cal.prefs.range ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#cal-impact [data-impact]'), function (b) {
+      b.setAttribute('aria-pressed', cal.prefs.impact[b.getAttribute('data-impact')] ? 'true' : 'false');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#cal-ccy [data-ccy]'), function (b) {
+      var c = b.getAttribute('data-ccy');
+      var on = c === 'ALL' ? !cal.prefs.ccy.length : cal.prefs.ccy.indexOf(c) >= 0;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    var sel = $('#cal-tz');
+    if (sel && sel.options.length) sel.options[0].textContent = 'Local time (' + (cal.prefs.tz === 'local' ? tzAbbr() : 'device') + ')';
+
+    renderNextUp(now, todayKey);
+    renderUpNext(now);
+
+    var list = $('#cal-list');
+    list.textContent = '';
+    var evs = filtered(now);
+    if (!evs.length) {
+      var empty = el('div', 'card cal-empty');
+      empty.appendChild(el('p', null, 'No events match these filters.'));
+      list.appendChild(empty);
+      return;
+    }
+    var bar = el('div', 'cal-bar');
+    bar.appendChild(el('span', 'meta', evs.length + (evs.length === 1 ? ' event' : ' events') + ' · times in ' + tzAbbr()));
+    var ex = el('button', 'btn ghost small', 'Add these to my calendar');
+    ex.type = 'button';
+    ex.setAttribute('data-ics', '__visible');
+    bar.appendChild(ex);
+    list.appendChild(bar);
+
+    var group = null, groupKey = null, nowDrawn = false;
+    evs.forEach(function (e) {
+      var k = evKey(e);
+      if (k !== groupKey) {
+        groupKey = k;
+        group = el('section', 'cal-day card' + (k === todayKey ? ' today' : '') + (k < todayKey ? ' past' : ''));
+        group.appendChild(el('h3', 'cal-day-head', keyLabel(k, todayKey)));
+        list.appendChild(group);
+      }
+      if (k === todayKey && !nowDrawn && evUpcoming(e, now, todayKey) && evWhen(e)) {
+        var nl = el('div', 'now-line');
+        nl.appendChild(el('span', null, 'Now · ' + fmtClock(now)));
+        group.appendChild(nl);
+        nowDrawn = true;
+      }
+      group.appendChild(eventRow(e, now, todayKey));
+    });
+    // Today's events all done: put "Now" at the end of today's list.
+    var todayGroup = list.querySelector('.cal-day.today');
+    if (todayGroup && !nowDrawn) {
+      var end = el('div', 'now-line');
+      end.appendChild(el('span', null, 'Now \u00b7 ' + fmtClock(now)));
+      todayGroup.appendChild(end);
+    }
+  }
+
+  function eventRow(e, now, todayKey) {
+    var w = evWhen(e), up = evUpcoming(e, now, todayKey), sp = surprise(e);
+    var wrap = el('div', 'ev imp-' + e.impact + (up ? '' : ' past'));
+    var row = el('button', 'ev-row');
+    row.type = 'button';
+    row.setAttribute('data-id', e.id);
+    row.setAttribute('aria-expanded', cal.open[e.id] ? 'true' : 'false');
+
+    row.appendChild(el('span', 'ev-time mono', w && !e.time_tbd ? fmtClock(w) : 'TBD'));
+    row.appendChild(el('span', 'ev-ccy mono', e.ccy));
+    var pips = makePips(e.impact);
+    pips.title = e.impact.charAt(0).toUpperCase() + e.impact.slice(1) + ' impact';
+    row.appendChild(pips);
+
+    var t = el('span', 'ev-title');
+    t.appendChild(el('span', 'ev-name', e.title));
+    if (up && w) {
+      var cd = el('span', 'ev-cd', 'in ' + countdown(w - now));
+      cd.setAttribute('data-ts', w.getTime());
+      t.appendChild(cd);
+    }
+    row.appendChild(t);
+
+    function cell(lbl, v, cls) {
+      var c = el('span', 'ev-num');
+      c.appendChild(el('small', null, lbl));
+      c.appendChild(el('b', 'mono' + (cls ? ' ' + cls : ''), v == null || v === '' ? '—' : v));
+      return c;
+    }
+    var nums = el('span', 'ev-nums');
+    nums.appendChild(cell('Actual', e.actual, sp ? 'sp-' + sp : null));
+    nums.appendChild(cell('Forecast', e.forecast));
+    nums.appendChild(cell('Previous', e.previous));
+    row.appendChild(nums);
+    row.appendChild(el('span', 'ev-caret', '›'));
+    wrap.appendChild(row);
+
+    var det = el('div', 'ev-detail');
+    det.hidden = !cal.open[e.id];
+    if (sp && sp !== 'inline') {
+      det.appendChild(el('p', 'sp-note sp-' + sp, (sp === 'good' ? 'Beat' : 'Missed') + ' forecast — ' +
+        (sp === 'good' ? 'supportive' : 'negative') + ' for ' + e.ccy));
+    }
+    if (e.why) det.appendChild(el('p', 'ev-why', e.why));
+    if (e.if_beat || e.if_miss) {
+      var cb = e.category === 'central-bank';
+      var g = el('div', 'ev-scen');
+      if (e.if_beat) {
+        var b1 = el('div', 'sc-box sc-bull');
+        b1.appendChild(el('span', 'callout-lbl', cb ? 'Hawkish outcome' : 'If it beats'));
+        b1.appendChild(el('p', null, e.if_beat));
+        g.appendChild(b1);
+      }
+      if (e.if_miss) {
+        var b2 = el('div', 'sc-box sc-bear');
+        b2.appendChild(el('span', 'callout-lbl', cb ? 'Dovish outcome' : 'If it misses'));
+        b2.appendChild(el('p', null, e.if_miss));
+        g.appendChild(b2);
+      }
+      det.appendChild(g);
+    }
+    var bk = e.bank && cal.banks[e.bank];
+    if (bk) {
+      var bx = el('div', 'ev-bank');
+      bx.appendChild(el('span', 'callout-lbl', bk.short + ' today'));
+      var bits = [];
+      if (bk.rate) bits.push(bk.rate + (bk.rate_label ? ' ' + bk.rate_label.toLowerCase() : ''));
+      if (bk.last_move && bk.last_move.bp != null) {
+        var lm = ymd(bk.last_move.date);
+        bits.push((bk.last_move.bp > 0 ? 'hiked +' + bk.last_move.bp + 'bp' : bk.last_move.bp < 0 ? 'cut ' + bk.last_move.bp + 'bp' : 'held') +
+          (lm ? ' ' + MONTHS[lm.getMonth()] + ' ' + lm.getDate() : ''));
+      }
+      if (bk.priced) bits.push('priced: ' + bk.priced);
+      if (bk.bias) bits.push(bk.bias);
+      bx.appendChild(el('p', null, bits.join(' · ')));
+      det.appendChild(bx);
+    }
+    var links = el('div', 'ev-links');
+    if (e.chapter) {
+      var ch = el('a', 'more', 'Read the story chapter →');
+      ch.href = '#story/' + e.chapter;
+      links.appendChild(ch);
+    }
+    if (bk) {
+      var bl = el('a', 'more', 'Central bank card →');
+      bl.href = '#banks';
+      links.appendChild(bl);
+    }
+    var add = el('button', 'btn ghost small', 'Add to calendar');
+    add.type = 'button';
+    add.setAttribute('data-ics', e.id);
+    links.appendChild(add);
+    det.appendChild(links);
+    if ((e.sources || []).length) det.appendChild(sourceChips(e.sources));
+    if (!e.why && !e.if_beat && !bk && !(e.sources || []).length) {
+      det.insertBefore(el('p', 'meta', 'No briefing for this event yet.'), det.firstChild);
+    }
+    wrap.appendChild(det);
+    return wrap;
+  }
+
+  /* "Up next": the next high-impact event, with a live countdown. */
+  function renderUpNext(now) {
+    var box = $('#cal-next');
+    if (!box || !cal.data) return;
+    var todayKey = dayKeyOf(now);
+    var evs = (cal.data.events || []).filter(function (e) {
+      return e.impact === 'high' && evWhen(e) && evUpcoming(e, now, todayKey);
+    }).sort(function (a, b) { return evSort(a) - evSort(b); });
+    var e = evs[0];
+    if (!e) { box.hidden = true; return; }
+    var w = evWhen(e);
+    box.textContent = '';
+    var left = el('div', 'cn-main');
+    left.appendChild(el('span', 'kicker', 'Up next · high impact'));
+    var h = el('p', 'cn-title');
+    h.appendChild(el('span', 'ev-ccy mono', e.ccy));
+    h.appendChild(document.createTextNode(' ' + e.title));
+    left.appendChild(h);
+    var k = dayKeyOf(w);
+    left.appendChild(el('p', 'meta', keyLabel(k, todayKey) + ' · ' + fmtClock(w) + ' ' + tzAbbr() +
+      (e.forecast ? ' · forecast ' + e.forecast : '') + (e.previous ? ' · previous ' + e.previous : '')));
+    box.appendChild(left);
+    var cd = el('div', 'cn-count mono', countdown(w - now));
+    cd.setAttribute('data-ts', w.getTime());
+    box.appendChild(cd);
+    box.hidden = false;
+  }
+
+  /* Today tab "Next up": next three high/medium events. */
+  function renderNextUp(now, todayKey) {
+    var box = $('#today-next');
+    if (!box) return;
+    box.textContent = '';
+    var evs = ((cal.data && cal.data.events) || []).filter(function (e) {
+      return e.impact !== 'low' && evUpcoming(e, now, todayKey);
+    }).sort(function (a, b) { return evSort(a) - evSort(b); }).slice(0, 3);
+    if (!evs.length) { box.appendChild(el('li', 'meta', 'Nothing scheduled.')); return; }
+    evs.forEach(function (e) {
+      var w = evWhen(e), k = evKey(e), p = k.split('-');
+      var d = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2]));
+      var row = el('li', e.impact === 'high' ? 'key' : null);
+      row.appendChild(el('span', 'n-day mono', d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' })));
+      var what = el('span', 'n-what', e.ccy + ' · ' + e.title);
+      if (w && !e.time_tbd) what.appendChild(el('small', 'n-time', fmtClock(w)));
+      row.appendChild(what);
+      box.appendChild(row);
+    });
+  }
+
+  /* Live countdowns; full re-render when an event crosses "now". */
+  function tickCalendar() {
+    var now = Date.now(), crossed = false;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ts]'), function (n) {
+      var ms = +n.getAttribute('data-ts') - now;
+      if (ms <= 0) crossed = true;
+      n.textContent = (n.classList.contains('ev-cd') ? 'in ' : '') + countdown(ms);
+    });
+    if (crossed) renderCalendar();
+  }
+
+  /* ---- .ics export (one event, or everything currently visible) ---- */
+  function icsEsc(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/([,;])/g, '\\$1').replace(/\n/g, '\\n'); }
+  function icsStamp(d) { return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+  function icsEvent(e) {
+    var w = evWhen(e), L = ['BEGIN:VEVENT', 'UID:' + e.id + '@gloment', 'DTSTAMP:' + icsStamp(new Date())];
+    if (w && !e.time_tbd) {
+      L.push('DTSTART:' + icsStamp(w), 'DURATION:PT30M');
+    } else {
+      var k = evKey(e);
+      L.push('DTSTART;VALUE=DATE:' + k.replace(/-/g, ''), 'DTEND;VALUE=DATE:' + keyAdd(k, 1).replace(/-/g, ''));
+    }
+    L.push('SUMMARY:' + icsEsc(e.ccy + ' · ' + e.title));
+    var desc = [e.why, e.forecast ? 'Forecast ' + e.forecast : '', e.previous ? 'Previous ' + e.previous : '']
+      .filter(Boolean).join('\n');
+    if (desc) L.push('DESCRIPTION:' + icsEsc(desc));
+    if (w && !e.time_tbd) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsEsc(e.title), 'TRIGGER:-PT15M', 'END:VALARM');
+    L.push('END:VEVENT');
+    return L.join('\r\n');
+  }
+  function downloadIcs(which) {
+    var evs = (cal.data && cal.data.events) || [];
+    var pick = which === '__visible' ? filtered(new Date()) : evs.filter(function (e) { return e.id === which; });
+    if (!pick.length) return;
+    var body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Gloment//Calendar//EN', 'CALSCALE:GREGORIAN']
+      .concat(pick.map(icsEvent)).concat(['END:VCALENDAR']).join('\r\n');
+    var blob = new Blob([body], { type: 'text/calendar;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (which === '__visible' ? 'gloment-calendar' : which) + '.ics';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
   }
 
   /* ---------------- breaking wire ----------------
