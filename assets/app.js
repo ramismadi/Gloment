@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '29';
+  var ASSET_VERSION = '30';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'flash'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -16,11 +16,24 @@
     { id: 'ivory',     name: 'Ivory',     desc: 'Navy & brass',           sw: ['#f6f2ea', '#1f3a5f', '#a07a32'] },
     { id: 'sage',      name: 'Sage',      desc: 'Forest & sand',          sw: ['#f2f4ef', '#2f5d4a', '#c9ad7f'] },
     { id: 'claret',    name: 'Claret',    desc: 'Burgundy & cream',       sw: ['#f7f3ef', '#6e1f30', '#a8803c'] },
+    { id: 'pearl',     name: 'Pearl',     desc: 'Black & champagne',      sw: ['#f5f3ee', '#151515', '#b8964f'] },
     { id: 'ink',       name: 'Ink',       desc: 'Ink, ivory & copper',    sw: ['#131a26', '#e9dcbc', '#cf9259'], dark: true },
     { id: 'forest',    name: 'Forest',    desc: 'Dark green & brass',     sw: ['#0e1714', '#9fd0b5', '#d2b072'], dark: true },
     { id: 'velvet',    name: 'Velvet',    desc: 'Oxblood, rosé & gold',   sw: ['#1e1216', '#e8a9a0', '#d6ad62'], dark: true },
     { id: 'onyx',      name: 'Onyx',      desc: 'Black & champagne',      sw: ['#0f0f10', '#e2c98f', '#6cc794'], dark: true }
   ];
+  /* Four colorways, each a light + dark pair; the masthead toggle flips
+     between the two, the menu picks the colorway. */
+  var COLORWAYS = [
+    { light: 'ivory',  dark: 'ink',    desc: 'Navy, ivory & brass' },
+    { light: 'sage',   dark: 'forest', desc: 'Green & sand' },
+    { light: 'claret', dark: 'velvet', desc: 'Burgundy, ros\u00e9 & gold' },
+    { light: 'pearl',  dark: 'onyx',   desc: 'Black & champagne' }
+  ];
+  function colorwayOf(id) {
+    for (var i = 0; i < COLORWAYS.length; i++) if (COLORWAYS[i].light === id || COLORWAYS[i].dark === id) return COLORWAYS[i];
+    return COLORWAYS[0];
+  }
   var story = null;      // story.json, once loaded
   var chapterIdx = 0;    // chapter shown in the Story tab
 
@@ -279,29 +292,33 @@
     var cur = document.documentElement.getAttribute('data-theme');
     if (!themeById(cur)) cur = 'ivory';
 
+    var mode = $('#mode-btn');
+    if (mode) mode.addEventListener('click', function () {
+      var t = themeById(document.documentElement.getAttribute('data-theme')) || THEMES[0];
+      var cw = colorwayOf(t.id);
+      applyTheme(t.dark ? cw.light : cw.dark, true);
+    });
+
     var btn = $('#theme-btn'), list = $('#theme-list');
     if (!btn || !list) { applyTheme(cur, false); return; }
 
-    // Build the menu: light themes, then dark.
-    [['Light', false], ['Dark', true]].forEach(function (g) {
-      var col = el('div', 'tl-col');
-      col.appendChild(el('div', 'tl-group', g[0]));
-      list.appendChild(col);
-      THEMES.filter(function (t) { return !!t.dark === g[1]; }).forEach(function (t) {
-        var item = el('button', 'tl-item');
-        item.type = 'button';
-        item.setAttribute('role', 'menuitemradio');
-        item.setAttribute('data-theme-opt', t.id);
-        var sw = el('span', 'tm-swatch');
-        sw.style.background = swatchBg(t);
-        item.appendChild(sw);
-        var txt = el('span', 'tl-text');
-        txt.appendChild(el('span', 'tl-name', t.name));
-        txt.appendChild(el('span', 'tl-desc', t.desc));
-        item.appendChild(txt);
-        item.appendChild(el('span', 'tl-check', '\u2713'));
-        col.appendChild(item);
-      });
+    // Menu: the four colorways; picking one keeps the current light/dark mode.
+    list.appendChild(el('div', 'tl-group', 'Colorway'));
+    COLORWAYS.forEach(function (cw) {
+      var item = el('button', 'tl-item');
+      item.type = 'button';
+      item.setAttribute('role', 'menuitemradio');
+      item.setAttribute('data-colorway', cw.light);
+      item.appendChild(el('span', 'tm-swatch'));
+      var txt = el('span', 'tl-text');
+      var nm = el('span', 'tl-name');
+      nm.appendChild(el('span', 'tl-cur'));
+      nm.appendChild(el('span', 'tl-pair'));
+      txt.appendChild(nm);
+      txt.appendChild(el('span', 'tl-desc', cw.desc));
+      item.appendChild(txt);
+      item.appendChild(el('span', 'tl-check', '✓'));
+      list.appendChild(item);
     });
     applyTheme(cur, false);
 
@@ -323,7 +340,9 @@
     list.addEventListener('click', function (e) {
       var it = e.target.closest('.tl-item');
       if (!it) return;
-      applyTheme(it.getAttribute('data-theme-opt'), true);
+      var cw = colorwayOf(it.getAttribute('data-colorway'));
+      var dark = !!(themeById(document.documentElement.getAttribute('data-theme')) || {}).dark;
+      applyTheme(dark ? cw.dark : cw.light, true);
       close(true);
     });
     list.addEventListener('keydown', function (e) {
@@ -348,16 +367,30 @@
 
   function applyTheme(id, save) {
     var t = themeById(id) || THEMES[0];
-    document.documentElement.setAttribute('data-theme', t.id);
+    var cw = colorwayOf(t.id), dark = !!t.dark;
+    var root = document.documentElement;
+    root.setAttribute('data-theme', t.id);
+    root.setAttribute('data-mode', dark ? 'dark' : 'light');
     var btn = $('#theme-btn');
     if (btn) {
-      btn.setAttribute('aria-label', 'Color scheme: ' + t.name);
-      btn.title = 'Color scheme: ' + t.name;
+      btn.setAttribute('aria-label', 'Colorway: ' + t.name);
+      btn.title = 'Colorway: ' + t.name;
+    }
+    var mode = $('#mode-btn');
+    if (mode) {
+      mode.setAttribute('aria-pressed', dark ? 'true' : 'false');
+      var other = themeById(dark ? cw.light : cw.dark);
+      mode.title = 'Switch to ' + (dark ? 'light' : 'dark') + ' mode (' + (other ? other.name : '') + ')';
     }
     var sw = $('#theme-swatch');
     if (sw) sw.style.background = swatchBg(t);
     Array.prototype.forEach.call(document.querySelectorAll('.tl-item'), function (b) {
-      b.setAttribute('aria-checked', b.getAttribute('data-theme-opt') === t.id ? 'true' : 'false');
+      var c = colorwayOf(b.getAttribute('data-colorway'));
+      var shown = themeById(dark ? c.dark : c.light), pair = themeById(dark ? c.light : c.dark);
+      b.querySelector('.tm-swatch').style.background = swatchBg(shown);
+      b.querySelector('.tl-cur').textContent = shown.name;
+      b.querySelector('.tl-pair').textContent = ' · ' + pair.name;
+      b.setAttribute('aria-checked', c === cw ? 'true' : 'false');
     });
     if (save) {
       try { localStorage.setItem('gloment-theme', t.id); } catch (e) { /* private mode */ }
