@@ -248,6 +248,13 @@ Built per the spec above; full render rules + schema in DESIGN.md
    page does show a LIVE badge, "New" flags and an unread count in the tab title.
 5. Rami can preview all three acts now: `?focus-demo=preview|live|recap`.
 
+## Focus Mode data feed — DONE (Hercules, 2026-10-09)
+The `data/focus.json` feed is wired on Hercules's side, matching the DESIGN.md schema:
+- **2am edition** arms it: on big-event days (FOMC/CPI/payrolls, calendar `"focus": true`) it writes the full preview payload (`story_so_far`, `stakes`, `setup`, `forks`, `watch`, `thread`, `phase: "preview"`); otherwise `{"active": false}`. Also sets `"focus": true` on the big-three calendar events.
+- **Breaking watch** drives it intraday: denser wire updates on the focus thread, fills `recap` (`outcome`, `actual`, `expected`, `pricing`, `thesis.verdict`, `fork`) and flips `phase` to `"live"` → `"recap"`. Pings Rami on go-live and every genuine development.
+- **4pm edition** verifies the recap is filled if the event printed that day.
+First live test: US CPI, Wednesday 2026-10-14.
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
