@@ -51,16 +51,22 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
   `rel="noopener noreferrer"`.
 
 ## Look
-- Themes are token sets on `<html data-theme="…">`, picked from the swatch
-  dropdown in the masthead and saved per reader (localStorage).
-  Light: **ivory** (default — keep the default light; its tokens sit on
-  `:root`), **sage**, **claret**.
-  Dark (opt-in): **ink**, **forest**, **onyx**, **velvet**.
-  Retired (Rami, 2026-10-09): alpine, porcelain, harbor, dusk — a saved
-  retired theme falls back to Ivory.
-  To add/remove a theme, edit its `[data-theme]` block in style.css *and* its
-  entry in `THEMES` in app.js. Every theme defines the same tokens; never
-  hard-code hex in component rules.
+- Themes are token sets on `<html data-theme="…">` (plus `data-mode` =
+  light|dark). They come in **four colorways, each a light + dark pair**:
+  | Colorway | Light | Dark |
+  |---|---|---|
+  | Navy, ivory & brass | **ivory** (site default; tokens on `:root`) | **ink** |
+  | Green & sand | **sage** | **forest** |
+  | Burgundy, rosé & gold | **claret** | **velvet** |
+  | Black & champagne | **pearl** | **onyx** |
+  The masthead has a sun/moon toggle (flips to the counterpart) and a
+  colorway menu (switches colorway, keeps the current mode). The choice is
+  saved per reader (localStorage `gloment-theme`); retired themes (alpine,
+  porcelain, harbor, dusk, …) fall back to Ivory. To add a colorway, add both
+  `[data-theme]` blocks in style.css, both entries in `THEMES`, and the pair in
+  `COLORWAYS` in app.js (and the dark id to the pre-paint regex in
+  index.html). Every theme defines the same tokens; never hard-code hex in
+  component rules.
 - Fonts: serif (Source Serif 4 → Georgia) for headlines and ledes; system sans
   for UI/body; monospace only for tabular numerals.
 - Session chips (masthead): SYD 07–16, TYO 09–18, LDN 08–17, NYC 08–17, each
