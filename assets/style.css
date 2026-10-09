@@ -3,31 +3,6 @@
    is the default. Every theme defines the same tokens. */
 
 :root,
-[data-theme="alpine"] {
-  --bg: #f3f8fc;
-  --bg-2: #e8f1f8;
-  --surface: #ffffff;
-  --surface-2: #f6fafd;
-  --ink: #1d2b38;
-  --ink-2: #4c5e70;
-  --ink-3: #7a8b9c;
-  --line: #dde7f0;
-  --accent: #1668a3;
-  --accent-2: #3a9bdc;
-  --accent-wash: #e9f4fc;
-  --gold: #b9852f;
-  --gold-wash: #faf3e2;
-  --bull: #1e8a52;
-  --bull-wash: #e6f5ec;
-  --bear: #c43d3d;
-  --bear-wash: #fcecec;
-  --mast-1: #135a8f;
-  --mast-2: #2a8fd0;
-  --mast-ink: #ffffff;
-  --shadow: 0 1px 2px rgba(20, 60, 100, 0.05), 0 6px 24px rgba(20, 60, 100, 0.06);
-  color-scheme: light;
-}
-
 [data-theme="ivory"] {
   --bg: #f6f2ea;
   --bg-2: #efe9dd;
@@ -78,31 +53,6 @@
   color-scheme: light;
 }
 
-[data-theme="porcelain"] {
-  --bg: #f4f5f7;
-  --bg-2: #eceef2;
-  --surface: #ffffff;
-  --surface-2: #f8f9fb;
-  --ink: #1e2430;
-  --ink-2: #4f5868;
-  --ink-3: #858c99;
-  --line: #e1e4ea;
-  --accent: #3b4a63;
-  --accent-2: #5d6f8f;
-  --accent-wash: #eceff5;
-  --gold: #a8704f;
-  --gold-wash: #f7ede8;
-  --bull: #2e7b52;
-  --bull-wash: #e7f2eb;
-  --bear: #b2413b;
-  --bear-wash: #f8eae8;
-  --mast-1: #2b3446;
-  --mast-2: #46536d;
-  --mast-ink: #f4f1ee;
-  --shadow: 0 1px 2px rgba(30, 36, 48, 0.05), 0 6px 24px rgba(30, 36, 48, 0.06);
-  color-scheme: light;
-}
-
 [data-theme="claret"] {
   --bg: #f7f3ef;
   --bg-2: #efe8e1;
@@ -125,56 +75,6 @@
   --mast-2: #6e1f30;
   --mast-ink: #f7efe4;
   --shadow: 0 1px 2px rgba(50, 20, 25, 0.05), 0 6px 24px rgba(50, 20, 25, 0.06);
-  color-scheme: light;
-}
-
-[data-theme="harbor"] {
-  --bg: #f1f5f5;
-  --bg-2: #e6eded;
-  --surface: #ffffff;
-  --surface-2: #f6f9f9;
-  --ink: #172a2e;
-  --ink-2: #475b5f;
-  --ink-3: #7d8e91;
-  --line: #dbe5e5;
-  --accent: #0f5560;
-  --accent-2: #2a7c87;
-  --accent-wash: #e5f0f1;
-  --gold: #a8613a;
-  --gold-wash: #f8ece3;
-  --bull: #2e7b52;
-  --bull-wash: #e7f2eb;
-  --bear: #b2413b;
-  --bear-wash: #f8eae8;
-  --mast-1: #0b3d45;
-  --mast-2: #135e69;
-  --mast-ink: #f2f0ea;
-  --shadow: 0 1px 2px rgba(10, 50, 55, 0.05), 0 6px 24px rgba(10, 50, 55, 0.06);
-  color-scheme: light;
-}
-
-[data-theme="dusk"] {
-  --bg: #f5f2f5;
-  --bg-2: #ece7ec;
-  --surface: #ffffff;
-  --surface-2: #f9f7f9;
-  --ink: #251f29;
-  --ink-2: #57505c;
-  --ink-3: #8b8490;
-  --line: #e6e0e7;
-  --accent: #4b2f5c;
-  --accent-2: #6e4d82;
-  --accent-wash: #f0eaf3;
-  --gold: #9c7c43;
-  --gold-wash: #f5efe2;
-  --bull: #2e7b52;
-  --bull-wash: #e7f2eb;
-  --bear: #b2413b;
-  --bear-wash: #f8eae8;
-  --mast-1: #2e1e3a;
-  --mast-2: #4b2f5c;
-  --mast-ink: #f4efe6;
-  --shadow: 0 1px 2px rgba(40, 25, 50, 0.05), 0 6px 24px rgba(40, 25, 50, 0.06);
   color-scheme: light;
 }
 
