@@ -39,7 +39,7 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
   inject HTML from data.
 - **Cache-busting:** `index.html` loads `assets/style.css?v=N` and
   `assets/app.js?v=N`, and `ASSET_VERSION` at the top of `app.js` must equal
-  N. **Bump all three whenever style.css or app.js changes.** On load, app.js
+  N. **Bump all three whenever index.html, style.css or app.js changes.** On load, app.js
   re-fetches index.html and reloads once if it sees a newer N — this is how
   cached pages and home-screen installs heal themselves.
 - **Live data while open:** every 5 min (while visible) and on returning to
