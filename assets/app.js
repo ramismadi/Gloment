@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '20';
+  var ASSET_VERSION = '21';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -75,6 +75,7 @@
     fetchJSON('data/currencies.json').then(function (d) {
       fx.data = d;
       renderFx();
+      refreshGhosts();
     }).catch(function () { note('#fx-board', 'Currency data unavailable.'); });
     fetchJSON('data/calendar.json').then(function (d) {
       cal.data = d;
@@ -561,7 +562,7 @@
       sc.id = 'scene-' + (i + 1);
       sc.style.setProperty('--steps', steps);
       var pin = el('div', 'pin');
-      pin.appendChild(el('span', 'ghost-num mono', String(i + 1).padStart(2, '0')));
+      pin.appendChild(ghostMark(ch, i));
       var inner = el('div', 'pin-inner ch-inner');
 
       var head = el('div', 'ch-head step');
@@ -595,6 +596,35 @@
     });
     measureScenes();
     queueScroll();
+  }
+
+  /* Background mark behind each chapter scene: the chapter's currency symbol
+     (currencies.json `chapter` join, else the chapter title), or the chapter
+     number when a chapter isn't about one currency. */
+  var CCY_SYMBOL = { USD: '$', EUR: '€', GBP: '£', JPY: '¥', CHF: 'Fr', AUD: 'A$', CAD: 'C$', NZD: 'NZ$' };
+  var CCY_TITLE = [[/new zealand|kiwi/i, 'NZD'], [/austral|aussie/i, 'AUD'], [/canad|loonie/i, 'CAD'],
+    [/\b(us|u\.s\.)\s+dollar|greenback/i, 'USD'], [/\beuro\b/i, 'EUR'], [/pound|sterling|\bgbp\b/i, 'GBP'],
+    [/\byen\b/i, 'JPY'], [/franc|swiss/i, 'CHF']];
+  function chapterCcy(ch, i) {
+    var list = (fx.data && fx.data.currencies) || [];
+    for (var k = 0; k < list.length; k++) if (+list[k].chapter === i + 1) return list[k].ccy;
+    for (var j = 0; j < CCY_TITLE.length; j++) if (CCY_TITLE[j][0].test(ch.title || '')) return CCY_TITLE[j][1];
+    return null;
+  }
+  function ghostMark(ch, i) {
+    var sym = CCY_SYMBOL[chapterCcy(ch, i)];
+    var g = el('span', 'ghost-num mono' + (sym && sym.length > 1 ? ' len-' + Math.min(sym.length, 3) : ''),
+      sym || String(i + 1).padStart(2, '0'));
+    g.setAttribute('aria-hidden', 'true');
+    return g;
+  }
+  /* currencies.json can land after the story: re-mark the scenes. */
+  function refreshGhosts() {
+    if (!story) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.ch-scene'), function (sc, i) {
+      var old = sc.querySelector('.ghost-num'), ch = (story.chapters || [])[i];
+      if (old && ch) old.parentNode.replaceChild(ghostMark(ch, i), old);
+    });
   }
 
   /* ---------------- today: scroll engine ----------------

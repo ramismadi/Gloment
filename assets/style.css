@@ -742,6 +742,8 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
   pointer-events: none;
   transform: translateY(calc(-50% + (0.5 - var(--p, 0)) * 34vh));
 }
+/* A three-character mark (NZ$) scales down into the old "01" footprint. */
+.ghost-num.len-3 { font-size: clamp(5.5rem, 16vw, 12rem); }
 .ch-inner { max-width: 780px; }
 .step {
   opacity: 0;
