@@ -40,6 +40,11 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
   N. **Bump all three whenever style.css or app.js changes.** On load, app.js
   re-fetches index.html and reloads once if it sees a newer N — this is how
   cached pages and home-screen installs heal themselves.
+- **Live data while open:** every 5 min (while visible) and on returning to
+  the page, app.js re-fetches the `data/*.json` files it rendered and
+  compares them. Changed and the reader was away 10+ min → reload; changed
+  mid-read → a "New update · tap to refresh" pill. Nothing for the scheduled
+  jobs to do — just push the files as usual.
 - Only http(s) URLs become links; they open in a new tab with
   `rel="noopener noreferrer"`.
 

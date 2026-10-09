@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '17';
+  var ASSET_VERSION = '18';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -32,6 +32,7 @@
 
   function init() {
     checkFreshness();
+    watchUpdates();
     initTheme();
     initTabs();
     startClock();
@@ -108,11 +109,55 @@
   }
 
   /* ---------------- helpers ---------------- */
+  var loaded = {};   // path → raw text as rendered (see watchUpdates)
   function fetchJSON(path) {
     return fetch(path, {cache: 'no-store'}).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
+      return r.text();
+    }).then(function (t) {
+      loaded[path] = t;
+      return JSON.parse(t);
     });
+  }
+
+  /* Scheduled pushes (2 a.m. edition, 30-min wire, intraday actuals) land
+     while the page sits open or a home-screen app waits in the background.
+     Every few minutes while visible — and on returning to the page — re-fetch
+     the data files and compare with what was rendered. Back after a long
+     break: reload straight away. Mid-read: offer a refresh pill instead of
+     yanking the page. */
+  var CHECK_EVERY = 5 * 60 * 1000, AWAY_RELOAD = 10 * 60 * 1000;
+  function watchUpdates() {
+    var hiddenAt = 0;
+    function check(autoReload) {
+      var paths = Object.keys(loaded);
+      if (!paths.length || !window.fetch) return;
+      Promise.all(paths.map(function (p) {
+        return fetch(p, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : loaded[p]; })
+          .catch(function () { return loaded[p]; });
+      })).then(function (texts) {
+        var changed = texts.some(function (t, i) { return t !== loaded[paths[i]]; });
+        if (!changed) return;
+        if (autoReload) location.reload();
+        else showUpdatePill();
+      });
+    }
+    setInterval(function () { if (!document.hidden) check(false); }, CHECK_EVERY);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { hiddenAt = Date.now(); return; }
+      var away = hiddenAt ? Date.now() - hiddenAt : 0;
+      checkFreshness();
+      check(away >= AWAY_RELOAD);
+    });
+  }
+
+  function showUpdatePill() {
+    if ($('#update-pill')) return;
+    var b = el('button', 'update-pill', 'New update · tap to refresh');
+    b.id = 'update-pill';
+    b.type = 'button';
+    b.addEventListener('click', function () { location.reload(); });
+    document.body.appendChild(b);
   }
 
   function $(sel) { return document.querySelector(sel); }
