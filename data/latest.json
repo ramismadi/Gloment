@@ -1,12 +1,42 @@
 {
   "items": [
     {
+      "ts": "2026-10-08T21:35:00-05:00",
+      "headline": "Houthi missiles hit Riyadh airport — third straight day of strikes on Saudi aviation",
       "bullets": [
-        "Numbers: Brent spiked 5.7% intraday to $105.91, WTI to $93.20, on reports the White House asked the Pentagon for limited Iran strike options; both faded by midday (Brent $103.63, WTI $90.87). Nine tankers attacked in/around the Strait of Hormuz this week \u2014 most since the war began Feb 28. Reuters reported US strikes Wednesday on an Iranian drone-control site near Bandar Abbas.",
-        "Meaning: fresh supply-shock premium layered onto a tight oil market; Trump then ruled out new strikes before the Nov 3 midterms, helping oil give back ~$2. IEA agreed to accelerate release of 100M barrels from emergency stocks. Markets price escalation-with-a-ceiling: tail risk up, no open-ended strike path yet.",
-        "FX: CAD bid via terms of trade (loonie led G10 intraday); USD bid near 18-month highs on risk-off flows and inflation repricing (DXY ~102.2\u2013102.4, US 10Y ~5.35%); EUR pinned near 17-month lows (~$1.12) on the energy-cost drag; JPY supported by haven flows but capped by wide yield differentials (USD/JPY ~158.2)"
+        "Numbers: Houthi ballistic/cruise missiles struck King Khalid International Airport in Riyadh on Thursday — third straight day of attacks on Saudi airports. 3 killed and 36 wounded over two days at Riyadh + Abha airports (Saudi GACA). An empty commercial aircraft was hit at Terminal 4; dozens of incoming flights canceled or diverted. Saudi intercepted two ballistic missiles over Riyadh; falling debris damaged a kindergarten and medical clinic. Brent settled Thursday at $104.28 (+4%), easing to ~$103.5 early Friday after Trump ruled out US strikes before the Nov 3 midterms.",
+        "Meaning: escalation-with-a-ceiling — Iran's Houthi allies are retaliating asymmetrically for the Saudi-led Yemen offensive and the US blockade, widening the conflict from shipping to civil aviation in the capital. Risk premium is spreading from shipping to air travel. Trump ruling out US strikes before the midterms caps the tail, but the two-way pressure keeps a supply-shock premium in oil.",
+        "FX: USD near 18-month highs (DXY ~102.3, US 10Y ~5.30%) on risk-off flows and inflation repricing; JPY/CHF supported by haven flows; USD/JPY ~157.9–158.1 held steady as haven bid meets the wide yield gap (intervention watch); AUD/NZD soft on risk-off; CAD cushioned by $103 oil; EUR pinned near $1.121 on the energy-cost drag."
       ],
-      "headline": "US\u2013Iran escalation: strike options drawn up, Iran threatens Hormuz blockade \u2014 oil spikes 5%",
+      "sources": [
+        {
+          "label": "CNN: Iran-backed Houthis expand attacks on Riyadh as Yemen war escalates",
+          "url": "https://www.cnn.com/2026/10/08/middleeast/riyadh-airport-houthis-explosion-intl?cid=external-feeds_iluminar_meta"
+        },
+        {
+          "label": "WSJ: Iran and Houthis try to regain upper hand in Hormuz",
+          "url": "https://www.wsj.com/world/middle-east/iran-and-houthis-try-to-regain-upper-hand-in-hormuz-with-spate-of-new-attacks-c845c4ab"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "AUD",
+        "NZD",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: any Saudi retaliation or fresh US-strike headlines overnight; U Mich sentiment Fri 9am CT; watch whether Tehran confirms Trump's 'productive talks' claim."
+    },
+    {
+      "bullets": [
+        "Numbers: Brent spiked 5.7% intraday to $105.91, WTI to $93.20, on reports the White House asked the Pentagon for limited Iran strike options; both faded by midday (Brent $103.63, WTI $90.87). Nine tankers attacked in/around the Strait of Hormuz this week — most since the war began Feb 28. Reuters reported US strikes Wednesday on an Iranian drone-control site near Bandar Abbas.",
+        "Meaning: fresh supply-shock premium layered onto a tight oil market; Trump then ruled out new strikes before the Nov 3 midterms, helping oil give back ~$2. IEA agreed to accelerate release of 100M barrels from emergency stocks. Markets price escalation-with-a-ceiling: tail risk up, no open-ended strike path yet.",
+        "FX: CAD bid via terms of trade (loonie led G10 intraday); USD bid near 18-month highs on risk-off flows and inflation repricing (DXY ~102.2–102.4, US 10Y ~5.35%); EUR pinned near 17-month lows (~$1.12) on the energy-cost drag; JPY supported by haven flows but capped by wide yield differentials (USD/JPY ~158.2)"
+      ],
+      "headline": "US–Iran escalation: strike options drawn up, Iran threatens Hormuz blockade — oil spikes 5%",
       "sources": [
         {
           "label": "Reuters: Iran vows to block more Hormuz routes",
@@ -30,7 +60,7 @@
         "CAD"
       ],
       "pillar": "risk",
-      "next": "Next: any US strike headlines overnight \u2014 Brent $105 is the line in the sand."
+      "next": "Next: any US strike headlines overnight — Brent $105 is the line in the sand."
     },
     {
       "bullets": [
@@ -54,7 +84,7 @@
         "CAD"
       ],
       "pillar": "risk",
-      "next": "Next: any US strike headlines overnight \u2014 Brent $105 is the line in the sand."
+      "next": "Next: any US strike headlines overnight — Brent $105 is the line in the sand."
     }
   ]
 }
