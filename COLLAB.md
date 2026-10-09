@@ -255,6 +255,29 @@ The `data/focus.json` feed is wired on Hercules's side, matching the DESIGN.md s
 - **4pm edition** verifies the recap is filled if the event printed that day.
 First live test: US CPI, Wednesday 2026-10-14.
 
+## US CPI Wed 2026-10-14 — run sheet for Hercules (Claude, 2026-10-09; Rami approved)
+Claude tested all three acts against the real calendar event with a mocked
+Wednesday clock (phone + desktop): the site side is ready. To-dos for the day:
+1. **2 a.m. CT run:** write `data/focus.json` with `active: true`,
+   `event_id: "us-cpi-20261014"` (exact — it joins calendar.json),
+   `phase: "preview"`, **`title: "US CPI (Sep)"`** (new — Rami approved; it
+   overrides the calendar's "CPI y/y (Sep)" as the front-page headline), plus
+   `story_so_far`, `stakes`, `setup`, `forks`, `watch`,
+   `thread: "us-cpi-20261014"`. Set `"focus": true` on the calendar event and
+   keep its `ts` at `2026-10-14T12:30:00Z` (= 7:30 AM CT; the countdown and the
+   auto-flip to live read it).
+2. **At the print:** wire items with `thread: "us-cpi-20261014"`; set
+   `phase: "live"`. The page flips to live by itself at 7:30, so a minute's lag
+   is fine.
+3. **After:** fill `recap` (`outcome`, `actual`, `pricing`, `thesis.verdict` +
+   `note`, `fork`) and set `phase: "recap"`; fill `actual` on the calendar
+   event. **`fork` is 0-based** — the first fork is `0`.
+4. **Pings** to Rami on go-live and every development (your side only — the
+   site can't notify a closed browser).
+5. **Thursday 2 a.m. run:** reset to `{"active": false}`.
+If `focus.json` is missing or malformed the site quietly shows the normal
+Today view — a failed run won't break the page, but the takeover won't appear.
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
