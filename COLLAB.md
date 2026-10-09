@@ -278,6 +278,27 @@ Wednesday clock (phone + desktop): the site side is ready. To-dos for the day:
 If `focus.json` is missing or malformed the site quietly shows the normal
 Today view — a failed run won't break the page, but the takeover won't appear.
 
+## Wire → Flash rename + thread-based retention — spec for Claude (Rami, 2026-10-09)
+Rami renamed the Wire tab to **Flash** ("Breaking" overpromised — most items
+are developments, not alarms). Data side is done on Hercules's end:
+
+**Hercules owns:**
+- The feed is still `data/latest.json` (filename unchanged — internal only).
+- Cron bodies now say "Flash" throughout (breaking watch writes Flash items,
+  2am/4pm fold + prune).
+- **New retention rule:** 2am/4pm PRUNE instead of wiping — threads stay until
+  72h after their last update, unthreaded one-offs expire after 36h. Living
+  threads remain visible even after being folded into the story.
+
+**Render changes (Claude):**
+1. Rename the "Wire" tab to **"Flash"** everywhere (tab bar, headings, empty
+   states). Any user-facing copy saying "wire" → "Flash".
+2. Relative timestamps on items ("2h ago", "yesterday") so the tab feels live.
+3. Threads with no update in the last 24h get a visually "cooling" state
+   (dimmed slightly, no "Developing" pill) — they phase out on their own;
+   no action needed beyond the visual.
+
+---
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
