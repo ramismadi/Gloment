@@ -1537,7 +1537,7 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
 .btn.small { padding: 6px 12px; font-size: 0.78rem; border-radius: 8px; cursor: pointer; font-family: inherit; }
 button.btn { border: 1px solid var(--line); }
 
-.cal-list { display: grid; gap: 14px; }
+.cal-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .cal-earlier-body { display: grid; gap: 14px; margin-top: 14px; }
 .cal-earlier.open .cal-earlier-body { animation: drawerIn 0.35s cubic-bezier(0.2, 0.7, 0.15, 1); }
 .cal-earlier-btn {
@@ -1567,7 +1567,7 @@ button.btn { border: 1px solid var(--line); }
 .cal-day.today .cal-day-head { color: var(--gold); }
 .cal-day.past { opacity: 0.85; }
 
-.ev { border-bottom: 1px solid var(--line); }
+.ev { border-bottom: 1px solid var(--line); min-width: 0; }
 .ev:last-child { border-bottom: 0; }
 .ev-row {
   display: grid;
@@ -1643,7 +1643,7 @@ button.btn { border: 1px solid var(--line); }
   letter-spacing: 0.04em;
 }
 
-.ev-detail { padding: 2px 20px 18px 180px; display: grid; gap: 12px; }
+.ev-detail { padding: 2px 20px 18px 180px; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .ev-why { margin: 0; font-family: var(--serif); font-size: 1.02rem; color: var(--ink); }
 .sp-note { margin: 0; font-size: 0.84rem; font-weight: 600; }
 .ev-scen { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -1797,9 +1797,9 @@ footer { padding: 34px 0 44px; text-align: center; }
   .ev-caret { grid-area: caret; align-self: center; }
   .ev-nums { grid-area: nums; display: flex; flex-wrap: wrap; gap: 2px 14px; min-width: 0; }
   .ev-nums:empty { display: none; }
-  .ev-num { flex-direction: row; gap: 4px; align-items: baseline; }
+  .ev-num { flex-direction: row; flex-wrap: wrap; gap: 0 4px; align-items: baseline; max-width: 100%; }
   .ev-num.nil { display: none; }
-  .ev-sub { font-size: 0.7rem; }
+  .ev-sub { font-size: 0.7rem; white-space: normal; overflow-wrap: anywhere; text-align: left; }
   #cal-ccy, #cal-impact { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; }
   #cal-ccy::-webkit-scrollbar, #cal-impact::-webkit-scrollbar { display: none; }
   #cal-ccy .fchip, #cal-impact .fchip { flex: none; }
