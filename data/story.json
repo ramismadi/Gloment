@@ -205,23 +205,32 @@
   },
   {
    "title": "Oil",
-   "teaser": "Brent eases to ~$102.90 as Trump's no-strikes pledge drains the war premium — relief for importers, a headwind for CAD.",
-   "meaning": "What changed: crude gave back another 1.3% today, extending the slide that started when Trump took fresh Iran strikes off the table before the midterms. The geopolitical premium that had Brent knocking on $105 is leaking out. Thread: oil has been the swing factor for CAD all week — every escalation headline lifted it, every de-escalation headline压ed it back down. What it means: this is a straight terms-of-trade transfer. Canada, the exporter, loses a tailwind just as its blowout jobs report (+60.4K) was building a hawkish BoC case — the two forces are now pulling CAD in opposite directions. Japan and the eurozone, the big importers, get the mirror image: cheaper energy eases their import bills and takes pressure off their trade balances, a quiet positive for JPY and EUR that never makes headlines.",
+   "teaser": "Brent ~$102.80, WTI ~$90.70 — and the $12+ spread between them is the story: the war premium sits in seaborne crude, not US landlocked oil.",
+   "meaning": "What changed: crude gave back more today — Brent down 1.4% to ~$102.80, WTI off 1% to ~$90.70 — as Trump's no-strikes pledge kept the market defensive and Hurricane Isaias shut in some Gulf production without lifting prices. Thread: oil has been the swing factor for CAD all week — every escalation headline lifted it, every de-escalation headline pressed it back down. What it means: the number that matters isn't either price, it's the $12.40 gap between them — roughly triple the normal spread. That wide gap is the geopolitical premium made visible: it lives in Brent, the seaborne benchmark exposed to Hormuz, while WTI, landlocked in Oklahoma, barely feels it. For FX this is a terms-of-trade transfer with an asterisk. Canada's crude prices off WTI, so the loonie feels the softer ~$90.70 print more than the Brent headline — a headwind arriving just as the +60.4K jobs beat was building a hawkish BoC case. Japan and the eurozone, pricing imports off Brent, get relief either way: cheaper energy eases import bills, a quiet positive for JPY and EUR.",
    "numbers": [
-    "Brent ~$102.90 (-1.3% today)",
-    "Off the ~$105 war-premium highs",
-    "Canada jobs +60.4K vs ~5K expected (Oct 9)"
+    "Brent ~$102.80 (-1.4% today)",
+    "WTI ~$90.70 (-1.0% today)",
+    "Brent-WTI spread ~$12.40 (normal: $3–5)",
+    "Goldman: Sept risk premium ~$22/bbl on Brent"
    ],
-   "fx": "What to watch: whether the de-escalation holds — any fresh strike or shipping disruption re-prices the premium back in within hours. For CAD, the tug-of-war is jobs-hawkishness vs oil-softness; for JPY/EUR, sustained sub-$103 oil is a slow-burn positive that compounds if it lasts.",
+   "fx": "What to watch: the spread itself — if it narrows toward $5, the geopolitical premium is truly unwinding; if it stays wide, the market still prices Hormuz risk. For CAD, WTI is the number that moves the terms of trade; for JPY/EUR, Brent. Any fresh strike or shipping disruption re-prices Brent first and the spread blows wider within hours.",
    "scenarios": {
     "base": "Brent drifts $100–105 while the no-strikes pledge holds; CAD trades the jobs beat more than the oil tape.",
-    "bull": "A fresh escalation or Hormuz disruption spikes Brent back toward $110+; CAD rips, JPY/EUR sag on import-cost fears.",
-    "bear": "Ceasefire chatter or OPEC+ supply signals push Brent under $100; CAD gives back the jobs gains, importers breathe easier."
+    "bull": "A fresh escalation or Hormuz disruption: Brent spikes toward $110+, the spread blows past $15; CAD rips on WTI follow-through, JPY/EUR sag on import-cost fears.",
+    "bear": "Ceasefire chatter or OPEC+ supply signals: Brent breaks under $100, spread collapses toward $5; CAD gives back the jobs gains, importers breathe easier."
    },
    "sources": [
     {
      "label": "The Hindu BusinessLine — market highlights Oct 9",
      "url": "https://www.thehindubusinessline.com/markets/sensex-nifty50-today-stock-market-live-updates-9th-october-2026/article71560336.ece"
+    },
+    {
+     "label": "WSJ — oil futures give back gains (Oct 9)",
+     "url": "https://www.wsj.com/finance/commodities-futures/oil-edges-lower-prices-likely-to-remain-high-in-short-term-c7024a73"
+    },
+    {
+     "label": "5paisa — Brent/WTI spread Oct 9",
+     "url": "https://www.5paisa.com/blog/crude-oil-price-today-brent-at-10260-wti-at-9018-in-9-october-trading"
     }
    ]
   },
