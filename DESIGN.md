@@ -21,11 +21,13 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 | Wire | `#wire` | `data/latest.json` |
 
 - **Today is a scroll story** (Apple-style pinned scenes): full-screen
-  headline → one pinned scene per story chapter where the FX line, each
-  `numbers` entry and `meaning` reveal step by step as you scroll → "Go
-  deeper" (wire teaser, macro pulse, next up, tiles to every tab). Figures in
-  `fx` / `numbers` are auto-highlighted, so keep numbers in those strings
-  concrete. Scene mechanics are commented in app.js ("today: scroll engine");
+  headline → one pinned scene per story chapter = number + title + `teaser`
+  + "Read the chapter →" (falls back to `fx` if a chapter has no teaser) →
+  "Go deeper" (wire teaser, macro pulse, next up, tiles to every tab). The
+  full narrative lives only in the Story tab, so the tap earns itself.
+- **Prose first, site-wide:** narrative leads; figures sit in a "Details"
+  drawer (tap to open) — story `numbers`, engine `figure` + sources, bank
+  rate definition / last move / sources, the currency score table. Scene mechanics are commented in app.js ("today: scroll engine");
   `prefers-reduced-motion` gets a plain, fully visible page.
 - The GLOMENT wordmark and the Today tab go to the clean site URL (no hash).
 - No live price widgets (Rami removed them). Price levels appear only in the
@@ -78,9 +80,15 @@ work). Engine rows and story chapters may instead use `"source"` (string) +
 ### `data/story.json`
 ```
 {"date":"YYYY-MM-DD","headline":"...",
- "chapters":[{"title","fx","meaning","numbers":[],
+ "chapters":[{"title","teaser","fx","meaning","numbers":[],
    "scenarios":{"base","bull","bear"},"sources":[]}]}
 ```
+- `teaser` — 1–2 lines, the delta only; it's the Today card.
+- `meaning` (+ `fx`) — the narrative. Section labels `What changed:`,
+  `Thread:`, `What it means:`, `What to watch:` become headed sections in the
+  Story tab, in that order (`fx` usually carries What to watch). Unlabelled
+  `fx` renders as the old "What it means for FX" callout.
+- `numbers` — 3–4 crisp figures for the Details drawer, never paragraphs.
 
 ### `data/engine.json`
 ```
@@ -126,6 +134,17 @@ has no "What is this?" button.
   rewrite past entries.
 - Scoring is v1 on purpose (Rami + Claude will refine weights/pillars over
   time); keep the method string accurate if it changes.
+
+### `data/glossary.json` — inline definitions
+```
+{"terms":[{"term":"FOMC","definition":"one to two lines","aliases":["Federal Open Market Committee"]}]}
+```
+Known terms in prose get a dotted underline: hover = tooltip, tap (touch) =
+bottom sheet. Only the first occurrence per chapter / card / wire thread /
+calendar detail. Never inside links, buttons, headings, labels or figures.
+Terms with 2+ capitals (CPI, BoE, OAT) match case-sensitively so plain words
+("oat") stay plain; others match any case. Render code opts a container in
+with the `gl-scope` class; re-renders are picked up automatically.
 
 ### `data/latest.json` — Wire
 ```

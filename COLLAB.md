@@ -218,6 +218,17 @@ The tap must reveal genuinely more than the card.
 
 ---
 
+## Done on Claude's side (2026-10-09): teasers, prose-first, glossary
+- Today chapter scenes now show number + title + `teaser` + "Read the chapter →".
+- Story chapters render `meaning`/`fx` as labelled sections (What changed /
+  Thread / What it means / What to watch); `numbers` sit in a Details drawer.
+  Engine figures, bank raw numbers and the currency score table are behind
+  Details too. Banks lead with Market pricing; an optional `summary` string
+  per bank in banks.json would render as the lead line if you want one.
+- Inline glossary is live on Today, Story, Engine, Banks, Currencies,
+  Calendar details and Wire. Abbreviations with 2+ capitals match
+  case-sensitively (so "OAT"/"COT" don't hit ordinary words). Spec in DESIGN.md.
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.

@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '18';
+  var ASSET_VERSION = '21';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -50,6 +50,7 @@
       note('#chapter-view', 'Story unavailable.');
       setText('#today-headline', 'Edition unavailable');
     });
+    initGlossary();
     fetchJSON('data/pillars.json').then(function (d) {
       explainers = d.pillars || null;
       attachExplainers();
@@ -74,6 +75,7 @@
     fetchJSON('data/currencies.json').then(function (d) {
       fx.data = d;
       renderFx();
+      refreshGhosts();
     }).catch(function () { note('#fx-board', 'Currency data unavailable.'); });
     fetchJSON('data/calendar.json').then(function (d) {
       cal.data = d;
@@ -541,26 +543,26 @@
     return node;
   }
 
-  /* One pinned scene per chapter. Each child with data-at reveals once the
-     scene's scroll progress (0–1) passes that value: FX line, then each data
-     point, then the meaning and the way into the full chapter. */
+  /* One pinned scene per chapter: number + title, then the teaser (the delta
+     — what changed and why it matters), then the way into the full chapter.
+     Each child with data-at reveals once the scene's scroll progress (0–1)
+     passes that value. The full narrative lives in the Story tab, so the tap
+     always earns itself. */
   function renderScenes(d) {
     var box = $('#today-story'), dots = $('#story-dots');
     box.textContent = '';
     dots.textContent = '';
     var chs = d.chapters || [];
     chs.forEach(function (ch, i) {
-      var nums = ch.numbers || [];
-      var steps = 2 + nums.length;   // FX line, each number, foot
-      var at = function (k) { return (0.06 + 0.78 * k / (steps - 1)).toFixed(3); };
-      var k = 0;
+      var steps = 2;   // teaser, foot
+      var at = function (k) { return (0.1 + 0.62 * k / (steps - 1)).toFixed(3); };
 
-      var sc = el('section', 'scene ch-scene');
+      var sc = el('section', 'scene ch-scene gl-scope');
       sc.setAttribute('data-scene', '');
       sc.id = 'scene-' + (i + 1);
       sc.style.setProperty('--steps', steps);
       var pin = el('div', 'pin');
-      pin.appendChild(el('span', 'ghost-num mono', String(i + 1).padStart(2, '0')));
+      pin.appendChild(ghostMark(ch, i));
       var inner = el('div', 'pin-inner ch-inner');
 
       var head = el('div', 'ch-head step');
@@ -569,33 +571,14 @@
       head.appendChild(el('h2', 'ch-title', ch.title));
       inner.appendChild(head);
 
-      if (ch.fx) {
-        var fxl = el('p', 'ch-fx step');
-        fxl.setAttribute('data-at', at(k++));
-        withFigures(fxl, ch.fx);
-        inner.appendChild(fxl);
-      } else k++;
-
-      if (nums.length) {
-        var ul = el('ul', 'ch-nums');
-        nums.forEach(function (n) {
-          var li = el('li', 'step');
-          li.setAttribute('data-at', at(k++));
-          withFigures(li, n);
-          ul.appendChild(li);
-        });
-        inner.appendChild(ul);
-      }
+      var tz = el('p', 'ch-teaser step');
+      tz.setAttribute('data-at', at(0));
+      withFigures(tz, ch.teaser || ch.fx || '');
+      inner.appendChild(tz);
 
       var foot = el('div', 'ch-foot step');
-      foot.setAttribute('data-at', at(Math.min(k, steps - 1)));
-      if (ch.meaning) {
-        var m = el('p', 'ch-meaning');
-        m.appendChild(el('span', 'callout-lbl', 'What it means'));
-        m.appendChild(el('span', null, ch.meaning));
-        foot.appendChild(m);
-      }
-      var cta = el('a', 'btn', 'Read the full chapter →');
+      foot.setAttribute('data-at', at(1));
+      var cta = el('a', 'btn', 'Read the chapter →');
       cta.href = '#story/' + (i + 1);
       foot.appendChild(cta);
       inner.appendChild(foot);
@@ -613,6 +596,35 @@
     });
     measureScenes();
     queueScroll();
+  }
+
+  /* Background mark behind each chapter scene: the chapter's currency symbol
+     (currencies.json `chapter` join, else the chapter title), or the chapter
+     number when a chapter isn't about one currency. */
+  var CCY_SYMBOL = { USD: '$', EUR: '€', GBP: '£', JPY: '¥', CHF: 'Fr', AUD: 'A$', CAD: 'C$', NZD: 'NZ$' };
+  var CCY_TITLE = [[/new zealand|kiwi/i, 'NZD'], [/austral|aussie/i, 'AUD'], [/canad|loonie/i, 'CAD'],
+    [/\b(us|u\.s\.)\s+dollar|greenback/i, 'USD'], [/\beuro\b/i, 'EUR'], [/pound|sterling|\bgbp\b/i, 'GBP'],
+    [/\byen\b/i, 'JPY'], [/franc|swiss/i, 'CHF']];
+  function chapterCcy(ch, i) {
+    var list = (fx.data && fx.data.currencies) || [];
+    for (var k = 0; k < list.length; k++) if (+list[k].chapter === i + 1) return list[k].ccy;
+    for (var j = 0; j < CCY_TITLE.length; j++) if (CCY_TITLE[j][0].test(ch.title || '')) return CCY_TITLE[j][1];
+    return null;
+  }
+  function ghostMark(ch, i) {
+    var sym = CCY_SYMBOL[chapterCcy(ch, i)];
+    var g = el('span', 'ghost-num mono' + (sym && sym.length > 1 ? ' len-' + Math.min(sym.length, 3) : ''),
+      sym || String(i + 1).padStart(2, '0'));
+    g.setAttribute('aria-hidden', 'true');
+    return g;
+  }
+  /* currencies.json can land after the story: re-mark the scenes. */
+  function refreshGhosts() {
+    if (!story) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.ch-scene'), function (sc, i) {
+      var old = sc.querySelector('.ghost-num'), ch = (story.chapters || [])[i];
+      if (old && ch) old.parentNode.replaceChild(ghostMark(ch, i), old);
+    });
   }
 
   /* ---------------- today: scroll engine ----------------
@@ -745,19 +757,34 @@
     v.appendChild(el('p', 'kicker', 'Chapter ' + (chapterIdx + 1) + ' of ' + chs.length));
     v.appendChild(el('h1', 'display', ch.title));
 
-    // The FX takeaway leads — it's the point of the chapter.
-    var fx = el('div', 'fx-callout');
-    fx.appendChild(el('span', 'callout-lbl', 'What it means for FX'));
-    fx.appendChild(el('p', null, ch.fx));
-    v.appendChild(fx);
+    // Prose leads: the narrative under its labels (What changed / Thread /
+    // What it means / What to watch). An unlabelled `fx` (older editions) is
+    // still the FX takeaway up top.
+    var body = el('div', 'narrative gl-scope');
+    var fxSecs = narrativeSections(ch.fx);
+    if (ch.fx && !fxSecs[0].label) {
+      var fx = el('div', 'fx-callout');
+      fx.appendChild(el('span', 'callout-lbl', 'What it means for FX'));
+      fx.appendChild(el('p', null, ch.fx));
+      body.appendChild(fx);
+      fxSecs = [];
+    }
+    narrativeSections(ch.meaning).concat(fxSecs).forEach(function (sec) {
+      if (!sec.text) return;
+      var part = el('section', 'narr' + (/watch/i.test(sec.label || '') ? ' narr-watch' : ''));
+      if (sec.label) part.appendChild(el('h3', 'narr-lbl', sec.label));
+      part.appendChild(el('p', 'narr-p', sec.label ? sec.text.charAt(0).toUpperCase() + sec.text.slice(1) : sec.text));
+      body.appendChild(part);
+    });
+    v.appendChild(body);
 
-    v.appendChild(el('p', 'lede', ch.meaning));
-
+    // Figures serve the prose: one tap away.
     if ((ch.numbers || []).length) {
-      v.appendChild(el('h2', 'section-label', 'The numbers'));
+      var det = drawer('Details', ch.numbers.length + (ch.numbers.length === 1 ? ' figure' : ' figures'));
       var ul = el('ul', 'numbers');
-      ch.numbers.forEach(function (n) { ul.appendChild(el('li', null, n)); });
-      v.appendChild(ul);
+      ch.numbers.forEach(function (n) { ul.appendChild(withFigures(el('li'), n)); });
+      det.appendChild(ul);
+      v.appendChild(det);
     }
 
     if (ch.scenarios) v.appendChild(scenarioSwitch(ch.scenarios));
@@ -779,6 +806,33 @@
       nav.appendChild(n);
     }
     v.appendChild(nav);
+  }
+
+  /* Split narrative prose on its section labels. Text before the first label
+     (or prose with none) comes back as one unlabelled section. */
+  var NARR_RE = /(?:^|\s)(What changed|Thread|What it means|What to watch)\s*:\s*/g;
+  function narrativeSections(text) {
+    text = String(text || '').trim();
+    var out = [], m, last = 0, label = null;
+    NARR_RE.lastIndex = 0;
+    while ((m = NARR_RE.exec(text))) {
+      var chunk = text.slice(last, m.index).trim();
+      if (chunk || label) out.push({ label: label, text: chunk });
+      label = m[1];
+      last = NARR_RE.lastIndex;
+    }
+    out.push({ label: label, text: text.slice(last).trim() });
+    return out;
+  }
+
+  /* Tap-to-reveal drawer for figures and raw numbers (prose-first rule). */
+  function drawer(label, hint) {
+    var d = el('details', 'drawer');
+    var sm = el('summary');
+    sm.appendChild(el('span', 'drawer-lbl', label));
+    if (hint) sm.appendChild(el('span', 'drawer-hint', hint));
+    d.appendChild(sm);
+    return d;
   }
 
   /* Base / Bull / Bear as a segmented control: one scenario visible at a time. */
@@ -832,14 +886,17 @@
     var n = rows.length, rem = n % 3;
     var halfFrom = rem === 1 && n >= 4 ? n - 4 : rem === 2 ? n - 2 : n;
     rows.forEach(function (row, i) {
-      var c = el('div', 'card pillar' + (i >= halfFrom ? ' half' : ''));
+      var c = el('div', 'card pillar gl-scope' + (i >= halfFrom ? ' half' : ''));
       c.setAttribute('data-pillar', row.id);
       var head = el('div', 'pillar-head');
       head.appendChild(el('span', 'pillar-title', row.title));
       c.appendChild(head);
+      // The read leads; the figures behind it sit one tap away.
       c.appendChild(el('p', 'pillar-read', row.read));
-      c.appendChild(el('p', 'pillar-figure mono', row.figure));
-      c.appendChild(sourceChips(row.sources || row.source, row.source_url));
+      var det = drawer('Details');
+      if (row.figure) det.appendChild(withFigures(el('p', 'pillar-figure'), row.figure));
+      det.appendChild(sourceChips(row.sources || row.source, row.source_url));
+      c.appendChild(det);
       box.appendChild(c);
     });
     attachExplainers();
@@ -938,7 +995,7 @@
     var thin = [];
     banks.forEach(function (o) {
       var b = o.b;
-      var c = el('article', 'card bank' + (o.covered ? '' : ' thin'));
+      var c = el('article', 'card bank gl-scope' + (o.covered ? '' : ' thin'));
       var head = el('div', 'bank-head');
       head.appendChild(el('span', 'bank-short', b.short));
       head.appendChild(el('span', 'bank-ccy mono', b.ccy || ''));
@@ -946,13 +1003,20 @@
       c.appendChild(head);
       c.appendChild(el('p', 'bank-name', b.name));
 
-      if (o.covered) {
+      // Prose first: the bank's story (summary, if the feed gives one) and
+      // what the market prices lead; the rate stays as a compact figure.
+      if (b.summary) c.appendChild(el('p', 'bank-summary', b.summary));
+      if (b.priced) {
+        var pr = el('div', 'bank-priced');
+        pr.appendChild(el('span', 'meet-lbl', 'Market pricing'));
+        pr.appendChild(el('span', null, b.priced));
+        c.appendChild(pr);
+      }
+      if (o.covered && b.rate) {
         var rate = el('div', 'bank-rate');
-        rate.appendChild(el('span', 'rate-val', b.rate || '—'));
-        if (b.rate_label) rate.appendChild(el('span', 'rate-lbl', b.rate_label));
+        rate.appendChild(el('span', 'meet-lbl', 'Policy rate'));
+        rate.appendChild(el('span', 'rate-val', b.rate));
         c.appendChild(rate);
-        var mc = moveChip(b.last_move);
-        if (mc) c.appendChild(mc);
       }
 
       var meet = el('div', 'bank-meet');
@@ -967,15 +1031,16 @@
       }
       c.appendChild(meet);
 
-      if (b.priced) {
-        var pr = el('div', 'bank-priced');
-        pr.appendChild(el('span', 'meet-lbl', 'Market pricing'));
-        pr.appendChild(el('span', null, b.priced));
-        c.appendChild(pr);
-      }
-
       if (o.covered) {
-        if ((b.sources || []).length) c.appendChild(sourceChips(b.sources));
+        // Raw numbers: rate definition, last move, sources — on tap.
+        var mc = moveChip(b.last_move);
+        if (b.rate_label || mc || (b.sources || []).length) {
+          var det = drawer('Details');
+          if (b.rate_label) det.appendChild(el('p', 'rate-lbl', b.rate_label + ': ' + (b.rate || '—')));
+          if (mc) det.appendChild(mc);
+          if ((b.sources || []).length) det.appendChild(sourceChips(b.sources));
+          c.appendChild(det);
+        }
       } else {
         thin.push(b.short);
       }
@@ -1312,7 +1377,7 @@
     row.appendChild(el('span', 'ev-caret', '›'));
     wrap.appendChild(row);
 
-    var det = el('div', 'ev-detail');
+    var det = el('div', 'ev-detail gl-scope');
     det.hidden = !cal.open[e.id];
     if (sp && sp !== 'inline') {
       det.appendChild(el('p', 'sp-note sp-' + sp, (sp === 'good' ? 'Beat' : 'Missed') + ' forecast — ' +
@@ -1691,7 +1756,7 @@
     if (!c) { box.hidden = true; box.textContent = ''; return; }
     box.hidden = false;
     box.textContent = '';
-    var card = el('article', 'card fx-detail');
+    var card = el('article', 'card fx-detail gl-scope');
 
     var back = el('a', 'more', '← All currencies');
     back.href = '#fx';
@@ -1715,9 +1780,25 @@
 
     var cols = el('div', 'fd-cols');
 
-    // Breakdown by pillar
+    // What's driving it, as prose: the live drivers' notes, supportive first.
+    // The full scored table (all pillars, -1/0/+1) sits behind a tap.
     var bd = el('section', 'fd-break');
     bd.appendChild(el('h2', 'section-label', 'What’s driving it'));
+    var live = PILLARS.map(function (k) { return { k: k, d: (c.drivers || {})[k[0]] }; })
+      .filter(function (x) { return x.d && +x.d.score && x.d.note; })
+      .sort(function (a, b) { return +b.d.score - +a.d.score; });
+    var why = el('ul', 'driver-prose');
+    if (!live.length) why.appendChild(el('li', 'meta', 'No pillar is moving it today.'));
+    live.forEach(function (x) {
+      var li = el('li', +x.d.score > 0 ? 'pos' : 'neg');
+      li.appendChild(el('span', 'sr-only', +x.d.score > 0 ? 'Supportive: ' : 'Weighing: '));
+      li.appendChild(document.createTextNode(x.d.note));
+      li.appendChild(el('span', 'dp-pillar', ' · ' + x.k[1]));
+      why.appendChild(li);
+    });
+    bd.appendChild(why);
+    var sdet = drawer('Score breakdown', 'all pillars');
+    bd.appendChild(sdet);
     var ul = el('ul', 'drivers');
     PILLARS.forEach(function (k) {
       var d = (c.drivers || {})[k[0]];
@@ -1730,7 +1811,7 @@
       li.appendChild(el('span', 'dr-note', d && d.note ? d.note : 'Not a driver today'));
       ul.appendChild(li);
     });
-    bd.appendChild(ul);
+    sdet.appendChild(ul);
     cols.appendChild(bd);
 
     var side = el('section', 'fd-side');
@@ -1911,7 +1992,7 @@
 
     threads.forEach(function (t, i) {
       var it = t.latest, n = t.items.length;
-      var w = el('article', 'card wire-item thread' + (i === 0 ? ' latest' : ''));
+      var w = el('article', 'card wire-item thread gl-scope' + (i === 0 ? ' latest' : ''));
       w.id = 'thread-' + t.id;
 
       // Meta: live status, update count, time span
@@ -2009,6 +2090,162 @@
       tz.hidden = false;
     }
     renderFx();
+  }
+
+  /* ---------------- inline glossary ----------------
+     data/glossary.json (Hercules) → known terms in rendered prose get a dotted
+     underline; hover (desktop) or tap (touch) shows the definition. Each
+     .gl-scope (a chapter, card, wire thread, calendar detail) wraps only the
+     FIRST occurrence of each term. Skips links, buttons, headings, figures
+     and labels. A MutationObserver picks up every re-render, so render code
+     only has to mark its container with .gl-scope. All-caps-style
+     abbreviations (2+ capitals: CPI, BoE, OAT) match case-sensitively so
+     ordinary words ("oat", "cot") stay plain; everything else matches any case. */
+  var gloss = { re: null, map: {}, list: [], pop: null, pinned: null, queued: false };
+  var GL_SKIP = 'a, button, summary, h1, h2, time, script, style, .gl, .mono, .fig, .chip, .kicker, ' +
+    '.section-label, .callout-lbl, .lbl, .narr-lbl, .drawer-lbl, .tag, .badge, .ev-ccy, .sr-only, ' +
+    '.bias, .meet-lbl, .rate-val, .bank-short, .bank-name, .seg';
+
+  function initGlossary() {
+    fetchJSON('data/glossary.json').then(function (d) {
+      var vars = [];
+      (d.terms || []).forEach(function (t, i) {
+        if (!t || !t.term || !t.definition) return;
+        gloss.list[i] = t;
+        [t.term].concat(t.aliases || []).forEach(function (v) {
+          if (!v) return;
+          gloss.map[v.toLowerCase()] = { i: i, v: v, exact: (v.match(/[A-Z]/g) || []).length >= 2 };
+          vars.push(v);
+        });
+      });
+      if (!vars.length) return;
+      vars.sort(function (a, b) { return b.length - a.length; });
+      var alt = vars.map(function (v) { return v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+'); }).join('|');
+      // (prefix)(term) — a capture instead of lookbehind, for older Safari.
+      gloss.re = new RegExp('(^|[^A-Za-z\\-])(' + alt + ')(?![A-Za-z])', 'gi');
+      glossifyAll();
+      if (window.MutationObserver) {
+        new MutationObserver(function () {
+          if (gloss.queued) return;
+          gloss.queued = true;
+          requestAnimationFrame(function () { gloss.queued = false; glossifyAll(); });
+        }).observe(document.body, { childList: true, subtree: true });
+      }
+    }).catch(function () { /* glossary is optional */ });
+    initGlossPop();
+  }
+
+  function glossifyAll() {
+    if (!gloss.re) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.gl-scope:not([data-gl])'), glossify);
+  }
+
+  function glossify(scope) {
+    scope.setAttribute('data-gl', '1');
+    var used = {}, nodes = [];
+    var walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (n) {
+        if (!n.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var p = n.parentElement;
+        return p && !p.closest(GL_SKIP) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach(function (node) {
+      var text = node.nodeValue, re = gloss.re, m, last = 0, frag = null;
+      re.lastIndex = 0;
+      while ((m = re.exec(text))) {
+        var hit = gloss.map[m[2].toLowerCase().replace(/\s+/g, ' ')];
+        if (!hit || used[hit.i] || (hit.exact && m[2].replace(/\s+/g, ' ') !== hit.v)) continue;
+        used[hit.i] = true;
+        frag = frag || document.createDocumentFragment();
+        var start = m.index + m[1].length;
+        frag.appendChild(document.createTextNode(text.slice(last, start)));
+        var g = el('span', 'gl', m[2]);
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('role', 'button');
+        g.setAttribute('data-gl-i', hit.i);
+        g.setAttribute('aria-label', m[2] + ': ' + gloss.list[hit.i].definition);
+        frag.appendChild(g);
+        last = start + m[2].length;
+      }
+      if (!frag) return;
+      frag.appendChild(document.createTextNode(text.slice(last)));
+      node.parentNode.replaceChild(frag, node);
+    });
+  }
+
+  /* One shared popover: a tooltip by the term on hover devices, a bottom
+     sheet on touch. Fixed-position on <body>, so pinned scenes and cards
+     with overflow:hidden never clip it. */
+  function initGlossPop() {
+    var hover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var pop = el('div', 'gl-pop');
+    pop.setAttribute('role', 'tooltip');
+    pop.id = 'gl-pop';
+    pop.hidden = true;
+    pop.appendChild(el('b', 'gl-term'));
+    pop.appendChild(el('p', 'gl-def'));
+    var x = el('button', 'gl-close', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Close definition');
+    pop.appendChild(x);
+    document.body.appendChild(pop);
+    gloss.pop = pop;
+
+    function show(g, sheet) {
+      var t = gloss.list[+g.getAttribute('data-gl-i')];
+      if (!t) return;
+      pop.querySelector('.gl-term').textContent = t.term;
+      pop.querySelector('.gl-def').textContent = t.definition;
+      pop.className = 'gl-pop' + (sheet ? ' sheet' : '');
+      pop.hidden = false;
+      g.setAttribute('aria-describedby', 'gl-pop');
+      if (sheet) { pop.style.left = pop.style.top = ''; return; }
+      var r = g.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
+      var left = Math.max(8, Math.min(r.left + r.width / 2 - w / 2, window.innerWidth - w - 8));
+      var top = r.top - h - 10;
+      pop.classList.toggle('below', top < 70);
+      if (top < 70) top = r.bottom + 10;
+      pop.style.left = left + 'px';
+      pop.style.top = top + 'px';
+    }
+    function hide() {
+      pop.hidden = true;
+      if (gloss.pinned) gloss.pinned.removeAttribute('aria-describedby');
+      gloss.pinned = null;
+    }
+    if (hover) {
+      document.addEventListener('mouseover', function (e) {
+        var g = e.target.closest && e.target.closest('.gl');
+        if (g && !gloss.pinned) show(g, false);
+      });
+      document.addEventListener('mouseout', function (e) {
+        var g = e.target.closest && e.target.closest('.gl');
+        if (g && !gloss.pinned) pop.hidden = true;
+      });
+    }
+    document.addEventListener('click', function (e) {
+      var g = e.target.closest && e.target.closest('.gl');
+      if (g) {
+        e.preventDefault();
+        if (gloss.pinned === g) { hide(); return; }
+        gloss.pinned = g;
+        show(g, !hover);
+        return;
+      }
+      if (e.target === x || !pop.contains(e.target)) hide();
+    });
+    document.addEventListener('keydown', function (e) {
+      var g = e.target.closest && e.target.closest('.gl');
+      if (g && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); gloss.pinned = g; show(g, !hover); }
+      if (e.key === 'Escape') hide();
+    });
+    document.addEventListener('focusin', function (e) {
+      if (e.target.classList && e.target.classList.contains('gl') && hover) show(e.target, false);
+    });
+    window.addEventListener('scroll', function () { if (!pop.hidden && !pop.classList.contains('sheet')) hide(); }, { passive: true });
+    window.addEventListener('hashchange', hide);
   }
 
 })();
