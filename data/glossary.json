@@ -1,0 +1,185 @@
+{
+ "terms": [
+  {
+   "term": "FOMC",
+   "definition": "Federal Open Market Committee — the Fed's rate-setting body; meets 8 times a year.",
+   "aliases": [
+    "Federal Open Market Committee"
+   ]
+  },
+  {
+   "term": "ECB",
+   "definition": "European Central Bank — sets rates for the eurozone.",
+   "aliases": [
+    "European Central Bank"
+   ]
+  },
+  {
+   "term": "BoE",
+   "definition": "Bank of England — the UK's central bank.",
+   "aliases": [
+    "Bank of England"
+   ]
+  },
+  {
+   "term": "BoJ",
+   "definition": "Bank of Japan — Japan's central bank.",
+   "aliases": [
+    "Bank of Japan"
+   ]
+  },
+  {
+   "term": "SNB",
+   "definition": "Swiss National Bank — Switzerland's central bank.",
+   "aliases": [
+    "Swiss National Bank"
+   ]
+  },
+  {
+   "term": "RBA",
+   "definition": "Reserve Bank of Australia — Australia's central bank.",
+   "aliases": [
+    "Reserve Bank of Australia"
+   ]
+  },
+  {
+   "term": "BoC",
+   "definition": "Bank of Canada — Canada's central bank.",
+   "aliases": [
+    "Bank of Canada"
+   ]
+  },
+  {
+   "term": "RBNZ",
+   "definition": "Reserve Bank of New Zealand — NZ's central bank.",
+   "aliases": [
+    "Reserve Bank of New Zealand"
+   ]
+  },
+  {
+   "term": "CPI",
+   "definition": "Consumer Price Index — the main inflation gauge; measures what households pay.",
+   "aliases": [
+    "Consumer Price Index"
+   ]
+  },
+  {
+   "term": "PCE",
+   "definition": "Personal Consumption Expenditures — the Fed's preferred inflation measure.",
+   "aliases": [
+    "Personal Consumption Expenditures"
+   ]
+  },
+  {
+   "term": "NFP",
+   "definition": "Non-Farm Payrolls — the monthly US jobs report; the most watched labor print.",
+   "aliases": [
+    "Non-Farm Payrolls",
+    "payrolls"
+   ]
+  },
+  {
+   "term": "PMI",
+   "definition": "Purchasing Managers' Index — a survey of business activity; above 50 means expansion.",
+   "aliases": [
+    "Purchasing Managers' Index"
+   ]
+  },
+  {
+   "term": "GDP",
+   "definition": "Gross Domestic Product — the total value of an economy's output.",
+   "aliases": [
+    "Gross Domestic Product"
+   ]
+  },
+  {
+   "term": "COT",
+   "definition": "Commitments of Traders — weekly CFTC report showing how speculators are positioned.",
+   "aliases": [
+    "Commitments of Traders"
+   ]
+  },
+  {
+   "term": "hawkish",
+   "definition": "Favoring higher interest rates to fight inflation.",
+   "aliases": []
+  },
+  {
+   "term": "dovish",
+   "definition": "Favoring lower rates or looser policy to support growth.",
+   "aliases": []
+  },
+  {
+   "term": "basis points",
+   "definition": "Hundredths of a percent — 25bp = 0.25%. How rate moves are measured.",
+   "aliases": [
+    "bp",
+    "bps"
+   ]
+  },
+  {
+   "term": "yield",
+   "definition": "The return on a bond. Rising yields usually mean tighter financial conditions.",
+   "aliases": [
+    "yields"
+   ]
+  },
+  {
+   "term": "spread",
+   "definition": "The gap between two yields or rates — e.g. French vs German bonds. Wider = more stress.",
+   "aliases": [
+    "spreads"
+   ]
+  },
+  {
+   "term": "QT",
+   "definition": "Quantitative Tightening — a central bank shrinking its balance sheet; the reverse of QE.",
+   "aliases": [
+    "Quantitative Tightening"
+   ]
+  },
+  {
+   "term": "QE",
+   "definition": "Quantitative Easing — a central bank buying bonds to loosen conditions.",
+   "aliases": [
+    "Quantitative Easing"
+   ]
+  },
+  {
+   "term": "intervention",
+   "definition": "When a central bank buys or sells its own currency to move the exchange rate.",
+   "aliases": []
+  },
+  {
+   "term": "forward guidance",
+   "definition": "A central bank signaling its future policy intentions to shape expectations.",
+   "aliases": []
+  },
+  {
+   "term": "MPR",
+   "definition": "Monetary Policy Report — a central bank's quarterly outlook on the economy and rates.",
+   "aliases": [
+    "Monetary Policy Report"
+   ]
+  },
+  {
+   "term": "OAT",
+   "definition": "French government bonds (Obligations Assimilables du Trésor).",
+   "aliases": [
+    "OATs"
+   ]
+  },
+  {
+   "term": "Bund",
+   "definition": "German government bonds — the eurozone's safe-haven benchmark.",
+   "aliases": [
+    "Bunds"
+   ]
+  },
+  {
+   "term": "OIS",
+   "definition": "Overnight Index Swap — market pricing for where rates are headed.",
+   "aliases": []
+  }
+ ]
+}
