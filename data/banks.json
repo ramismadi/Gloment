@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-08T18:30:00-05:00",
+  "updated": "2026-10-08T19:40:00-05:00",
   "banks": [
     {
       "id": "fed",
@@ -20,8 +20,8 @@
       "bias": "hawkish",
       "sources": [
         {
-          "label": "FRED: FEDFUNDS",
-          "url": "https://fred.stlouisfed.org/series/FEDFUNDS"
+          "label": "FRED: Fed funds target range (DFEDTARU/DFEDTARL)",
+          "url": "https://fred.stlouisfed.org/series/DFEDTARU"
         },
         {
           "label": "CME FedWatch",
@@ -74,8 +74,8 @@
       "bias": "hawkish",
       "sources": [
         {
-          "label": "Reuters: RBNZ raised OCR to 2.75%",
-          "url": "https://www.reuters.com/world/asia-pacific/new-zealand-central-bank-chief-sees-risks-economy-inflation-2026-09-22/"
+          "label": "RBNZ: OCR increased to 2.75% (Sep 2, 2026)",
+          "url": "https://www.rbnz.govt.nz/news-and-events/news/2026/09/ocr-increased-by-25-basis-points-to-2-75"
         }
       ]
     },
@@ -121,8 +121,8 @@
       "bias": "hawkish",
       "sources": [
         {
-          "label": "Reuters: BoJ debated faster hikes",
-          "url": "https://www.reuters.com/business/finance/bank-japan-debated-need-faster-rate-hikes-july-minutes-show-2026-09-28/"
+          "label": "BoJ: Sep 18, 2026 statement \u2014 policy rate to 1.25%",
+          "url": "https://www.boj.or.jp/en/mopo/mpmdeci/mpr_2026/k260918a.pdf"
         }
       ]
     },
