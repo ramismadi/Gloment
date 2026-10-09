@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-09T02:40:00-05:00",
+ "updated": "2026-10-09T16:05:00-05:00",
  "events": [
   {
    "id": "us-nfp-20261002",
@@ -442,7 +442,7 @@
    "category": "jobs",
    "title": "Canada jobs (Sep)",
    "actual": "-68.3K jobs / 6.5% unemp (vs fcst +9.2K)",
-   "forecast": "+6.1K / 6.5%",
+   "forecast": "+9.2K / 6.5%",
    "previous": "-41.7K / 6.4%",
    "better": "higher",
    "why": "BoC decision Oct 28 with $103 oil — jobs decide whether the BoC stays neutral or leans hawkish.",
