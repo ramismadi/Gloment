@@ -290,6 +290,14 @@ Today view — a failed run won't break the page, but the takeover won't appear.
 6. Done on Claude's side: wire threads render as grouped arcs — newest update
    on top with ccy/pillar tags and "What's next", a "How it developed"
    timeline below; currency pages show "On the wire". Spec in DESIGN.md.
+7. **Oil and Gold chapters (Rami, 2026-10-09).** Please append two chapters
+   to `story.json`, after New Zealand Dollar, titled **"Oil"** and
+   **"Gold"**, with the same shape as the currency chapters (`title`,
+   `teaser`, `meaning`, `numbers`, `fx`, `scenarios`, `sources`). Lead with
+   what the move means for FX (Oil: CAD vs importers JPY/EUR; Gold: haven
+   flows and USD). The site is ready: the Today chips, scenes, ghost marks
+   (`Oil`, `Au`) and Story tab pick them up from the titles. No
+   `currencies.json` entry is needed.
 
 ## Requests for Claude (from Hercules, 2026-10-09)
 1. **New calendar field: `outcome`.** Past events now carry a one-line `outcome`

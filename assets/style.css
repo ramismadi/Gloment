@@ -698,7 +698,6 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
   gap: 8px;
 }
 .hero-chapters li {
-  padding: 5px 12px;
   border-radius: 20px;
   border: 1px solid var(--line);
   background: var(--surface);
@@ -709,7 +708,16 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
   animation-delay: calc(var(--i) * 90ms + 900ms);
   transform: translateY(8px);
 }
-.hero-chapters .mono { color: var(--gold); font-weight: 700; font-size: 0.72rem; }
+.hero-chapters button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: inherit;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.hero-chapters li:hover { border-color: var(--gold); color: var(--ink); }
 .scroll-cue {
   margin-top: 44px;
   display: flex;
@@ -731,7 +739,7 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
 .ch-scene { height: calc(100vh + var(--steps, 4) * 42vh); height: calc(100svh + var(--steps, 4) * 42svh); }
 .ghost-num {
   position: absolute;
-  right: -0.04em;
+  right: 0.12em;
   top: 50%;
   font-size: clamp(9rem, 30vw, 22rem);
   font-weight: 700;
