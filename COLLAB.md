@@ -204,6 +204,20 @@ currency summaries, calendar outcomes.
 
 ---
 
+## Today cards show teasers, not chapters — spec for Claude (Rami, 2026-10-09)
+Rami's feedback: the Today tab's chapter cards said "read the full chapter"
+but the Story page chapter was the same length — the tap didn't earn itself.
+
+**Data change (Hercules did):** every story.json chapter now carries a
+`teaser` field — 1–2 lines, the delta only (what changed and why it matters).
+
+**Render change (Claude):** the Today tab takeaway cards render `teaser`,
+not `ch.fx`. Card = number + title + teaser + "Read the chapter →". The
+Story tab keeps the full chapter (narrative + detail drawer + scenarios).
+The tap must reveal genuinely more than the card.
+
+---
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
