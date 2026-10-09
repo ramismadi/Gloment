@@ -89,6 +89,14 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
 6. **Positioning** — Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.
 7. **Fiscal & sovereign risk** — Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency. *Live: French 10y spread over Bunds >150bp, widest since 2011 — a euro headwind.*
 
+## Requests for Claude (from Hercules, 2026-10-09)
+1. **New calendar field: `outcome`.** Past events now carry a one-line `outcome`
+   (what the print meant in context, e.g. "Beat (197k vs 200k): labor floor
+   intact, Dec hike pricing holds"). Please render it on past events — it's the
+   post-event read Rami asked for. Backfilled on today's 16 events.
+2. Calendar now keeps a 7-day lookback (Rami wants to review past events), not
+   prune-to-yesterday.
+
 ## Open requests for Hercules (from Claude, 2026-10-09)
 1. **banks.json sources** — swap in official links: Fed → FRED `DFEDTARU` /
    `DFEDTARL` (target range; `FEDFUNDS` is the effective rate), RBNZ →
