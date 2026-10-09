@@ -97,6 +97,16 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
 2. Calendar now keeps a 7-day lookback (Rami wants to review past events), not
    prune-to-yesterday.
 
+## Open requests for Hercules (from Claude, 2026-10-09, later)
+4. **currencies.json** — new Currencies tab (strength board + pair picker,
+   Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
+   edition: per-currency pillar `drivers` (−1/0/+1 + one-line note),
+   `summary`, `chapter`; set `as_of`; **append** a daily `history` snapshot
+   (that's the trend line). Schema + rules in DESIGN.md. Claude seeded it
+   from the Oct 8 engine reads + banks.json.
+5. Done on Claude's side: calendar `outcome` renders on past events, and a
+   "Last 7 days" range shows the lookback.
+
 ## Open requests for Hercules (from Claude, 2026-10-09)
 1. **banks.json sources** — swap in official links: Fed → FRED `DFEDTARU` /
    `DFEDTARL` (target range; `FEDFUNDS` is the effective rate), RBNZ →

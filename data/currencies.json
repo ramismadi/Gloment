@@ -1,0 +1,180 @@
+{
+ "updated": "2026-10-09T01:00:00-05:00",
+ "as_of": "2026-10-08",
+ "method": "Score = sum of pillar scores (-1 / 0 / +1). Pillars: policy, growth, inflation, risk, tot, positioning, fiscal. Missing pillar = 0.",
+ "note": "Seed by Claude: a structured restatement of the Oct 8 Macro Engine reads and banks.json stances. Hercules owns this feed from the next edition.",
+ "currencies": [
+  {
+   "ccy": "USD",
+   "name": "US dollar",
+   "bank": "fed",
+   "chapter": 1,
+   "summary": "Hawkish Fed, resilient growth and haven demand — but longs are crowded.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "Fed hiked +25bp Sep 16 to 3.75–4.00%; hawkish"
+    },
+    "growth": {
+     "score": 1,
+     "note": "US resilient vs soft Europe"
+    },
+    "inflation": {
+     "score": 1,
+     "note": "Sticky inflation keeps the Fed hawkish"
+    },
+    "risk": {
+     "score": 1,
+     "note": "Risk-off tilt bids USD"
+    },
+    "positioning": {
+     "score": -1,
+     "note": "Long-USD crowded — reversal risk on any dovish surprise"
+    }
+   }
+  },
+  {
+   "ccy": "EUR",
+   "name": "Euro",
+   "bank": "ecb",
+   "chapter": 2,
+   "summary": "Fiscal stress, soft growth and the energy hit outweigh a hawkish ECB.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "ECB hiked +25bp Sep 10 to 2.50% deposit; hawkish"
+    },
+    "growth": {
+     "score": -1,
+     "note": "Europe soft vs US — EUR/USD pressured"
+    },
+    "tot": {
+     "score": -1,
+     "note": "Energy importer — oil spike hurts"
+    },
+    "fiscal": {
+     "score": -1,
+     "note": "French spread >150bp — fiscal risk premium in EUR"
+    }
+   }
+  },
+  {
+   "ccy": "GBP",
+   "name": "British pound",
+   "bank": "boe",
+   "chapter": null,
+   "summary": "BoE leaning hawkish on sticky inflation; no other strong driver today.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "BoE held 3.75% Sep 17 with a hawkish tilt"
+    }
+   }
+  },
+  {
+   "ccy": "JPY",
+   "name": "Japanese yen",
+   "bank": "boj",
+   "chapter": 3,
+   "summary": "Haven bid and a hiking BoJ, offset by the oil import bill.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "BoJ hiked +25bp Sep 18 to 1.25%; hawkish"
+    },
+    "risk": {
+     "score": 1,
+     "note": "Risk-off tilt bids JPY"
+    },
+    "tot": {
+     "score": -1,
+     "note": "Energy importer — oil spike hurts"
+    }
+   }
+  },
+  {
+   "ccy": "CHF",
+   "name": "Swiss franc",
+   "bank": "snb",
+   "chapter": null,
+   "summary": "Haven demand in risk-off; SNB on hold at 0%.",
+   "drivers": {
+    "policy": {
+     "score": 0,
+     "note": "SNB held 0.00% Sep 24; neutral"
+    },
+    "risk": {
+     "score": 1,
+     "note": "Risk-off tilt bids CHF"
+    }
+   }
+  },
+  {
+   "ccy": "CAD",
+   "name": "Canadian dollar",
+   "bank": "boc",
+   "chapter": 4,
+   "summary": "Oil spike supports the loonie via terms of trade; BoC neutral.",
+   "drivers": {
+    "policy": {
+     "score": 0,
+     "note": "BoC held 2.25% Sep 2; neutral"
+    },
+    "tot": {
+     "score": 1,
+     "note": "Oil exporter — Brent spike supports CAD"
+    }
+   }
+  },
+  {
+   "ccy": "AUD",
+   "name": "Australian dollar",
+   "bank": "rba",
+   "chapter": null,
+   "summary": "RBA hiking, but risk-off weighs on the risk proxy.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "RBA hiked +25bp Sep 29 to 4.60%; hawkish"
+    },
+    "risk": {
+     "score": -1,
+     "note": "Risk-off tilt — AUD soft"
+    }
+   }
+  },
+  {
+   "ccy": "NZD",
+   "name": "New Zealand dollar",
+   "bank": "rbnz",
+   "chapter": null,
+   "summary": "RBNZ hiking, but risk-off weighs on the risk proxy.",
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "RBNZ hiked +25bp Sep 2 to 2.75%; hawkish"
+    },
+    "risk": {
+     "score": -1,
+     "note": "Risk-off tilt — NZD soft"
+    }
+   }
+  }
+ ],
+ "history": [
+  {
+   "date": "2026-10-08",
+   "scores": {
+    "USD": 3,
+    "EUR": -2,
+    "GBP": 1,
+    "JPY": 1,
+    "CHF": 1,
+    "CAD": 1,
+    "AUD": 0,
+    "NZD": 0
+   }
+  }
+ ],
+ "pairs": {}
+}
