@@ -97,6 +97,57 @@ Keep each to ~3 lines: what it is, how it moves currencies, one live example.
 2. Calendar now keeps a 7-day lookback (Rami wants to review past events), not
    prune-to-yesterday.
 
+## Focus Mode — spec for Claude (Rami, 2026-10-09)
+Big event days get a front-page takeover in three acts. Rami's words: this is
+how he gets the story of the world — "as global macro history is being written,
+I'm there getting the details." Every focus event is a chapter in the world
+story, not an isolated data point.
+
+**Which events:** the big three — FOMC decisions, US CPI, US payrolls. Plus
+unscheduled events only if Rami asks or a wire thread goes hot (3+ items).
+Rami wants a ping when focus mode goes live and on every development.
+
+**Act 1 — Preview (before).** Goes live with the 2 a.m. edition on event day
+(evening before for Asia-timed events). Structure:
+1. `story_so_far` — 3–4 beats on HOW WE GOT HERE. Not the consensus first —
+   the thread. E.g. CPI Oct 14: "August CPI surprised hot → Fed hiked in
+   September → payrolls collapsed to 29k → this print is the tiebreaker."
+2. `stakes` — one line on what this decides (e.g. "Decides whether an October
+   hike comes back to life").
+3. `setup` — consensus, previous, what's priced (e.g. "3.7% y/y vs 3.35%;
+   Oct hike ~17%, Dec ~70%").
+4. `forks` — conditional branches, NEVER conclusions: [{"if": "core 0.2% or
+   below", "then": "..."}, {"if": "core 0.3%+", "then": "..."}]. This is the
+   agency principle: the board is set, Rami forms the bias.
+5. `watch` — what to watch and when (times in CT).
+Design: the event owns the front page (Today tab hero). Countdown to the print.
+
+**Act 2 — Live (during).** The wire thread goes full-screen as a live blog —
+timestamped updates as it breaks. Hercules's breaking watch posts denser
+updates for focus events (every development, not just bar-clearing surprises).
+The thread infrastructure (thread/ccy/pillar/next) already exists.
+
+**Act 3 — Recap (after).** Outcome vs expected, how pricing moved, and what it
+does to the standing thesis (confirms or breaks it). Then folds into the next
+regular edition like any wire item.
+
+**Data (Hercules owns):** new `data/focus.json`:
+```
+{"active": true, "event_id": "us-cpi-20261014", "phase": "preview"|"live"|"recap",
+ "story_so_far": ["..."], "stakes": "...",
+ "setup": {"consensus": "...", "previous": "...", "priced": "..."},
+ "forks": [{"if": "...", "then": "..."}],
+ "watch": ["..."], "thread": "us-cpi-20261014"}
+```
+When no focus event is active: `{"active": false}`. The 2 a.m. run arms it;
+the breaking watch drives live → recap. Calendar event gets `"focus": true`.
+
+**Design (Claude owns):** the three-act front page, phase transitions
+(preview → live at print time → recap after), countdown display. Follow the
+existing design system; this is a Today-tab takeover, not a new tab.
+
+---
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
