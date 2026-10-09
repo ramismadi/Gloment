@@ -1,15 +1,15 @@
 /* Gloment — premium desk renderer. Plain static JS, no build step.
    Tabbed views (hash-routed: #today, #story, #story/2, #engine, #banks,
-   #calendar, #wire), a theme picker, and edition data (story, macro engine,
-   wire) from local JSON files. textContent-only DOM, no HTML injection. */
+   #calendar, #flash), a theme picker, and edition data (story, macro engine,
+   Flash) from local JSON files. textContent-only DOM, no HTML injection. */
 
 (function () {
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '26';
+  var ASSET_VERSION = '27';
 
-  var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
+  var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'flash'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
      Token values live in style.css under [data-theme="<id>"]. */
   var THEMES = [
@@ -90,7 +90,7 @@
       note('#today-next', 'Calendar data unavailable.');
     });
     fetchJSON('data/latest.json').then(renderWire).catch(function () {
-      note('#latest-items', 'No wire items.');
+      note('#latest-items', 'No Flash items.');
     });
   }
 
@@ -257,8 +257,15 @@
   function relTime(iso) {
     var mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
     if (!isFinite(mins) || mins < 0) return fmtDateTime(iso);
+    if (mins < 1) return 'just now';
     if (mins < 60) return mins + 'm ago';
     if (mins < 24 * 60) return Math.round(mins / 60) + 'h ago';
+    var then = new Date(iso), today = new Date();
+    today.setHours(0, 0, 0, 0);
+    then.setHours(0, 0, 0, 0);
+    var days = Math.round((today - then) / 864e5);
+    if (days <= 1) return 'yesterday';
+    if (days < 7) return days + 'd ago';
     return fmtDateTime(iso);
   }
 
@@ -390,6 +397,10 @@
 
   function route() {
     var h = (location.hash || '#today').slice(1).split('/');
+    if (h[0] === 'wire') {   // the tab was called Wire until 2026-10-09
+      h[0] = 'flash';
+      history.replaceState(null, '', '#' + h.join('/'));
+    }
     var tab = TABS.indexOf(h[0]) >= 0 ? h[0] : 'today';
     TABS.forEach(function (t) {
       var v = $('#view-' + t), a = $('#tab-' + t);
@@ -421,6 +432,7 @@
         hour: '2-digit', minute: '2-digit', timeZone: 'UTC'
       }) + ' UTC');
       renderSessions(now);
+      tickRelTimes();
     }
     tick();
     setInterval(tick, 30000);
@@ -1913,10 +1925,10 @@
     // Wire threads touching this currency
     var wt = wireThreads.filter(function (t) { return t.ccy.indexOf(c.ccy) >= 0; });
     if (wt.length) {
-      side.appendChild(el('h2', 'section-label', 'On the wire'));
+      side.appendChild(el('h2', 'section-label', 'On Flash'));
       wt.slice(0, 3).forEach(function (t) {
         var a = el('a', 'fd-wire');
-        a.href = '#wire';
+        a.href = '#flash';
         a.appendChild(el('span', 'callout-lbl', relTime(t.latest.ts) + (t.items.length > 1 ? ' · ' + t.items.length + ' updates' : '')));
         a.appendChild(el('span', null, t.latest.headline));
         side.appendChild(a);
@@ -1983,12 +1995,28 @@
     return wrap;
   }
 
-  /* ---------------- breaking wire ----------------
+  /* ---------------- Flash (data/latest.json) ----------------
      Bullets prefixed "Numbers:", "Meaning:", "FX:" are split into labelled
      parts. The FX line shows by default; the rest sits behind "Full detail". */
   function splitBullet(b) {
     var m = /^\s*(Numbers|Meaning|FX)\s*:\s*/i.exec(b);
     return m ? { key: m[1].toLowerCase(), text: b.slice(m[0].length) } : { key: null, text: b };
+  }
+
+  var COOL_AFTER = 24 * 3600 * 1000;
+
+  /* <time> showing "2h ago"; the exact time is in the tooltip. Kept current
+     by tickRelTimes() so an open tab doesn't go stale. */
+  function relTimeEl(iso) {
+    var t = el('time', 'mono rel', relTime(iso));
+    t.dateTime = iso;
+    t.title = fmtDateTime(iso, true);
+    return t;
+  }
+  function tickRelTimes() {
+    Array.prototype.forEach.call(document.querySelectorAll('time.rel'), function (t) {
+      t.textContent = relTime(t.dateTime);
+    });
   }
 
   /* Group wire items into threads (same `thread` id = one developing
@@ -2046,7 +2074,7 @@
     focus.wire = items;
     if (focus.data) renderFocus();
     if (!items.length) {
-      box.appendChild(el('p', 'meta', 'Nothing breaking right now.'));
+      box.appendChild(el('p', 'meta', 'No developing stories right now.'));
       return;
     }
     var threads = buildThreads(items);
@@ -2056,17 +2084,20 @@
 
     threads.forEach(function (t, i) {
       var it = t.latest, n = t.items.length;
-      var w = el('article', 'card wire-item thread gl-scope' + (i === 0 ? ' latest' : ''));
+      // No update in 24h: the thread is cooling — dimmed, no live pill. It
+      // phases out when Hercules prunes it (72h after its last update).
+      var cooling = Date.now() - new Date(it.ts).getTime() > COOL_AFTER;
+      var w = el('article', 'card wire-item thread gl-scope' + (i === 0 && !cooling ? ' latest' : '') +
+        (cooling ? ' cooling' : ''));
       w.id = 'thread-' + t.id;
 
       // Meta: live status, update count, time span
       var meta = el('div', 'wire-meta');
-      if (i === 0) meta.appendChild(el('span', 'live-pill', n > 1 ? 'Developing' : 'Latest'));
-      else if (n > 1) meta.appendChild(el('span', 'thread-pill', 'Developing'));
-      var ts = el('time', 'mono', relTime(it.ts));
-      ts.dateTime = it.ts;
-      ts.title = fmtDateTime(it.ts, true);
-      meta.appendChild(ts);
+      if (!cooling) {
+        if (i === 0) meta.appendChild(el('span', 'live-pill', n > 1 ? 'Developing' : 'Latest'));
+        else if (n > 1) meta.appendChild(el('span', 'thread-pill', 'Developing'));
+      }
+      meta.appendChild(relTimeEl(it.ts));
       if (n > 1) meta.appendChild(el('span', null, '· ' + n + ' updates since ' + fmtDateTime(t.first.ts)));
       w.appendChild(meta);
 
@@ -2116,9 +2147,7 @@
         var ol = el('ol', 'arc');
         t.items.forEach(function (u, k) {
           var li = el('li', k === 0 ? 'now' : null);
-          var when = el('time', 'mono', fmtDateTime(u.ts));
-          when.dateTime = u.ts;
-          li.appendChild(when);
+          li.appendChild(relTimeEl(u.ts));
           var body = el('div', 'arc-body');
           body.appendChild(el('p', 'arc-hl', u.headline));
           if (k > 0) {
@@ -2146,7 +2175,7 @@
     var t0 = threads[0], tz = $('#today-wire');
     if (tz) {
       tz.textContent = '';
-      tz.appendChild(el('span', 'live-pill', 'Wire · ' + relTime(t0.latest.ts)));
+      tz.appendChild(el('span', 'live-pill', 'Flash · ' + relTime(t0.latest.ts)));
       var hl = el('span', 'teaser-hl', t0.latest.headline);
       if (t0.items.length > 1) hl.appendChild(el('small', 'teaser-n', ' · ' + t0.items.length + ' updates'));
       tz.appendChild(hl);

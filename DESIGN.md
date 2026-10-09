@@ -18,7 +18,7 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 | Macro engine | `#engine` | `data/engine.json` + `data/pillars.json` |
 | Central banks | `#banks` | `data/banks.json` |
 | Calendar | `#calendar` | `data/calendar.json` (+ banks.json join) |
-| Wire | `#wire` | `data/latest.json` |
+| Flash | `#flash` (old `#wire` links redirect) | `data/latest.json` |
 
 - **Today is a scroll story** (Apple-style pinned scenes): full-screen
   headline → one pinned scene per story chapter = number + title + `teaser`
@@ -184,7 +184,7 @@ with the `gl-scope` class; re-renders are picked up automatically.
 - Preview the design anytime: `?focus-demo=preview|live|recap` (sample
   content in `assets/focus-demo.json`, labelled as a demo on screen).
 
-### `data/latest.json` — Wire
+### `data/latest.json` — Flash
 ```
 {"items":[{"ts":"<ISO-8601>","headline","url"?,"bullets":[],"sources":[],
   "thread":"us-iran-20261008",     // same id = one developing story
@@ -197,7 +197,11 @@ by the newest update (headline, currency + pillar tags, FX line, "What's
 next" from the newest item's `next`, sources), with a "How it developed"
 timeline of every update below. Items without `thread` stand alone. Threads
 sort by their newest update; the tab badge counts threads. Currency pages
-list the threads tagged with that currency ("On the wire").
+list the threads tagged with that currency ("On Flash").
+Times are relative ("2h ago", "yesterday", "2d ago"; exact time on hover)
+and tick every 30s. A thread with no update in 24h is **cooling**: dimmed,
+no "Developing"/"Latest" pill. Hercules prunes threads 72h after their last
+update and unthreaded items after 36h.
 Keep the `Numbers:` / `Meaning:` / `FX:` prefixes on bullets — the FX line
 shows by default, the rest sits behind "Full detail".
 
