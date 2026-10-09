@@ -89,7 +89,19 @@
           "url": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm"
         }
       ]
+    },
+    {
+      "id": "fiscal",
+      "title": "Fiscal & sovereign risk",
+      "figure": "French 10y spread over Bunds >150bp \u2014 widest since 2011 euro crisis; deficit fears ahead of 2027 election",
+      "read": "Sovereign stress is a euro headwind \u2014 fiscal risk premium leaking into EUR",
+      "sources": [
+        {
+          "label": "Reuters: Europe's woes give dollar bulls fresh reason",
+          "url": "https://www.reuters.com/world/europe/europes-woes-give-dollar-bulls-fresh-reason-press-2026-10-08/"
+        }
+      ]
     }
   ],
-  "updated": "2026-10-08T02:00:00-05:00"
+  "updated": "2026-10-08T19:20:00-05:00"
 }
