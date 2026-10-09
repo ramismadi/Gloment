@@ -1648,7 +1648,7 @@ button.btn { border: 1px solid var(--line); }
 .ev:last-child { border-bottom: 0; }
 .ev-row {
   display: grid;
-  grid-template-columns: 74px 44px 18px minmax(0, 1fr) 240px 14px;
+  grid-template-columns: 74px 66px minmax(0, 1fr) 252px 14px;
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -1662,7 +1662,8 @@ button.btn { border: 1px solid var(--line); }
 }
 .ev-row:hover { background: var(--surface-2); }
 .ev.past .ev-row { color: var(--ink-2); }
-.ev-time { font-size: 0.8rem; color: var(--ink-2); }
+.ev-time { font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; }
+.ev-tag { display: inline-flex; align-items: center; gap: 7px; }
 .ev-ccy {
   display: inline-block;
   font-size: 0.7rem;
@@ -1693,7 +1694,9 @@ button.btn { border: 1px solid var(--line); }
 .ev-num { display: flex; flex-direction: column; align-items: flex-end; }
 .ev-num small { font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
 .ev-num { min-width: 0; }
-.ev-num b { font-size: 0.86rem; font-weight: 600; text-align: right; overflow-wrap: anywhere; }
+.ev-num b { font-size: 0.86rem; font-weight: 600; text-align: right; white-space: nowrap; }
+.ev-sub { font-size: 0.68rem; color: var(--ink-3); white-space: nowrap; text-align: right; }
+.ev-num.nil b { color: var(--ink-3); font-weight: 400; }
 .sp-good { color: var(--bull); }
 .sp-bad { color: var(--bear); }
 .ev-caret { color: var(--ink-3); font-size: 1.1rem; transition: transform 0.15s; }
@@ -1717,7 +1720,7 @@ button.btn { border: 1px solid var(--line); }
   letter-spacing: 0.04em;
 }
 
-.ev-detail { padding: 2px 20px 18px 150px; display: grid; gap: 12px; }
+.ev-detail { padding: 2px 20px 18px 180px; display: grid; gap: 12px; }
 .ev-why { margin: 0; font-family: var(--serif); font-size: 1.02rem; color: var(--ink); }
 .sp-note { margin: 0; font-size: 0.84rem; font-weight: 600; }
 .ev-scen { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -1809,7 +1812,7 @@ footer { padding: 34px 0 44px; text-align: center; }
   .engine-grid .pillar:last-child:nth-child(odd) { grid-column: span 2; }
   .bank-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .fx-grid, .fd-cols { grid-template-columns: minmax(0, 1fr); }
-  .ev-row { grid-template-columns: 64px 44px 18px minmax(0, 1fr) 200px 12px; gap: 8px; padding: 12px 14px; }
+  .ev-row { grid-template-columns: 66px 62px minmax(0, 1fr) 220px 12px; gap: 8px; padding: 12px 14px; }
   .ev-detail { padding-left: 14px; padding-right: 14px; }
   .brand-sub, .clock { display: none; }
 }
@@ -1853,19 +1856,27 @@ footer { padding: 34px 0 44px; text-align: center; }
   .fd-score { align-items: flex-start; text-align: left; }
   .drivers li { grid-template-columns: 96px 32px minmax(0, 1fr); }
   .fx-detail { padding: 18px; }
+  /* Phone row: time with the ccy + impact tag under it; title and the
+     figures that exist to the right. */
   .ev-row {
-    grid-template-columns: 54px 40px minmax(0, 1fr) 12px;
-    grid-template-areas: "time ccy title caret" "pips . nums nums";
-    row-gap: 6px;
-    column-gap: 8px;
+    grid-template-columns: 62px minmax(0, 1fr) 12px;
+    grid-template-areas: "time title caret" "tag title caret" ". nums nums";
+    row-gap: 4px;
+    column-gap: 10px;
+    align-items: start;
   }
-  .ev-time { grid-area: time; }
-  .ev-row .ev-ccy { grid-area: ccy; }
+  .ev-time { grid-area: time; font-size: 0.76rem; padding-top: 2px; }
+  .ev-row .ev-tag { grid-area: tag; gap: 5px; }
   .ev-title { grid-area: title; }
-  .ev-caret { grid-area: caret; }
-  .ev-row .pips { grid-area: pips; }
+  .ev-caret { grid-area: caret; align-self: center; }
   .ev-nums { grid-area: nums; display: flex; flex-wrap: wrap; gap: 2px 14px; min-width: 0; }
+  .ev-nums:empty { display: none; }
   .ev-num { flex-direction: row; gap: 4px; align-items: baseline; }
+  .ev-num.nil { display: none; }
+  .ev-sub { font-size: 0.7rem; }
+  #cal-ccy, #cal-impact { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px; }
+  #cal-ccy::-webkit-scrollbar, #cal-impact::-webkit-scrollbar { display: none; }
+  #cal-ccy .fchip, #cal-impact .fchip { flex: none; }
   .ev-scen { grid-template-columns: 1fr; }
   .cal-next { flex-direction: column; align-items: flex-start; }
   .cal-filters { gap: 8px; }

@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '22';
+  var ASSET_VERSION = '23';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -1354,10 +1354,13 @@
     row.setAttribute('aria-expanded', cal.open[e.id] ? 'true' : 'false');
 
     row.appendChild(el('span', 'ev-time mono', w && !e.time_tbd ? fmtClock(w) : 'TBD'));
-    row.appendChild(el('span', 'ev-ccy mono', e.ccy));
+    // Currency + impact travel together as one tag.
+    var tag = el('span', 'ev-tag');
+    tag.appendChild(el('span', 'ev-ccy mono', e.ccy));
     var pips = makePips(e.impact);
     pips.title = e.impact.charAt(0).toUpperCase() + e.impact.slice(1) + ' impact';
-    row.appendChild(pips);
+    tag.appendChild(pips);
+    row.appendChild(tag);
 
     var t = el('span', 'ev-title');
     var nm = el('span', 'ev-name', e.title);
@@ -1371,16 +1374,24 @@
     }
     row.appendChild(t);
 
+    // Compound values ("+6.1K / 6.5%", "5.300% (b/c 2.77)") show the lead
+    // figure, with the rest as a small line under it — no mid-value wraps.
     function cell(lbl, v, cls) {
-      var c = el('span', 'ev-num');
+      var nil = v == null || v === '';
+      var c = el('span', 'ev-num' + (nil ? ' nil' : ''));
       c.appendChild(el('small', null, lbl));
-      c.appendChild(el('b', 'mono' + (cls ? ' ' + cls : ''), v == null || v === '' ? '—' : v));
+      var parts = nil ? ['—'] : String(v).split(/\s+\/\s+|\s+(?=\()/);
+      c.appendChild(el('b', 'mono' + (cls ? ' ' + cls : ''), parts[0]));
+      if (parts.length > 1) c.appendChild(el('span', 'ev-sub mono', parts.slice(1).join(' · ')));
       return c;
     }
     var nums = el('span', 'ev-nums');
-    nums.appendChild(cell('Actual', e.actual, sp ? 'sp-' + sp : null));
-    nums.appendChild(cell('Forecast', e.forecast));
-    nums.appendChild(cell('Previous', e.previous));
+    // Speeches, minutes, auctions without figures: no wall of dashes.
+    if ([e.actual, e.forecast, e.previous].some(function (v) { return v != null && v !== ''; })) {
+      nums.appendChild(cell('Actual', e.actual, sp ? 'sp-' + sp : null));
+      nums.appendChild(cell('Forecast', e.forecast));
+      nums.appendChild(cell('Previous', e.previous));
+    }
     row.appendChild(nums);
     row.appendChild(el('span', 'ev-caret', '›'));
     wrap.appendChild(row);
