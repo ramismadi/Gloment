@@ -19,22 +19,22 @@
   "risk": {
    "title": "Risk sentiment",
    "body": "Risk-on vs risk-off. Fear bids USD, JPY, CHF (havens) and sells AUD, NZD, GBP (risk proxies).",
-   "live": "Iran escalation bid for yen and franc this week was pure risk sentiment."
+   "live": "Trump took new Iran strikes off the table before the Nov 3 midterms — the haven bid in JPY/CHF is leaking out as oil gives back ~$2."
   },
   "tot": {
    "title": "Terms of trade",
    "body": "Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways — say which and why.",
-   "live": "Brent ~$103 supports CAD (exporter) and pressures JPY/EUR (importers)."
+   "live": "Brent $103.53 supports CAD (exporter) and pressures JPY/EUR (importers) — Hormuz crossings down 27% to a 2-month low."
   },
   "positioning": {
    "title": "Positioning",
    "body": "Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.",
-   "live": null
+   "live": "Euro shorts at a 343-report CFTC extreme (Oct 2) — the squeeze risk sits against the dollar."
   },
   "fiscal": {
    "title": "Fiscal & sovereign risk",
    "body": "Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency.",
-   "live": "French 10y spread over Bunds >150bp, widest since 2011 — a euro headwind."
+   "live": "French 10y spread over Bunds ~140–146bp, off the >150bp wides — a euro headwind until the budget passes late Nov."
   }
  }
 }
