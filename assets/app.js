@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '25';
+  var ASSET_VERSION = '26';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -533,8 +533,14 @@
     (d.chapters || []).forEach(function (ch, i) {
       var li = el('li');
       li.style.setProperty('--i', i);
-      li.appendChild(el('span', 'mono', String(i + 1).padStart(2, '0')));
-      li.appendChild(document.createTextNode(' ' + ch.title));
+      // Each chip jumps straight to its chapter scene.
+      var b = el('button', null, ch.title);
+      b.type = 'button';
+      b.addEventListener('click', function () {
+        var sc = $('#scene-' + (i + 1));
+        if (sc) jumpTo(sc);
+      });
+      li.appendChild(b);
       hc.appendChild(li);
     });
   }
@@ -607,10 +613,11 @@
   /* Background mark behind each chapter scene: the chapter's currency symbol
      (currencies.json `chapter` join, else the chapter title), or the chapter
      number when a chapter isn't about one currency. */
-  var CCY_SYMBOL = { USD: '$', EUR: '€', GBP: '£', JPY: '¥', CHF: 'Fr', AUD: 'A$', CAD: 'C$', NZD: 'NZ$' };
+  var CCY_SYMBOL = { USD: '$', EUR: '€', GBP: '£', JPY: '¥', CHF: 'Fr', AUD: 'A$', CAD: 'C$', NZD: 'NZ$',
+    XAU: 'Au', OIL: 'Oil' };
   var CCY_TITLE = [[/new zealand|kiwi/i, 'NZD'], [/austral|aussie/i, 'AUD'], [/canad|loonie/i, 'CAD'],
     [/\b(us|u\.s\.)\s+dollar|greenback/i, 'USD'], [/\beuro\b/i, 'EUR'], [/pound|sterling|\bgbp\b/i, 'GBP'],
-    [/\byen\b/i, 'JPY'], [/franc|swiss/i, 'CHF']];
+    [/\byen\b/i, 'JPY'], [/franc|swiss/i, 'CHF'], [/\bgold\b/i, 'XAU'], [/\boil\b|crude|brent|\bwti\b/i, 'OIL']];
   function chapterCcy(ch, i) {
     var list = (fx.data && fx.data.currencies) || [];
     for (var k = 0; k < list.length; k++) if (+list[k].chapter === i + 1) return list[k].ccy;
