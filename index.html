@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=16">
+<link rel="stylesheet" href="assets/style.css?v=18">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,7 +23,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=16" defer></script>
+<script src="assets/app.js?v=18" defer></script>
 </head>
 <body>
 
@@ -66,34 +66,58 @@
 
 <main class="wrap">
 
-  <!-- ============ TODAY: the one-screen brief ============ -->
-  <section class="view" id="view-today" role="tabpanel" aria-labelledby="tab-today">
-    <div class="hero">
-      <p class="kicker">Today's read</p>
-      <h1 id="today-headline" class="display">Loading the edition…</h1>
-    </div>
+  <!-- ============ TODAY: a scroll story — headline → chapters → go deeper ============ -->
+  <section class="view today" id="view-today" role="tabpanel" aria-labelledby="tab-today">
+    <div class="read-bar" aria-hidden="true"><span id="read-bar"></span></div>
+    <nav class="story-dots" id="story-dots" aria-label="Jump to chapter"></nav>
 
-    <h2 class="section-label">The four things moving FX</h2>
-    <div class="takeaways" id="today-takeaways"></div>
-
-    <div class="today-grid">
-      <div class="card">
-        <div class="card-head">
-          <h2 class="section-label">Macro pulse</h2>
-          <a class="more" href="#engine">Full engine →</a>
+    <section class="scene hero-scene" data-scene>
+      <div class="pin">
+        <div class="pin-inner hero-inner">
+          <p class="kicker">Today&rsquo;s read <span id="hero-date"></span></p>
+          <h1 id="today-headline" class="display hero-hl">Loading the edition…</h1>
+          <ol class="hero-chapters" id="hero-chapters" aria-label="In this edition"></ol>
+          <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><i></i></div>
         </div>
-        <ul class="pulse" id="today-pulse"></ul>
       </div>
-      <div class="card">
-        <div class="card-head">
-          <h2 class="section-label">Next up</h2>
-          <a class="more" href="#calendar">Calendar →</a>
-        </div>
-        <ul class="nextup" id="today-next"></ul>
-      </div>
-    </div>
+    </section>
 
-    <a class="card wire-teaser" id="today-wire" href="#wire" hidden></a>
+    <div id="today-story"></div>
+
+    <section class="deeper">
+      <div class="deeper-head" data-reveal>
+        <p class="kicker">Go deeper</p>
+        <h2 class="display">The rest of the desk</h2>
+      </div>
+
+      <a class="card wire-teaser" id="today-wire" href="#wire" data-reveal hidden></a>
+
+      <div class="today-grid">
+        <div class="card" data-reveal>
+          <div class="card-head">
+            <h2 class="section-label">Macro pulse</h2>
+            <a class="more" href="#engine">Full engine →</a>
+          </div>
+          <ul class="pulse" id="today-pulse"></ul>
+        </div>
+        <div class="card" data-reveal>
+          <div class="card-head">
+            <h2 class="section-label">Next up</h2>
+            <a class="more" href="#calendar">Calendar →</a>
+          </div>
+          <ul class="nextup" id="today-next"></ul>
+        </div>
+      </div>
+
+      <div class="tiles" id="today-tiles">
+        <a class="tile card" href="#story" data-reveal><b>Story</b><span>Every chapter, with scenarios and sources</span></a>
+        <a class="tile card" href="#fx" data-reveal><b>Currencies</b><span>Strength board and pair picker</span></a>
+        <a class="tile card" href="#engine" data-reveal><b>Macro engine</b><span>The pillars behind every move</span></a>
+        <a class="tile card" href="#banks" data-reveal><b>Central banks</b><span>Rates, next decisions, pricing</span></a>
+        <a class="tile card" href="#calendar" data-reveal><b>Calendar</b><span>Every catalyst in your time zone</span></a>
+        <a class="tile card" href="#wire" data-reveal><b>Wire</b><span>Developing stories, intraday</span></a>
+      </div>
+    </section>
   </section>
 
   <!-- ============ STORY: one chapter at a time ============ -->

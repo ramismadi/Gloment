@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '16';
+  var ASSET_VERSION = '18';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -32,19 +32,21 @@
 
   function init() {
     checkFreshness();
+    watchUpdates();
     initTheme();
     initTabs();
     startClock();
+    initScrollStory();
 
     fetchJSON('data/story.json').then(function (d) {
       story = d;
       renderEdition(d);
-      renderTakeaways(d);
+      renderScenes(d);
       renderRail(d);
       route();
       renderFx();
     }).catch(function () {
-      note('#today-takeaways', 'Story unavailable.');
+      note('#today-story', 'Story unavailable.');
       note('#chapter-view', 'Story unavailable.');
       setText('#today-headline', 'Edition unavailable');
     });
@@ -107,11 +109,55 @@
   }
 
   /* ---------------- helpers ---------------- */
+  var loaded = {};   // path → raw text as rendered (see watchUpdates)
   function fetchJSON(path) {
     return fetch(path, {cache: 'no-store'}).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
+      return r.text();
+    }).then(function (t) {
+      loaded[path] = t;
+      return JSON.parse(t);
     });
+  }
+
+  /* Scheduled pushes (2 a.m. edition, 30-min wire, intraday actuals) land
+     while the page sits open or a home-screen app waits in the background.
+     Every few minutes while visible — and on returning to the page — re-fetch
+     the data files and compare with what was rendered. Back after a long
+     break: reload straight away. Mid-read: offer a refresh pill instead of
+     yanking the page. */
+  var CHECK_EVERY = 5 * 60 * 1000, AWAY_RELOAD = 10 * 60 * 1000;
+  function watchUpdates() {
+    var hiddenAt = 0;
+    function check(autoReload) {
+      var paths = Object.keys(loaded);
+      if (!paths.length || !window.fetch) return;
+      Promise.all(paths.map(function (p) {
+        return fetch(p, { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : loaded[p]; })
+          .catch(function () { return loaded[p]; });
+      })).then(function (texts) {
+        var changed = texts.some(function (t, i) { return t !== loaded[paths[i]]; });
+        if (!changed) return;
+        if (autoReload) location.reload();
+        else showUpdatePill();
+      });
+    }
+    setInterval(function () { if (!document.hidden) check(false); }, CHECK_EVERY);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { hiddenAt = Date.now(); return; }
+      var away = hiddenAt ? Date.now() - hiddenAt : 0;
+      checkFreshness();
+      check(away >= AWAY_RELOAD);
+    });
+  }
+
+  function showUpdatePill() {
+    if ($('#update-pill')) return;
+    var b = el('button', 'update-pill', 'New update · tap to refresh');
+    b.id = 'update-pill';
+    b.type = 'button';
+    b.addEventListener('click', function () { location.reload(); });
+    document.body.appendChild(b);
   }
 
   function $(sel) { return document.querySelector(sel); }
@@ -461,23 +507,201 @@
     if (d.date) {
       var p = d.date.split('-');
       var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      setText('#edition-date', months[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0]);
+      var label = months[parseInt(p[1], 10) - 1] + ' ' + parseInt(p[2], 10) + ', ' + p[0];
+      setText('#edition-date', label);
+      setText('#hero-date', '· ' + label);
     }
-    setText('#today-headline', d.headline || 'Today’s edition');
+    // Headline as word spans so it can rise in word by word.
+    var h = $('#today-headline');
+    h.textContent = '';
+    (d.headline || 'Today’s edition').split(/\s+/).forEach(function (w, i) {
+      if (i) h.appendChild(document.createTextNode(' '));
+      var s = el('span', 'hw', w);
+      s.style.setProperty('--i', i);
+      h.appendChild(s);
+    });
+    var hc = $('#hero-chapters');
+    hc.textContent = '';
+    (d.chapters || []).forEach(function (ch, i) {
+      var li = el('li');
+      li.style.setProperty('--i', i);
+      li.appendChild(el('span', 'mono', String(i + 1).padStart(2, '0')));
+      li.appendChild(document.createTextNode(' ' + ch.title));
+      hc.appendChild(li);
+    });
   }
 
-  /* One card per chapter: title + the FX line. Click → that chapter. */
-  function renderTakeaways(d) {
-    var box = $('#today-takeaways');
-    (d.chapters || []).forEach(function (ch, i) {
-      var a = el('a', 'takeaway card');
-      a.href = '#story/' + (i + 1);
-      a.appendChild(el('span', 'tk-num mono', String(i + 1).padStart(2, '0')));
-      a.appendChild(el('h3', 'tk-title', ch.title));
-      a.appendChild(el('p', 'tk-fx', ch.fx));
-      a.appendChild(el('span', 'tk-cta', 'Read the chapter →'));
-      box.appendChild(a);
+  /* Numbers inside a data point get emphasis (split + textContent, no HTML). */
+  var NUM_RE = /([+\-−~]?[$¥€£]?\d+(?:[.,]\d+)*(?:[–-]\d+(?:[.,]\d+)*)?(?:\s?(?:%|bp|T|k|bn)\b|%)?)/;
+  function withFigures(node, text) {
+    String(text).split(NUM_RE).forEach(function (part, i) {
+      if (!part) return;
+      node.appendChild(i % 2 ? el('b', 'fig mono', part) : document.createTextNode(part));
     });
+    return node;
+  }
+
+  /* One pinned scene per chapter. Each child with data-at reveals once the
+     scene's scroll progress (0–1) passes that value: FX line, then each data
+     point, then the meaning and the way into the full chapter. */
+  function renderScenes(d) {
+    var box = $('#today-story'), dots = $('#story-dots');
+    box.textContent = '';
+    dots.textContent = '';
+    var chs = d.chapters || [];
+    chs.forEach(function (ch, i) {
+      var nums = ch.numbers || [];
+      var steps = 2 + nums.length;   // FX line, each number, foot
+      var at = function (k) { return (0.06 + 0.78 * k / (steps - 1)).toFixed(3); };
+      var k = 0;
+
+      var sc = el('section', 'scene ch-scene');
+      sc.setAttribute('data-scene', '');
+      sc.id = 'scene-' + (i + 1);
+      sc.style.setProperty('--steps', steps);
+      var pin = el('div', 'pin');
+      pin.appendChild(el('span', 'ghost-num mono', String(i + 1).padStart(2, '0')));
+      var inner = el('div', 'pin-inner ch-inner');
+
+      var head = el('div', 'ch-head step');
+      head.setAttribute('data-reveal', '');   // in as the scene arrives
+      head.appendChild(el('p', 'kicker', 'Chapter ' + (i + 1) + ' of ' + chs.length));
+      head.appendChild(el('h2', 'ch-title', ch.title));
+      inner.appendChild(head);
+
+      if (ch.fx) {
+        var fxl = el('p', 'ch-fx step');
+        fxl.setAttribute('data-at', at(k++));
+        withFigures(fxl, ch.fx);
+        inner.appendChild(fxl);
+      } else k++;
+
+      if (nums.length) {
+        var ul = el('ul', 'ch-nums');
+        nums.forEach(function (n) {
+          var li = el('li', 'step');
+          li.setAttribute('data-at', at(k++));
+          withFigures(li, n);
+          ul.appendChild(li);
+        });
+        inner.appendChild(ul);
+      }
+
+      var foot = el('div', 'ch-foot step');
+      foot.setAttribute('data-at', at(Math.min(k, steps - 1)));
+      if (ch.meaning) {
+        var m = el('p', 'ch-meaning');
+        m.appendChild(el('span', 'callout-lbl', 'What it means'));
+        m.appendChild(el('span', null, ch.meaning));
+        foot.appendChild(m);
+      }
+      var cta = el('a', 'btn', 'Read the full chapter →');
+      cta.href = '#story/' + (i + 1);
+      foot.appendChild(cta);
+      inner.appendChild(foot);
+
+      pin.appendChild(inner);
+      sc.appendChild(pin);
+      box.appendChild(sc);
+
+      var dot = el('button', 'sdot');
+      dot.type = 'button';
+      dot.setAttribute('aria-label', 'Chapter ' + (i + 1) + ': ' + ch.title);
+      dot.appendChild(el('span', 'sdot-lbl', ch.title));
+      dot.addEventListener('click', function () { jumpTo(sc); });
+      dots.appendChild(dot);
+    });
+    measureScenes();
+    queueScroll();
+  }
+
+  /* ---------------- today: scroll engine ----------------
+     Each [data-scene] is taller than the screen; its .pin sticks under the
+     masthead while the scene scrolls past. Progress p (0 → 1) through that
+     travel is written to --p (continuous effects in CSS) and flips .in on
+     [data-at] steps (eased CSS transitions). [data-reveal] blocks fade up
+     once they enter the viewport. Reduced motion: no pinning, all shown. */
+  var sx = { raf: 0, mast: 0, reduced: false };
+
+  function initScrollStory() {
+    var mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    var setReduced = function () {
+      sx.reduced = !!(mq && mq.matches);
+      document.documentElement.classList.toggle('no-motion', sx.reduced);
+      queueScroll();
+    };
+    setReduced();
+    if (mq && mq.addEventListener) mq.addEventListener('change', setReduced);
+    window.addEventListener('scroll', queueScroll, { passive: true });
+    window.addEventListener('resize', function () { measureScenes(); queueScroll(); });
+    window.addEventListener('hashchange', function () { setTimeout(function () { measureScenes(); queueScroll(); }, 0); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measureScenes(); queueScroll(); });
+    measureScenes();
+  }
+
+  function queueScroll() {
+    if (!sx.raf) sx.raf = requestAnimationFrame(updateScroll);
+  }
+
+  /* Masthead height (sticky offset) and, per scene, how far the pinned
+     content overflows the screen — it then drifts up as you scroll. */
+  function measureScenes() {
+    var m = $('.masthead');
+    sx.mast = m ? m.offsetHeight : 0;
+    document.documentElement.style.setProperty('--mast-h', sx.mast + 'px');
+    var v = $('#view-today');
+    if (!v || v.hidden) return;
+    Array.prototype.forEach.call(v.querySelectorAll('[data-scene]'), function (sc) {
+      var pin = sc.querySelector('.pin'), inner = sc.querySelector('.pin-inner');
+      if (!pin || !inner) return;
+      var ov = Math.max(0, inner.offsetHeight - pin.clientHeight + 48);
+      sc.style.setProperty('--ov', ov + 'px');
+      sc.classList.toggle('tall', ov > 0);
+    });
+  }
+
+  function updateScroll() {
+    sx.raf = 0;
+    var v = $('#view-today');
+    if (!v || v.hidden) return;
+    var vh = window.innerHeight, avail = vh - sx.mast;
+    var scenes = v.querySelectorAll('[data-scene]');
+    var reads = [], active = -1;
+    Array.prototype.forEach.call(scenes, function (sc) {
+      reads.push(sc.getBoundingClientRect());
+    });
+    Array.prototype.forEach.call(scenes, function (sc, i) {
+      var r = reads[i], span = Math.max(1, r.height - avail);
+      var p = sx.reduced ? 1 : Math.min(1, Math.max(0, (sx.mast - r.top) / span));
+      sc.style.setProperty('--p', p.toFixed(4));
+      Array.prototype.forEach.call(sc.querySelectorAll('[data-at]'), function (n) {
+        n.classList.toggle('in', sx.reduced || p >= +n.getAttribute('data-at'));
+      });
+      if (sc.classList.contains('ch-scene') && r.top <= sx.mast + avail * 0.5) active = i - 1;
+    });
+    Array.prototype.forEach.call(v.querySelectorAll('[data-reveal]'), function (n) {
+      if (sx.reduced || n.getBoundingClientRect().top < vh * 0.9) n.classList.add('in');
+    });
+
+    // Reading progress through the chapters, and the chapter dots.
+    var story = $('#today-story'), bar = $('#read-bar');
+    if (story && bar) {
+      var sr = story.getBoundingClientRect();
+      var prog = Math.min(1, Math.max(0, (sx.mast - sr.top) / Math.max(1, sr.height - avail)));
+      bar.style.transform = 'scaleX(' + prog.toFixed(4) + ')';
+      var inStory = sr.top < sx.mast + avail * 0.5 && sr.bottom > sx.mast + avail * 0.5;
+      $('#story-dots').classList.toggle('on', inStory);
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#story-dots .sdot'), function (d, i) {
+      if (i === active) d.setAttribute('aria-current', 'step'); else d.removeAttribute('aria-current');
+    });
+  }
+
+  /* Scroll so a chapter scene's content is fully revealed. */
+  function jumpTo(sc) {
+    var span = sc.offsetHeight - (window.innerHeight - sx.mast);
+    var y = sc.getBoundingClientRect().top + window.pageYOffset - sx.mast + Math.max(0, span) * 0.86;
+    window.scrollTo({ top: y, behavior: sx.reduced ? 'auto' : 'smooth' });
   }
 
   /* Macro pulse: pillar title + its one-line read. */

@@ -20,6 +20,13 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
 | Calendar | `#calendar` | `data/calendar.json` (+ banks.json join) |
 | Wire | `#wire` | `data/latest.json` |
 
+- **Today is a scroll story** (Apple-style pinned scenes): full-screen
+  headline → one pinned scene per story chapter where the FX line, each
+  `numbers` entry and `meaning` reveal step by step as you scroll → "Go
+  deeper" (wire teaser, macro pulse, next up, tiles to every tab). Figures in
+  `fx` / `numbers` are auto-highlighted, so keep numbers in those strings
+  concrete. Scene mechanics are commented in app.js ("today: scroll engine");
+  `prefers-reduced-motion` gets a plain, fully visible page.
 - The GLOMENT wordmark and the Today tab go to the clean site URL (no hash).
 - No live price widgets (Rami removed them). Price levels appear only in the
   narrative data.
@@ -33,6 +40,11 @@ demand** — every view leads with the takeaway and tucks detail behind a click.
   N. **Bump all three whenever style.css or app.js changes.** On load, app.js
   re-fetches index.html and reloads once if it sees a newer N — this is how
   cached pages and home-screen installs heal themselves.
+- **Live data while open:** every 5 min (while visible) and on returning to
+  the page, app.js re-fetches the `data/*.json` files it rendered and
+  compares them. Changed and the reader was away 10+ min → reload; changed
+  mid-read → a "New update · tap to refresh" pill. Nothing for the scheduled
+  jobs to do — just push the files as usual.
 - Only http(s) URLs become links; they open in a new tab with
   `rel="noopener noreferrer"`.
 
