@@ -7,7 +7,7 @@
   'use strict';
 
   /* Must equal the ?v= on app.js in index.html — bump both together. */
-  var ASSET_VERSION = '23';
+  var ASSET_VERSION = '24';
 
   var TABS = ['today', 'story', 'fx', 'engine', 'banks', 'calendar', 'wire'];
   /* Theme catalogue. `sw` = swatch preview colors [background, accent, highlight].
@@ -1319,6 +1319,16 @@
     bar.appendChild(ex);
     list.appendChild(bar);
 
+    // This week / All: days already gone fold into one "Earlier" line so
+    // today and what's next come first. Not in "Last 7 days" (that's the
+    // point there), and not when nothing is left to come.
+    var fold = null;
+    var pastN = evs.filter(function (e) { return evKey(e) < todayKey; }).length;
+    if ((cal.prefs.range === 'week' || cal.prefs.range === 'all') && pastN && pastN < evs.length) {
+      fold = earlierFold(pastN, cal.prefs.range === 'week' ? 'Earlier this week' : 'Earlier');
+      list.appendChild(fold.wrap);
+    }
+
     var group = null, groupKey = null, nowDrawn = false;
     evs.forEach(function (e) {
       var k = evKey(e);
@@ -1326,7 +1336,7 @@
         groupKey = k;
         group = el('section', 'cal-day card' + (k === todayKey ? ' today' : '') + (k < todayKey ? ' past' : ''));
         group.appendChild(el('h3', 'cal-day-head', keyLabel(k, todayKey)));
-        list.appendChild(group);
+        (fold && k < todayKey ? fold.body : list).appendChild(group);
       }
       if (k === todayKey && !nowDrawn && evUpcoming(e, now, todayKey) && evWhen(e)) {
         var nl = el('div', 'now-line');
@@ -1343,6 +1353,29 @@
       end.appendChild(el('span', null, 'Now \u00b7 ' + fmtClock(now)));
       todayGroup.appendChild(end);
     }
+  }
+
+  /* The "Earlier this week · N events" toggle; open state lasts the visit. */
+  function earlierFold(n, label) {
+    var wrap = el('div', 'cal-earlier' + (cal.earlierOpen ? ' open' : ''));
+    var btn = el('button', 'cal-earlier-btn');
+    btn.type = 'button';
+    btn.setAttribute('aria-expanded', cal.earlierOpen ? 'true' : 'false');
+    btn.appendChild(el('span', 'ce-lbl', label));
+    btn.appendChild(el('span', 'ce-n', n + (n === 1 ? ' event' : ' events')));
+    btn.appendChild(el('span', 'ce-act', cal.earlierOpen ? 'Hide' : 'Show'));
+    var body = el('div', 'cal-earlier-body');
+    body.hidden = !cal.earlierOpen;
+    btn.addEventListener('click', function () {
+      cal.earlierOpen = !cal.earlierOpen;
+      body.hidden = !cal.earlierOpen;
+      wrap.classList.toggle('open', cal.earlierOpen);
+      btn.setAttribute('aria-expanded', cal.earlierOpen ? 'true' : 'false');
+      btn.querySelector('.ce-act').textContent = cal.earlierOpen ? 'Hide' : 'Show';
+    });
+    wrap.appendChild(btn);
+    wrap.appendChild(body);
+    return { wrap: wrap, body: body };
   }
 
   function eventRow(e, now, todayKey) {

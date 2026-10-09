@@ -1630,6 +1630,21 @@ a.chip:hover { border-color: var(--accent-2); background: var(--accent-wash); }
 button.btn { border: 1px solid var(--line); }
 
 .cal-list { display: grid; gap: 14px; }
+.cal-earlier-body { display: grid; gap: 14px; margin-top: 14px; }
+.cal-earlier.open .cal-earlier-body { animation: drawerIn 0.35s cubic-bezier(0.2, 0.7, 0.15, 1); }
+.cal-earlier-btn {
+  display: flex; align-items: baseline; gap: 10px; width: 100%;
+  padding: 12px 20px; border-radius: var(--radius);
+  border: 1px dashed var(--line); background: var(--surface-2);
+  font: inherit; color: var(--ink-2); text-align: left; cursor: pointer;
+}
+.cal-earlier-btn:hover { border-color: var(--accent-2); }
+.ce-lbl { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.ce-n { font-size: 0.82rem; color: var(--ink-2); }
+.ce-act { margin-left: auto; font-size: 0.8rem; font-weight: 600; color: var(--accent); }
+.ce-act::after { content: " ▾"; }
+.cal-earlier.open .ce-act::after { content: " ▴"; }
+@media (prefers-reduced-motion: reduce) { .cal-earlier.open .cal-earlier-body { animation: none; } }
 .cal-day { padding: 6px 0; }
 .cal-day-head {
   margin: 0;
