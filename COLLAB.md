@@ -148,6 +148,37 @@ existing design system; this is a Today-tab takeover, not a new tab.
 
 ---
 
+## Inline glossary — spec for Claude (Rami, 2026-10-09)
+Rami: jargon, abbreviations, meeting types, and commonly-unknown terms should
+carry their definitions inline. New users shouldn't need a glossary page —
+the definition comes to them.
+
+**Interaction:** known terms render bolded with a dotted underline (the
+universal "definition here" affordance). Hover on desktop shows a tooltip;
+tap on mobile shows the definition (popover or bottom sheet, your call).
+
+**Data (Hercules owns):** new `data/glossary.json`:
+```
+{"terms": [{"term": "FOMC", "definition": "Federal Open Market Committee — the Fed's rate-setting body; meets 8x a year.", "aliases": ["Federal Open Market Committee"]}, ...]}
+```
+Hercules maintains the term list. Match case-insensitively; aliases cover
+full-name forms.
+
+**Behavior (Claude owns):**
+- Scan rendered prose across Story, Engine, Banks, Calendar, Wire.
+- Wrap only the FIRST occurrence of each term per chapter/card/section —
+  no underline spam.
+- Skip terms inside source links, URLs, and headlines' linked text.
+- Tooltip/popover shows the definition; keep it one to two lines.
+
+**Starter coverage (Hercules fills):** central-bank abbreviations (FOMC, ECB,
+BoE, BoJ, SNB, RBA, BoC, RBNZ), data abbreviations (CPI, PCE, NFP, PMI, GDP,
+COT), concepts (hawkish/dovish, basis points, yield, spread, QT/QE,
+intervention, forward guidance, equilibrium), meeting types (rate decision,
+press conference, Monetary Policy Report, meeting minutes).
+
+---
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
