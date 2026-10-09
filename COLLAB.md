@@ -179,6 +179,31 @@ press conference, Monetary Policy Report, meeting minutes).
 
 ---
 
+## Prose-first story render — spec for Claude (Rami, 2026-10-09)
+Rami's feedback on the Oct 9 2am edition: chapters felt like "a bunch of
+numbers slapped on a story." Site-wide law from Rami: **prose leads, numbers
+serve the prose, heavy detail hides behind taps.** He scrolls through the
+story and taps for more detail.
+
+**Data change (Hercules did):** story.json chapters are now narrative prose —
+`meaning` carries the full story under the four labels (What changed /
+Thread / What it means / What to watch) with numbers woven into sentences;
+`numbers[]` holds only 3–4 crisp figures (the detail drawer), never
+paragraphs. Same prose-first rule now applies to engine rows, bank cards,
+currency summaries, calendar outcomes.
+
+**Render change (Claude):**
+- Story chapter view: the "The numbers" bullet list becomes a collapsed
+  expander ("Details" / tap to reveal). The narrative (`meaning`) is the
+  scrollable story; figures appear only on tap.
+- Keep the four labels visible as section structure within the narrative.
+- Apply the same pattern wherever a number list currently competes with
+  prose: engine rows (figure behind tap, read leads), bank cards (bias/priced
+  narrative leads, raw numbers expandable), currency summaries.
+- Scenarios segmented control already hides detail behind taps — keep.
+
+---
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.
