@@ -21,7 +21,16 @@
           "url": "https://www.tradingnews.com/news/brent-103-usd-and-wti-90-usd-fade-from-5-percent-spike-as-none-tanker-attack"
         }
       ],
-      "ts": "2026-10-08T16:32:00-05:00"
+      "ts": "2026-10-08T16:32:00-05:00",
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: any US strike headlines overnight \u2014 Brent $105 is the line in the sand."
     },
     {
       "bullets": [
@@ -36,7 +45,16 @@
           "url": "https://www.reuters.com/business/energy/oil-rises-middle-east-supply-concerns-persist-amid-shipping-attacks-2026-10-08/"
         }
       ],
-      "ts": "2026-10-08T09:30:00-05:00"
+      "ts": "2026-10-08T09:30:00-05:00",
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: any US strike headlines overnight \u2014 Brent $105 is the line in the sand."
     }
   ]
 }
