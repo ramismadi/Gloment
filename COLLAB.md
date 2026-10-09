@@ -11,53 +11,26 @@ advice.
 
 ## Architecture
 - `index.html` — page shell; dynamic sections are empty containers filled by JS.
-- `assets/style.css` — premium tabbed desk. Colors are token sets on
-  `<html data-theme="…">`. Light: **alpine** (default — sky blues, pale gold,
-  white; keep the default light, Rami rejected a dark default), **ivory**,
-  **sage**, **porcelain**, **claret**, **harbor**, **dusk**. Dark
-  (opt-in only): **ink**, **forest**, **onyx**, **velvet**. Readers pick from the
-  theme dropdown in the masthead; the choice is saved in localStorage. To add
-  or remove a theme, edit both its `[data-theme]` token block in style.css and
-  its entry in the `THEMES` list in app.js. Every theme defines the same
-  tokens — add new colors as tokens, never as hard-coded hex in components.
-- Cache-busting: `index.html` loads `assets/style.css?v=N` and
-  `assets/app.js?v=N`, and `ASSET_VERSION` at the top of `app.js` must equal
-  N. **Bump all three whenever style.css or app.js changes** — app.js
-  re-fetches index.html on load and reloads once if it sees a newer N (this
-  is how stale home-screen installs heal themselves) —
-  GitHub Pages lets browsers cache assets ~10 min, and a new page with a stale
-  script breaks the UI (this happened with the theme dropdown).
+- `assets/style.css` — sunny alpine theme: bright sky blues, pale gold accents,
+  light greys, white surfaces. Airy daytime feel. Terminal-desk aesthetic
+  (monospace tabular numerals, compact data rows). Keep it light — Rami
+  rejected a darker version.
 - `assets/app.js` — on load: fetches `data/*.json` via relative paths and renders
-  each view. All DOM built with textContent (no HTML injection). Hash-routed
-  tabs: `#today`, `#story` (`#story/2` = chapter 2), `#engine`, `#banks`,
-  `#calendar`, `#wire`. No live price widgets — Rami removed them (unreliable
-  feeds); this is a story/full-picture site, not a quote terminal.
-- Session chips (masthead): SYD 07–16, TYO 09–18, LDN 08–17, NYC 08–17,
-  each in its own city's local time via Intl time zones (DST-correct),
-  Mon–Fri, and only while the FX week is open (Sun 17:00 → Fri 17:00 New
-  York). Hover shows hours and an opens/closes-in countdown. Holidays are
-  not modelled.
-- Fonts: serif (Source Serif 4 → Georgia) for headlines and the story lede;
-  system sans for UI and body; monospace (`--mono`) only for tabular numerals
-  (clock, engine figures, bank rates, calendar dates/times, wire timestamps).
-- Design principle: **less text up front, depth on demand.** Each view leads
-  with the takeaway and tucks detail behind a click:
-  - Today — headline, one card per story chapter (title + its `fx` line),
-    macro pulse (each pillar's `read`), next 3 calendar items, latest wire.
-  - Story — one chapter at a time: `fx` callout first, then `meaning`, the
-    `numbers`, and a Base/Bull/Bear switch showing one scenario at a time.
-  - Engine — six tiles: `read` big, `figure` small.
-  - Wire — headline + the `FX:` bullet; `Numbers:`/`Meaning:` bullets sit
-    behind "Full detail". Keep the `Numbers:` / `Meaning:` / `FX:` prefixes
-    on wire bullets — the renderer splits on them.
-  So write data with that in mind: `fx` and `read` should be short, punchy
-  one-liners (they are what people see first); depth goes in `numbers`,
-  `meaning`, and the scenarios.
-- Central banks are fed by `data/banks.json` (see schema below). The
-  calendar is still hand-seeded in `index.html` — update by hand when
-  stale. Calendar entries with
-  `data-key` are highlighted; Today's "Next up" shows the first three `<li>`s,
-  so drop past events from the top of the list.
+  each section. All DOM built with textContent (no HTML injection). Also drives
+  the JS-rendered dashboard chrome: sticky status bar (live local/UTC clocks,
+  TYO/LDN/NYC session chips). No live price widgets — Rami removed them
+  (unreliable feeds); this is a story/full-picture site, not a quote terminal.
+  Price levels appear only inside the narrative data.
+- Fonts: system sans stack (`-apple-system` first, so Apple devices render
+  San Francisco; Inter via Google Fonts elsewhere). Monospace (`--mono`) is
+  reserved strictly for tabular numerals: status-bar clocks, engine figures,
+  bank-table numbers, calendar times, wire timestamps. Everything else is sans.
+- Layout order (top to bottom): sticky status bar → hero header → **The Story**
+  (the core: daily narrative from `data/story.json`) → dashboard grid (macro
+  engine, central-bank scorecard, economic calendar, breaking wire) → footer.
+  The story is the product; everything else supports it.
+  The scorecard/calendar/ticker are presentational — they are NOT fed by
+  `data/*.json`, so update their seed values by hand when they go stale.
 - `data/engine.json` — six macro pillars:
   `{"updated": "<ISO-8601>", "rows": [{"id","title","figure","read"}]}`.
   Row ids: `policy`, `growth`, `inflation`, `risk`, `terms`, `positioning`.
@@ -68,39 +41,6 @@ advice.
 - `data/latest.json` — breaking items, reverse-chronological:
   `{"items":[{"ts":"<ISO-8601>","headline":"...","bullets":[],
   "sources":[]}]}`.
-- `data/banks.json` — central-bank scorecard (**Hercules: please own and
-  fill this feed**). Seeded 2026-10-08 with only what the site already
-  showed (Fed row + meeting dates); every other bank renders as a compact
-  "date only" card until its fields are filled.
-  `{"updated":"<ISO-8601>","banks":[{"id","short","name","ccy",
-  "rate":"2.50%" | null, "rate_label":"Deposit facility rate",
-  "last_move":{"date":"YYYY-MM-DD","bp":25 | -25 | 0} | null,
-  "next_meeting":{"start":"YYYY-MM-DD","end":"YYYY-MM-DD"?} | null,
-  "priced":"Oct hike ~60%" | null,
-  "bias":"hawkish" | "neutral" | "dovish" | null,
-  "sources":[{"label","url"}]}]}`.
-  A bank counts as covered (full card) once it has `rate`, `priced` or
-  `bias`. Cards sort by soonest `next_meeting`; the "Next decision" strip
-  picks the earliest upcoming one. Use the bank's headline policy rate
-  (Fed: target range, e.g. "3.50–3.75%"; ECB: deposit facility) and say
-  which in `rate_label`. Verify every rate and date against the central
-  bank's own site and link it in `sources` — secondary sites disagreed
-  widely when Claude checked on 2026-10-08.
-
-## Clickable sources (for whoever writes `data/*.json`)
-Source labels now link to the original article/page when a URL is supplied.
-Links open in a new tab (`rel="noopener noreferrer"`); only `http(s)` URLs are
-honoured. Everything is backward compatible: with no URL, the label renders as
-plain text exactly as before. Never guess or fabricate a URL — link the actual
-article/series page you used, or leave the URL out.
-- `engine.json` rows and `story.json` chapters: keep `"source"` (string) and add
-  `"source_url"` for a single source, or use `"sources": [{"label","url"}, ...]`
-  (items may also be plain strings) when a row cites several.
-- `latest.json` items: `"sources"` may hold `{"label","url"}` objects (or
-  strings, as before); optional `"url"` on the item makes the headline itself
-  a link.
-- Deep links beat homepages: prefer the specific article, FRED series page,
-  or release over a publisher front page.
 
 ## How updates happen (Hercules' automation — do not fight it)
 - Daily ~2:00 AM CT cron (`fx-outlook-daily-refresh`): rebuilds `story.json`
@@ -158,11 +98,18 @@ article/series page you used, or leave the URL out.
   Designs are only as good as the data behind them; Hercules makes sure the
   data is always there, fresh, and correctly shaped.
 
-## Keep the docs current
-COLLAB.md is shared. Edit only the section you're changing, starting from the
-latest `main` — don't paste an older copy over the whole file (the
-Architecture section has been reverted twice that way). The Architecture and
-theme notes describe the live design; Claude maintains them.
+## Pillar explainers (spec for Claude — Rami audit, 2026-10-08)
+Rami wants each Macro Engine row to have a tap-to-expand "What is this?"
+The content below is Hercules's; Claude owns the interaction design.
+Keep each to ~3 lines: what it is, how it moves currencies, one live example.
+
+1. **Policy divergence** — Central banks moving in different directions. It is the *gap* between them that moves currencies: money flows toward higher rates. *Live: Fed 3.75–4.00% and still hiking vs SNB pinned at 0% — that gap underpins USD/CHF.*
+2. **Growth differentials** — Who is accelerating, who is stalling (GDP, jobs, PMIs). Always comparative. Stronger growth pulls in capital and raises hike expectations. *Live: US resilient while Europe stalls on energy costs — weight on EUR/USD.*
+3. **Inflation** — CPI/PCE vs the central bank's target. High inflation alone strengthens nothing — what matters is what the bank *does* about it. *Live: UK inflation 3.1% vs 2% target is why the BoE is talking hikes, holding GBP up.*
+4. **Risk sentiment** — Risk-on vs risk-off. Fear bids USD, JPY, CHF (havens) and sells AUD, NZD, GBP (risk proxies). *Live: Iran escalation bid for yen and franc this week was pure risk sentiment.*
+5. **Terms of trade** — Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways — say which and why. *Live: Brent ~$103 supports CAD (exporter) and pressures JPY/EUR (importers).*
+6. **Positioning** — Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.
+7. **Fiscal & sovereign risk** — Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency. *Live: French 10y spread over Bunds >150bp, widest since 2011 — a euro headwind.*
 
 ## If you're Claude reading this
 Rami asked Hercules to leave this for you. The above is the full picture.
