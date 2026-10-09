@@ -117,8 +117,18 @@ has no "What is this?" button.
 
 ### `data/latest.json` — Wire
 ```
-{"items":[{"ts":"<ISO-8601>","headline","url"?,"bullets":[],"sources":[]}]}
+{"items":[{"ts":"<ISO-8601>","headline","url"?,"bullets":[],"sources":[],
+  "thread":"us-iran-20261008",     // same id = one developing story
+  "ccy":["USD","JPY"],             // affected currencies → tags link to #fx/CCY
+  "pillar":"risk",                 // engine pillar id → tag links to #engine
+  "next":"Next: ..."}]}            // next catalyst in the storyline
 ```
+Renders as **threads**: items sharing a `thread` id become one card headed
+by the newest update (headline, currency + pillar tags, FX line, "What's
+next" from the newest item's `next`, sources), with a "How it developed"
+timeline of every update below. Items without `thread` stand alone. Threads
+sort by their newest update; the tab badge counts threads. Currency pages
+list the threads tagged with that currency ("On the wire").
 Keep the `Numbers:` / `Meaning:` / `FX:` prefixes on bullets — the FX line
 shows by default, the rest sits behind "Full detail".
 
