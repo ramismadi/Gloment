@@ -1442,7 +1442,10 @@
       det.appendChild(oc);
     }
     if (e.why) det.appendChild(el('p', 'ev-why', e.why));
-    if (e.if_beat || e.if_miss) {
+    // Once the print and its outcome are in, the outcome supersedes the
+    // beat/miss branches — render-only; the feed keeps all fields.
+    var settled = e.actual != null && e.actual !== '' && !!e.outcome;
+    if (!settled && (e.if_beat || e.if_miss)) {
       var cb = e.category === 'central-bank';
       var g = el('div', 'ev-scen');
       if (e.if_beat) {
@@ -1492,7 +1495,7 @@
     links.appendChild(add);
     det.appendChild(links);
     if ((e.sources || []).length) det.appendChild(sourceChips(e.sources));
-    if (!e.why && !e.if_beat && !bk && !(e.sources || []).length) {
+    if (!e.why && !e.if_beat && !(e.outcome && !up) && !bk && !(e.sources || []).length) {
       det.insertBefore(el('p', 'meta', 'No briefing for this event yet.'), det.firstChild);
     }
     wrap.appendChild(det);
