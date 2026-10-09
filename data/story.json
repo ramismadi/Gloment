@@ -206,7 +206,7 @@
   {
    "title": "Oil",
    "teaser": "Brent ~$102.80, WTI ~$90.70 — and the $12+ spread between them is the story: the war premium sits in seaborne crude, not US landlocked oil.",
-   "meaning": "What changed: crude gave back more today — Brent down 1.4% to ~$102.80, WTI off 1% to ~$90.70 — as Trump's no-strikes pledge kept the market defensive and Hurricane Isaias shut in some Gulf production without lifting prices. Thread: oil has been the swing factor for CAD all week — every escalation headline lifted it, every de-escalation headline pressed it back down. What it means: the number that matters isn't either price, it's the $12.40 gap between them — roughly triple the normal spread. That wide gap is the geopolitical premium made visible: it lives in Brent, the seaborne benchmark exposed to Hormuz, while WTI, landlocked in Oklahoma, barely feels it. For FX this is a terms-of-trade transfer with an asterisk. Canada's crude prices off WTI, so the loonie feels the softer ~$90.70 print more than the Brent headline — a headwind arriving just as the +60.4K jobs beat was building a hawkish BoC case. Japan and the eurozone, pricing imports off Brent, get relief either way: cheaper energy eases import bills, a quiet positive for JPY and EUR.",
+   "meaning": "What changed: crude gave back more today — Brent down 1.4% to ~$102.80, WTI off 1% to ~$90.70 — as Trump's no-strikes pledge kept the market defensive and Hurricane Isaias shut in some Gulf production without lifting prices. Thread: oil has been the swing factor for CAD all week — every escalation headline lifted it, every de-escalation headline pressed it back down. What it means: the number that matters isn't either price, it's the $12.40 gap between them — roughly triple the normal spread. That wide gap is the geopolitical premium made visible: it lives in Brent, the seaborne benchmark exposed to Hormuz, while WTI, landlocked in Oklahoma, barely feels it. For FX this is a terms-of-trade transfer with an asterisk. Canada's crude prices off WTI, so the loonie feels the softer ~$90.70 print more than the Brent headline — a headwind arriving just as the -68.3K jobs miss was unwinding the hawkish BoC case. Japan and the eurozone, pricing imports off Brent, get relief either way: cheaper energy eases import bills, a quiet positive for JPY and EUR.",
    "numbers": [
     "Brent ~$102.80 (-1.4% today)",
     "WTI ~$90.70 (-1.0% today)",
@@ -215,9 +215,9 @@
    ],
    "fx": "What to watch: the spread itself — if it narrows toward $5, the geopolitical premium is truly unwinding; if it stays wide, the market still prices Hormuz risk. For CAD, WTI is the number that moves the terms of trade; for JPY/EUR, Brent. Any fresh strike or shipping disruption re-prices Brent first and the spread blows wider within hours.",
    "scenarios": {
-    "base": "Brent drifts $100–105 while the no-strikes pledge holds; CAD trades the jobs beat more than the oil tape.",
+    "base": "Brent drifts $100–105 while the no-strikes pledge holds; CAD trades the BoC repricing more than the oil tape.",
     "bull": "A fresh escalation or Hormuz disruption: Brent spikes toward $110+, the spread blows past $15; CAD rips on WTI follow-through, JPY/EUR sag on import-cost fears.",
-    "bear": "Ceasefire chatter or OPEC+ supply signals: Brent breaks under $100, spread collapses toward $5; CAD gives back the jobs gains, importers breathe easier."
+    "bear": "Ceasefire chatter or OPEC+ supply signals: Brent breaks under $100, spread collapses toward $5; CAD extends the jobs-driven slide, importers breathe easier."
    },
    "sources": [
     {
