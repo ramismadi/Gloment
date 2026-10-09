@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gloment — Global fundamentals for FX</title>
-<meta name="description" content="Gloment: a premium FX macro desk — the daily story behind the moves, a six-pillar macro engine, central-bank scorecard, calendar and breaking wire.">
+<meta name="description" content="Gloment: a premium FX macro desk — the daily story behind the moves, a six-pillar macro engine, central-bank scorecard, calendar and Flash.">
 <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta name="theme-color" content="#2a86d0">
@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=26">
+<link rel="stylesheet" href="assets/style.css?v=27">
 <script>
   /* Apply the saved theme before first paint (no flash). */
   try {
@@ -23,7 +23,7 @@
     if (t) document.documentElement.setAttribute('data-theme', t);
   } catch (e) {}
 </script>
-<script src="assets/app.js?v=26" defer></script>
+<script src="assets/app.js?v=27" defer></script>
 </head>
 <body>
 
@@ -58,7 +58,7 @@
         <a role="tab" href="#engine"   data-tab="engine"   id="tab-engine">Macro engine</a>
         <a role="tab" href="#banks"    data-tab="banks"    id="tab-banks">Central banks</a>
         <a role="tab" href="#calendar" data-tab="calendar" id="tab-calendar">Calendar</a>
-        <a role="tab" href="#wire"     data-tab="wire"     id="tab-wire">Wire <span class="badge" id="wire-count" hidden></span></a>
+        <a role="tab" href="#flash"    data-tab="flash"    id="tab-flash">Flash <span class="badge" id="wire-count" hidden></span></a>
       </div>
     </div>
   </nav>
@@ -93,7 +93,7 @@
         <h2 class="display">The rest of the desk</h2>
       </div>
 
-      <a class="card wire-teaser" id="today-wire" href="#wire" data-reveal hidden></a>
+      <a class="card wire-teaser" id="today-wire" href="#flash" data-reveal hidden></a>
 
       <div class="today-grid">
         <div class="card" data-reveal>
@@ -118,7 +118,7 @@
         <a class="tile card" href="#engine" data-reveal><b>Macro engine</b><span>The pillars behind every move</span></a>
         <a class="tile card" href="#banks" data-reveal><b>Central banks</b><span>Rates, next decisions, pricing</span></a>
         <a class="tile card" href="#calendar" data-reveal><b>Calendar</b><span>Every catalyst in your time zone</span></a>
-        <a class="tile card" href="#wire" data-reveal><b>Wire</b><span>Developing stories, intraday</span></a>
+        <a class="tile card" href="#flash" data-reveal><b>Flash</b><span>Developing stories, intraday</span></a>
       </div>
     </section>
   </section>
@@ -207,10 +207,10 @@
     <div class="cal-list" id="cal-list"></div>
   </section>
 
-  <!-- ============ WIRE ============ -->
-  <section class="view" id="view-wire" role="tabpanel" aria-labelledby="tab-wire" hidden>
+  <!-- ============ FLASH ============ -->
+  <section class="view" id="view-flash" role="tabpanel" aria-labelledby="tab-flash" hidden>
     <div class="view-head">
-      <h1 class="view-title">Wire</h1>
+      <h1 class="view-title">Flash</h1>
       <p class="meta">Developing stories that move FX · newest first · tap a currency tag for its strength page</p>
     </div>
     <div class="wire" id="latest-items"></div>

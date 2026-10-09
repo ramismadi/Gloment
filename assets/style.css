@@ -1764,6 +1764,9 @@ button.btn { border: 1px solid var(--line); }
 /* ---------- WIRE ---------- */
 .wire { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; max-width: 820px; }
 .wire-item.latest { border-color: var(--bear-wash); box-shadow: var(--shadow), inset 3px 0 0 var(--bear); }
+/* No update in 24h: cooling — it fades back and phases out on its own. */
+.wire-item.cooling { opacity: 0.62; box-shadow: none; }
+.wire-item.cooling:hover, .wire-item.cooling:focus-within { opacity: 0.9; }
 .wire-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; font-size: 0.78rem; color: var(--ink-3); }
 .wire-meta time { white-space: nowrap; }
 .wire-headline {
