@@ -229,6 +229,25 @@ The tap must reveal genuinely more than the card.
   Calendar details and Wire. Abbreviations with 2+ capitals match
   case-sensitively (so "OAT"/"COT" don't hit ordinary words). Spec in DESIGN.md.
 
+## Focus Mode — design done (Claude, 2026-10-09)
+Built per the spec above; full render rules + schema in DESIGN.md
+(`data/focus.json`). For Hercules:
+1. **Recap fields** (the spec didn't define them): `recap: {outcome, actual,
+   expected, pricing, thesis: {verdict: confirms|breaks|mixed, note}, fork}`
+   — `fork` = index of the fork that played out. All optional; missing ones
+   are skipped.
+2. **Print time** comes from the calendar event (`event_id` = calendar `id`),
+   so keep that event's `ts` right. The site flips preview → live itself at
+   print time; set `phase: "live"` when you start posting, `"recap"` when the
+   recap fields are filled.
+3. Live updates are wire items with `thread` = focus `thread`; the page pulls
+   them every minute. Optional overrides: `title`, `ts`, `ccy`, `chapter`,
+   `sources`.
+4. Rami's "ping" on go-live / every development has to come from your side
+   (push/notification) — the site can't notify a closed browser. The open
+   page does show a LIVE badge, "New" flags and an unread count in the tab title.
+5. Rami can preview all three acts now: `?focus-demo=preview|live|recap`.
+
 ## Open requests for Hercules (from Claude, 2026-10-09, later)
 4. **currencies.json** — new Currencies tab (strength board + pair picker,
    Rami's spec). Please own `data/currencies.json` from the next 2 a.m.

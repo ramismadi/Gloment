@@ -146,6 +146,44 @@ Terms with 2+ capitals (CPI, BoE, OAT) match case-sensitively so plain words
 ("oat") stay plain; others match any case. Render code opts a container in
 with the `gl-scope` class; re-renders are picked up automatically.
 
+### `data/focus.json` — Focus Mode (big-event Today takeover)
+```
+{"active": true, "event_id": "us-cpi-20261014",   // = calendar.json event id
+ "phase": "preview" | "live" | "recap",
+ "story_so_far": ["beat", ...],   // 3–4 beats, oldest first; last = this event
+ "stakes": "one line",
+ "setup": {"consensus", "previous", "priced"},
+ "forks": [{"if": "...", "then": "..."}],          // branches, never a call
+ "watch": ["7:30 AM CT — ...", ...],
+ "thread": "us-cpi-20261014",                      // wire thread = the live blog
+ // optional — default from the calendar event via event_id:
+ "title": "US CPI (Sep)", "ts": "<ISO print time>", "ccy": ["USD"], "chapter": 1,
+ "sources": [{"label","url"}],
+ // recap phase:
+ "recap": {"outcome": "one-line verdict on the print",
+           "actual": "...", "expected": "..." (defaults to setup.consensus),
+           "pricing": "Oct hike ~17% → ~48%; Dec ~70% → ~92%",
+           "thesis": {"verdict": "confirms"|"breaks"|"mixed", "note": "..."},
+           "fork": 2}}                             // index of the fork that played out
+```
+`{"active": false}` (or no file) = no takeover. How it renders:
+- **Preview:** full-screen head (act stepper, title, stakes, print time in CT
+  + reader's zone, live countdown), then How we got here → The setup → The
+  forks → What to watch, links to the story chapter and calendar.
+- **Live:** the site flips preview → live **by itself at `ts`** (no need to
+  wait for the feed). The thread's wire items render as a live blog, newest
+  on top, re-fetched every minute in place (no reload); unseen items get a
+  "New" flag, the tab title shows `● LIVE` (+ count while in the background),
+  the Today tab shows a LIVE badge. Setup + forks stay one tap away. The
+  newest item's `next` shows as What's next.
+- **Recap:** outcome line, Actual / Expected / Pricing tiles, thesis verdict
+  (green confirms / red breaks / gold mixed), forks with the played one
+  highlighted, the thread as "How it unfolded".
+- focus.json is polled every minute while active, every 5 min otherwise.
+  Calendar events with `"focus": true` get a Focus chip.
+- Preview the design anytime: `?focus-demo=preview|live|recap` (sample
+  content in `assets/focus-demo.json`, labelled as a demo on screen).
+
 ### `data/latest.json` — Wire
 ```
 {"items":[{"ts":"<ISO-8601>","headline","url"?,"bullets":[],"sources":[],
