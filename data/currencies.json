@@ -1,1 +1,346 @@
-{"as_of":"2026-10-09","currencies":[{"bank":"fed","ccy":"USD","chapter":1,"drivers":{"growth":{"note":"US resilient — claims 197k, 4th straight week near 57-yr lows; U Mich 46.3, 3rd straight decline","score":1},"inflation":{"note":"U Mich 1y exp 4.7% (from 4.6%), 5y 3.5% (from 3.4%) — rising expectations keep Dec hike alive","score":1},"policy":{"note":"Fed hawkish; Dec hike ~83% priced, Oct ~17.7% (the pause)","score":1},"positioning":{"note":"Longs crowded; EUR shorts at 343-report extreme = squeeze risk against USD","score":-1},"risk":{"note":"Haven bid leaking on de-escalation; DXY ~102.0, dollar barely moved on Friday's data","score":0}},"name":"US dollar","summary":"Hawkish-hold in week three: rising inflation expectations keep December ~83% priced — Friday's data changed nothing."},{"bank":"ecb","ccy":"EUR","chapter":2,"drivers":{"fiscal":{"note":"OAT–Bund ~140–146bp off the wides — premium still in EUR","score":-1},"growth":{"note":"Europe stalls on politics and energy costs","score":-1},"policy":{"note":"ECB hawkish (2.50%); Lane adds dovish tint","score":1},"tot":{"note":"Energy importer — oil >$103 hurts","score":-1}},"name":"Euro","summary":"Fiscal stress + soft growth + energy costs outweigh a hawkish ECB."},{"bank":"boe","ccy":"GBP","chapter":3,"drivers":{"inflation":{"note":"UK CPI 3.1% (Aug); BoE sees ~3.75% Q4","score":1},"policy":{"note":"BoE held 3.75% in a 6–3 hawkish vote","score":1},"risk":{"note":"Risk proxy in a de-escalating risk-off","score":-1}},"name":"British pound","summary":"Hawkish-hold on sticky inflation; sterling bid vs the euro on French stress."},{"bank":"boj","ccy":"JPY","chapter":4,"drivers":{"policy":{"note":"BoJ hawkish — OIS >80% for a Dec hike; Takaichi back on intervention watch near 158","score":1},"risk":{"note":"Haven bid, softening on Iran de-escalation","score":1},"tot":{"note":"Energy importer — Brent ~$103 hurts","score":-1}},"name":"Japanese yen","summary":"Hiking cycle alive into Oct 29–30; the US–Japan rate gap still owns the pair, intervention talk caps the top."},{"bank":"snb","ccy":"CHF","chapter":5,"drivers":{"policy":{"note":"SNB pinned at 0.00%; neutral","score":0},"risk":{"note":"Haven bid leaking out as strike headlines fade","score":1}},"name":"Swiss franc","summary":"Pure geopolitical play — de-escalation softens the week's haven bid."},{"bank":"rba","ccy":"AUD","chapter":6,"drivers":{"policy":{"note":"RBA hiked to 4.60% Sep 29; hawkish, next Nov 2–3","score":1},"risk":{"note":"Risk-off drag vs de-escalation relief — net neutral today","score":0}},"name":"Australian dollar","summary":"Best G10 on softer USD; risk proxy with the strongest policy tailwind."},{"bank":"boc","ccy":"CAD","chapter":7,"drivers":{"policy":{"note":"BoC Oct 28 hike odds cut to 25% (from 40%) after -68.3K jobs; market prices hold at best","score":-1},"tot":{"note":"Brent $103.30, WTI ~$91 — oil still elevated, but domestic weakness now dominates","score":1}},"name":"Canadian dollar","summary":"Jobs shock (-68.3K) sank the loonie to an 18-month low; BoC hike bets unwound — oil tailwind vs a widening rate gap."},{"bank":"rbnz","ccy":"NZD","chapter":8,"drivers":{"policy":{"note":"RBNZ hawkish at 2.75%; Westpac sees pause Oct, hike Dec","score":1},"risk":{"note":"Softer USD lifted NZD overnight","score":0}},"name":"New Zealand dollar","summary":"RBNZ October decision now a two-way bet after Westpac's pause call."}],"history":[{"date":"2026-10-08","scores":{"AUD":0,"CAD":1,"CHF":1,"EUR":-2,"GBP":1,"JPY":1,"NZD":0,"USD":3}},{"date":"2026-10-09","scores":{"AUD":1,"CAD":1,"CHF":1,"EUR":-2,"GBP":1,"JPY":1,"NZD":1,"USD":3}}],"method":"Score = sum of pillar scores (-1 / 0 / +1). Pillars: policy, growth, inflation, risk, tot, positioning, fiscal. Missing pillar = 0.","note":"Hercules-owned feed. Scores from the morning engine reads and banks.json stances; chapters are story chapter numbers. Analysis, not trade recommendations.","pairs":{},"updated":"2026-10-09T16:05:00-05:00"}
+{
+ "as_of": "2026-10-10",
+ "currencies": [
+  {
+   "bank": "fed",
+   "ccy": "USD",
+   "chapter": 1,
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "Fed hawkish; Dec ~82% priced, Oct ~18% \u2014 unchanged in substance"
+    },
+    "growth": {
+     "score": 1,
+     "note": "Claims 197k, 4th straight week near 57-yr lows; consumers gloomier but the Fed watches expectations, not sentiment"
+    },
+    "inflation": {
+     "score": 1,
+     "note": "U Mich 1y exp 4.7%, 5y 3.5% \u2014 rising; diesel deal is a mild offset, not a reversal"
+    },
+    "risk": {
+     "score": 0,
+     "note": "Haven bid returned Friday evening; DXY -0.3% Fri but +0.6% w/w \u2014 the market says data changed nothing"
+    },
+    "tot": {
+     "score": 0,
+     "note": "No direct terms-of-trade read for the dollar"
+    },
+    "positioning": {
+     "score": -1,
+     "note": "USD longs crowded; EUR shorts at 343-report extreme = squeeze risk against the dollar"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "No new US fiscal development"
+    }
+   },
+   "name": "US dollar",
+   "summary": "Hawkish hold in week four: Dec ~82% priced, claims 197k for a fourth straight week \u2014 Friday evening's escalation and the diesel deal changed the edges, not the path."
+  },
+  {
+   "bank": "ecb",
+   "ccy": "EUR",
+   "chapter": 2,
+   "drivers": {
+    "policy": {
+     "score": 0,
+     "note": "ECB on hold at 2.50%; hawkish bias but no near-term move"
+    },
+    "growth": {
+     "score": 0,
+     "note": "2026 growth cut to 0.5% \u2014 weak, but priced; ZEW Tuesday is next"
+    },
+    "inflation": {
+     "score": 0,
+     "note": "No new eurozone inflation development"
+    },
+    "risk": {
+     "score": 0,
+     "note": "Not the haven of choice this weekend \u2014 that was JPY/CHF"
+    },
+    "tot": {
+     "score": -1,
+     "note": "Brent $104.72 raises import costs for eurozone buyers"
+    },
+    "positioning": {
+     "score": 1,
+     "note": "EUR shorts at 343-report extreme \u2014 contrarian squeeze potential favors EUR"
+    },
+    "fiscal": {
+     "score": -1,
+     "note": "French stress: debt/GDP 119.3%\u2192121.7%, spread ~140\u2013146bp, budget debate Tuesday"
+    }
+   },
+   "name": "Euro",
+   "summary": "Quiet weekend for the euro \u2014 fiscal premium still priced in, 1.1161 holding, waiting on Tuesday's budget debate."
+  },
+  {
+   "bank": "boe",
+   "ccy": "GBP",
+   "chapter": 3,
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "BoE Nov 5 hike ~85% priced; 6\u20133 hawkish hold stands"
+    },
+    "growth": {
+     "score": 0,
+     "note": "Retail sales Sep ahead; consumer strength the open question"
+    },
+    "inflation": {
+     "score": 1,
+     "note": "UK CPI 3.1% sticky; BoE sees ~3.75% Q4 \u2014 the hike case"
+    },
+    "risk": {
+     "score": 0,
+     "note": "Beneficiary of euro weakness more than risk mood"
+    },
+    "tot": {
+     "score": 0,
+     "note": "Neutral terms-of-trade read"
+    },
+    "positioning": {
+     "score": 1,
+     "note": "GBP shorts -91.1k at multi-year extremes \u2014 short-covering floor at 1.3180"
+    },
+    "fiscal": {
+     "score": -1,
+     "note": "Oct 28 Budget: if gilts dislike it, real-money selling joins the shorts"
+    }
+   },
+   "name": "British pound",
+   "summary": "Sterling the relative winner of Europe's fiscal stress \u2014 $1.324, 16-month high vs the euro, floored by ~85% November hike pricing."
+  },
+  {
+   "bank": "boj",
+   "ccy": "JPY",
+   "chapter": 4,
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "BoJ 1.25%; Dec hike >80% priced (OIS); Oct 29\u201330 live"
+    },
+    "growth": {
+     "score": 0,
+     "note": "No new growth development"
+    },
+    "inflation": {
+     "score": 1,
+     "note": "Cost-push broadening \u2014 Ueda flagged overshoot risk"
+    },
+    "risk": {
+     "score": 1,
+     "note": "Haven bid back on widened strike campaign; intervention talk caps the top"
+    },
+    "tot": {
+     "score": -1,
+     "note": "Brent $104.72 is an import-cost headwind for Japan"
+    },
+    "positioning": {
+     "score": 1,
+     "note": "JPY net longs rebuilt to 62,325 (wk to Oct 6) \u2014 the crowd is long yen again"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "Takaichi monitoring FX; no fiscal move"
+    }
+   },
+   "name": "Japanese yen",
+   "summary": "The haven bid returned \u2014 USD/JPY fell to 157.87 as strikes widened, with spec yen longs rebuilt to 62.3k."
+  },
+  {
+   "bank": "snb",
+   "ccy": "CHF",
+   "chapter": 5,
+   "drivers": {
+    "policy": {
+     "score": 0,
+     "note": "SNB pinned at 0.00%; no domestic rate story"
+    },
+    "growth": {
+     "score": 0,
+     "note": "No new development"
+    },
+    "inflation": {
+     "score": 0,
+     "note": "No new development"
+    },
+    "risk": {
+     "score": 1,
+     "note": "Haven bid returned on widened strikes"
+    },
+    "tot": {
+     "score": -1,
+     "note": "Energy importer \u2014 Brent elevation a mild headwind"
+    },
+    "positioning": {
+     "score": 0,
+     "note": "CHF specs short -24.6k (wk to Oct 2) \u2014 modest"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "No fiscal development"
+    }
+   },
+   "name": "Swiss franc",
+   "summary": "A pure fear barometer this weekend \u2014 USD/CHF fell to 0.8302 as the haven bid returned Friday evening."
+  },
+  {
+   "bank": "rba",
+   "ccy": "AUD",
+   "chapter": 6,
+   "drivers": {
+    "policy": {
+     "score": 1,
+     "note": "RBA hawkish on hold at 4.60%; minutes Tuesday Oct 13"
+    },
+    "growth": {
+     "score": 0,
+     "note": "China reopened soft \u2014 Golden Week consumption 'underwhelming'"
+    },
+    "inflation": {
+     "score": 0,
+     "note": "No new domestic inflation development"
+    },
+    "risk": {
+     "score": -1,
+     "note": "Risk-proxy sold first on the widened strikes; weakest G8 Friday"
+    },
+    "tot": {
+     "score": 0,
+     "note": "No new terms-of-trade read"
+    },
+    "positioning": {
+     "score": 0,
+     "note": "No new positioning data"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "No fiscal development"
+    }
+   },
+   "name": "Australian dollar",
+   "summary": "Best G10 at 4pm, weakest by the NY close \u2014 the evening's escalation hit the cleanest risk proxy first."
+  },
+  {
+   "bank": "boc",
+   "ccy": "CAD",
+   "chapter": 7,
+   "drivers": {
+    "policy": {
+     "score": -1,
+     "note": "BoC Oct 28 hike odds ~25% \u2014 hawkish-BoC thesis broken"
+    },
+    "growth": {
+     "score": -1,
+     "note": "-68.3K jobs, unemp 6.5%, participation 29-yr low"
+    },
+    "inflation": {
+     "score": 0,
+     "note": "Canada CPI Oct 21 is the next inflation test"
+    },
+    "risk": {
+     "score": 0,
+     "note": "Neutral risk read"
+    },
+    "tot": {
+     "score": 1,
+     "note": "Brent $104.72, WTI ~$91 \u2014 the oil offset against the jobs miss"
+    },
+    "positioning": {
+     "score": 0,
+     "note": "No new CAD positioning data"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "No fiscal development"
+    }
+   },
+   "name": "Canadian dollar",
+   "summary": "Trading the rate gap now, not the oil premium \u2014 18-month lows held as Brent's $104.72 settle leans against the jobs shock."
+  },
+  {
+   "bank": "rbnz",
+   "ccy": "NZD",
+   "chapter": 8,
+   "drivers": {
+    "policy": {
+     "score": 0,
+     "note": "RBNZ 2.75%; pause vs hike Oct 28 a genuine two-way bet"
+    },
+    "growth": {
+     "score": 0,
+     "note": "No new development"
+    },
+    "inflation": {
+     "score": 0,
+     "note": "No new development"
+    },
+    "risk": {
+     "score": -1,
+     "note": "Risk-proxy softness alongside AUD"
+    },
+    "tot": {
+     "score": 0,
+     "note": "No new terms-of-trade data"
+    },
+    "positioning": {
+     "score": 0,
+     "note": "No new positioning data"
+    },
+    "fiscal": {
+     "score": 0,
+     "note": "No fiscal development"
+    }
+   },
+   "name": "New Zealand dollar",
+   "summary": "The quietest chapter \u2014 ~0.5613, drifting with the risk mood, waiting on the RBNZ's Oct 28 two-way bet."
+  }
+ ],
+ "history": [
+  {
+   "date": "2026-10-08",
+   "scores": {
+    "AUD": 0,
+    "CAD": 1,
+    "CHF": 1,
+    "EUR": -2,
+    "GBP": 1,
+    "JPY": 1,
+    "NZD": 0,
+    "USD": 3
+   }
+  },
+  {
+   "date": "2026-10-09",
+   "scores": {
+    "AUD": 1,
+    "CAD": 1,
+    "CHF": 1,
+    "EUR": -2,
+    "GBP": 1,
+    "JPY": 1,
+    "NZD": 1,
+    "USD": 3
+   }
+  },
+  {
+   "date": "2026-10-10",
+   "scores": {
+    "USD": 2,
+    "EUR": -1,
+    "GBP": 2,
+    "JPY": 3,
+    "CHF": 0,
+    "AUD": 0,
+    "CAD": -1,
+    "NZD": -1
+   }
+  }
+ ],
+ "method": "Score = sum of pillar scores (-1 / 0 / +1). Pillars: policy, growth, inflation, risk, tot, positioning, fiscal. Missing pillar = 0.",
+ "note": "Hercules-owned feed. Scores from the morning engine reads and banks.json stances; chapters are story chapter numbers. Analysis, not trade recommendations.",
+ "pairs": {},
+ "updated": "2026-10-10T02:05:00-05:00"
+}
