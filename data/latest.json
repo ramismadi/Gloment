@@ -1,285 +1,307 @@
 {
- "items": [
-  {
-   "ts": "2026-10-10T14:05:00-05:00",
-   "headline": "Trump: US 'could join' Saudi strikes on the Houthis; Riyadh airport toll rises",
-   "bullets": [
-    "Trump told reporters Saturday the US could join Saudi strikes on the Houthis after the airport attack — a reversal from Thursday/Friday, when WSJ reported the Trump administration had declined the kingdom's plea to intervene directly; US involvement was limited to intel and targeting support for the coalition's Yemen campaign.",
-    "The strike was worse than first reported: Saudi officials say Terminals 3 AND 4 of King Khalid airport took direct missile hits, with dozens of injuries, some critical — airport closed for damage assessment; arrivals canceled across the board, inbound flights diverted to Dammam.",
-    "US kinetic entry would put the fight on two fronts (Yemen + Hormuz shipping). Watch the Sunday oil open — Brent closed Friday ~$104.43; a confirmed US strike decision would reprice the geopolitical premium."
-   ],
-   "sources": [
+  "items": [
     {
-     "label": "WSJ: Iran-Backed Houthis Hit Saudi Capital's Airport in Damaging New Attack (updated)",
-     "url": "https://www.wsj.com/world/middle-east/iran-backed-houthis-hit-saudi-capitals-airport-in-damaging-new-attack-d4c12236"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY"
-   ],
-   "pillar": "risk",
-   "next": "Next: whether Trump commits to actual strikes or holds to intel support; Sunday Brent open; any Houthi or Iranian reply to the coalition campaign."
-  },
-  {
-   "ts": "2026-10-10T11:35:00-05:00",
-   "headline": "Houthis strike Riyadh airport again — Terminal 3 hit, evacuated; arrivals canceled",
-   "bullets": [
-    "Houthi missiles hit Terminal 3 of Riyadh's King Khalid International Airport on Saturday: direct hit, terminal evacuated, injuries reported; arrivals canceled or delayed Saturday afternoon, inbound flights diverted to Dammam (WSJ).",
-    "Canada, Germany and Ireland warned citizens to avoid the airport — the fourth day of strikes on Saudi aviation this week, one day after the Saudi coalition's 136-target retaliation in Yemen.",
-    "The Houthis are answering the coalition's 'large-scale operation' with a capital-city strike — the tit-for-tat on airports is the live risk arc; WSJ flags the month-end FII summit in Riyadh as now in the crosshairs."
-   ],
-   "sources": [
-    {
-     "label": "WSJ: Iran-Backed Houthis Hit Saudi Capital's Airport in Damaging New Attack",
-     "url": "https://www.wsj.com/world/middle-east/iran-backed-houthis-hit-saudi-capitals-airport-in-damaging-new-attack-d4c12236"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY"
-   ],
-   "pillar": "risk",
-   "next": "Next: whether the coalition escalates its Yemen campaign beyond the 136 targets; and whether the 'Saudi airspace is the battlefield' doctrine extends to Aramco or shipping."
-  },
-  {
-   "ts": "2026-10-10T10:34:00-05:00",
-   "headline": "Saudi coalition retaliates: 136 Houthi targets destroyed after the airport strikes",
-   "bullets": [
-    "The Saudi-led coalition says it is carrying out a 'large-scale operation' against the Iran-backed Houthis, claiming 136 military targets destroyed — framed explicitly as retaliation for this week's Houthi missile/drone strikes on Riyadh and Abha airports (6 killed).",
-    "Parallel arc: the campaign aims to push the Houthis from the Bab el-Mandeb strait — Saudi Arabia's workaround oil-export route while Hormuz is disrupted (AP).",
-    "This was the coalition-retaliation trigger the desk was waiting for after the Riyadh strikes; the watch now is whether the Houthis answer with more airport or infrastructure strikes."
-   ],
-   "sources": [
-    {
-     "label": "MENA Today: Saudi-led coalition launches large-scale operation against Houthis",
-     "url": "https://menatoday.info/news/saudi-led-coalition-launches-large-scale-operation-against-houthis"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY"
-   ],
-   "pillar": "risk",
-   "next": "Next: Houthi response (more airport strikes?) and the next phase of the coalition's Yemen campaign."
-  },
-  {
-   "ts": "2026-10-10T10:33:00-05:00",
-   "headline": "Trump re-threatens Iran at Friday rally — 'either they give us everything, or they don't exist any longer'",
-   "bullets": [
-    "At a Syracuse, NY rally Friday, Trump said Iran will be 'very quick one way or the other' — 'either they give us everything, or they don't exist any longer' — and when asked about strikes before Nov 3: 'We may. I mean, we'll see.' (AP)",
-    "That undercuts his own Thursday Truth Social pledge ('we will not be attacking Iran at any time prior to the Midterm Elections') — one day old; the strike-option timetable is back on the table rhetorically.",
-    "Diplomacy alive underneath: Trump calls talks 'productive'; Iran's FM says Tehran will reply to the US counterproposal within days. Rhetoric says escalation, talks say engagement — the same tension running all week."
-   ],
-   "sources": [
-    {
-     "label": "AP: Trump and Iran agree the election calendar isn't driving the war",
-     "url": "https://www.ghanamma.com/2026/10/10/trump-and-iran-agree-on-one-thing-the-us-election-calendar-isnt-driving-their-decisions-on-the-war/"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY",
-    "CHF"
-   ],
-   "pillar": "risk",
-   "next": "Next: whether the no-strike pledge survives the weekend; US CPI Wed 8:30am ET."
-  },
-  {
-   "ts": "2026-10-09T22:36:00-05:00",
-   "headline": "OFAC paperwork lands: General License 135 permits Russian diesel imports through April 7, 2027",
-   "bullets": [
-    "OFAC General License No. 135 (dated Oct 9, signed by Director Bradley T. Smith) authorizes sale, delivery, offloading and importation of Russian-origin diesel through 12:01am EDT April 7, 2027 — the formal license behind Trump's 300k-ton diesel deal with Putin.",
-    "Narrow, not a reset: the license does not lift broader Russia sanctions, and paragraph (b) excludes debits to US accounts of the Central Bank of Russia, the National Wealth Fund and the Finance Ministry — payments must route around the blocked state institutions.",
-    "First Russian energy imports into the US since 2022 now have legal cover; the market reaction was already priced on the Truth Social announcement, so the watch is first cargoes, not more paperwork."
-   ],
-   "sources": [
-    {
-     "label": "Indian Economic Observer: OFAC issues licence for Russian diesel imports",
-     "url": "https://www.indianeconomicobserver.com/news/us-treasurys-ofac-issues-licence-permitting-russian-origin-diesel-fuel-imports-until-april-7-202720261010064417//"
-    }
-   ],
-   "thread": "us-russia-diesel-20261009",
-   "ccy": [
-    "USD",
-    "CAD"
-   ],
-   "pillar": "inflation",
-   "next": "Next: first Russian diesel cargo arrivals + whether Trump confirms barrels beyond the announced 4.3M-ton sequence."
-  },
-  {
-   "ts": "2026-10-09T22:35:00-05:00",
-   "headline": "IRGC officially claims NV Sunshine strike, warns ships face 'punishment' across the region",
-   "bullets": [
-    "The IRGC Navy issued a formal Friday statement: its forces struck the LPG carrier NV Sunshine (NatWit-owned) for using an 'illegal route' south of the strait — claiming a massive fire in the engine room and propulsion system. This upgrades the earlier unconfirmed claim to an official Tehran claim; still no independent verification.",
-    "Same statement claims the IRGC has 'taken control of the administration of the strait' and warns vessels on unauthorized routes will be 'pursued... and definitely punished' anywhere in the region — the formal version of the widening threat from this morning.",
-    "Separately, UKMTO confirms a distinct projectile strike ~13 nm off Al Jazeera Al Hamra, UAE (fire aboard, crew/damage unknown); Vanguard IDs the vessel as Panama-flagged crude tanker GEM NO.2. No link established between the two incidents."
-   ],
-   "sources": [
-    {
-     "label": "Mint: Iran claims strike on LPG tanker taking illegal route through Hormuz",
-     "url": "https://www.livemint.com/news/world/iran-says-it-hit-lpg-tanker-taking-illegal-route-through-hormuz-what-we-know-about-nv-sunshine-and-ship-fire-off-uae-11791561482963.html"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY",
-    "CHF",
-    "CAD"
-   ],
-   "pillar": "risk",
-   "next": "Next: Sunday 5pm ET FX reopen — risk-off gap wider (JPY/CHF bid, oil up) or hold; any fresh Tehran move over the weekend."
-  },
-  {
-   "ts": "2026-10-09T22:05:00-05:00",
-   "headline": "Iran hits Trafigura-chartered VLCC near Hormuz — strikes widening across the Gulf",
-   "bullets": [
-    "Gem No 2 (302,800-dwt VLCC, Trafigura-chartered, Taiwan-owned) struck by a projectile ~13 nm off the UAE; fire on board was extinguished, crew/ship status unclear — UKMTO via TradeWinds.",
-    "Iran also claims a hit on Vietnamese VLGC NV Sunshine (not confirmed by UKMTO) and says attacks will no longer be limited to the narrow strait — widening across the Middle East Gulf and Gulf of Oman. Comes a day after the US told shippers the strait is 'open' under US protection.",
-    "Brent closed ~$104.43 (+0.55%); risk-off context into the weekend — first test is Sunday 5pm ET FX reopen."
-   ],
-   "sources": [
-    {
-     "label": "TradeWinds: Iran hits Trafigura-chartered VLCC",
-     "url": "https://www.tradewindsnews.com/casualties/iran-hits-trafigura-chartered-vlcc-after-us-insists-the-strait-of-hormuz-is-open/2-1-2056734"
+      "ts": "2026-10-10T14:36:00-05:00",
+      "headline": "RBI opens dollar window for oil companies as rupee tests record low",
+      "bullets": [
+        "Reserve Bank of India will sell dollars directly from reserves to three state oil marketers (IOCL, HPCL, BPCL) starting Monday — takes the biggest dollar buyer out of the spot market; a classic FX-defense move.",
+        "Rupee closed Friday at 96.73/USD, near May's all-time low of 96.96; the 1-month NDF rallied ~40 paise on the news in thin Saturday trade.",
+        "Also tightened currency-derivative rules: exchange-traded position limit cut $100M → $5M, no rebooking of FX derivatives, 20% risk reserve for dealers — an FX squeeze, not rate policy."
+      ],
+      "sources": [
+        {
+          "label": "Reuters: India central bank takes steps to support rupee, opens dollar window for oil companies",
+          "url": "https://www.reuters.com/world/india/india-central-bank-takes-steps-support-rupee-opens-dollar-window-oil-companies-2026-10-10/"
+        }
+      ],
+      "thread": "rbi-rupee-20261010",
+      "ccy": [
+        "USD",
+        "INR"
+      ],
+      "pillar": "policy",
+      "next": "Next: does the window hold the rupee above 96.96 at Monday's open — watch spot action and the reserve-depletion cost."
     },
     {
-     "label": "Straits daily brief Oct 9",
-     "url": "https://straits.live/briefs/2026-10-09"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "JPY",
-    "CHF",
-    "CAD"
-   ],
-   "pillar": "risk",
-   "next": "Next: Sunday 5pm ET FX reopen — risk-off gap wider (JPY/CHF bid, oil up) or hold; any fresh Tehran move over the weekend."
-  },
-  {
-   "ts": "2026-10-09T16:35:00-05:00",
-   "headline": "Treasury hits Iran's 'shadow fleet' — 22 vessels, 27 firms, 6 individuals designated",
-   "bullets": [
-    "Numbers: Treasury (Oct 8) designated 17 shadow-fleet vessels + associated firms moving Iranian crude/petrochemicals to South and East Asia; State added 5 more ships, 10 entities, 6 individuals — framed as the biggest blow yet to Iran's illicit oil logistics ('Operation Economic Outcast').",
-    "Meaning: maximum pressure continues even as the strike option comes off the table — but the market doubts the bite: Treasury says Iran already halted loading/unloading under the blockade, and analysts say much of the flagged cargo was delivered before the sanctions hit.",
-    "FX read-through: no direct currency move — oil settled modestly higher on the no-strike news, not the sanctions (Brent $104.72, WTI $91.85). The premium that matters for the dollar stays the energy-driven inflation floor under Fed Dec-hike pricing."
-   ],
-   "sources": [
-    {
-     "label": "Wesal TV (Reuters): US imposes new sanctions on Iranian oil networks, 17 ships",
-     "url": "https://wesaltv.com/2026/10/09/us-imposes-new-sanctions-on-iranian-oil-networks-17-ships-3/"
+      "ts": "2026-10-10T14:05:00-05:00",
+      "headline": "Trump: US 'could join' Saudi strikes on the Houthis; Riyadh airport toll rises",
+      "bullets": [
+        "Trump told reporters Saturday the US could join Saudi strikes on the Houthis after the airport attack — a reversal from Thursday/Friday, when WSJ reported the Trump administration had declined the kingdom's plea to intervene directly; US involvement was limited to intel and targeting support for the coalition's Yemen campaign.",
+        "The strike was worse than first reported: Saudi officials say Terminals 3 AND 4 of King Khalid airport took direct missile hits, with dozens of injuries, some critical — airport closed for damage assessment; arrivals canceled across the board, inbound flights diverted to Dammam.",
+        "US kinetic entry would put the fight on two fronts (Yemen + Hormuz shipping). Watch the Sunday oil open — Brent closed Friday ~$104.43; a confirmed US strike decision would reprice the geopolitical premium."
+      ],
+      "sources": [
+        {
+          "label": "WSJ: Iran-Backed Houthis Hit Saudi Capital's Airport in Damaging New Attack (updated)",
+          "url": "https://www.wsj.com/world/middle-east/iran-backed-houthis-hit-saudi-capitals-airport-in-damaging-new-attack-d4c12236"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY"
+      ],
+      "pillar": "risk",
+      "next": "Next: whether Trump commits to actual strikes or holds to intel support; Sunday Brent open; any Houthi or Iranian reply to the coalition campaign."
     },
     {
-     "label": "Export Compliance Daily: US targets Iran's shadow fleet, issues license",
-     "url": "https://exportcompliancedaily.com/article/2026/10/09/us-targets-irans-shadow-fleet-issues-license-2610080040?BC=bc_6ac82623a5e4a"
-    }
-   ],
-   "thread": "us-iran-20261008",
-   "ccy": [
-    "USD",
-    "CAD"
-   ],
-   "pillar": "risk",
-   "next": "US-Iran talks on reopening Hormuz within 7 days; Iran oil ~$104 Brent keeps the risk premium bid"
-  },
-  {
-   "ts": "2026-10-09T16:05:00-05:00",
-   "headline": "Trump strikes diesel deal with Putin — Treasury pauses Russian oil sanctions",
-   "bullets": [
-    "Numbers: Trump says Russia will supply 300k tons of diesel immediately, 500k in November, 1M after — plus 3M 'within a short period' (~4.8M tons total, ≈36M barrels). Diesel fell 3% on the news; crude barely moved (WTI ~$91.20, Brent ~$104).",
-    "Meaning: U-turn just weeks after the new Russia sanctions law — Treasury issued a temporary general license, the first Russian energy imports since 2022. IEA puts the global diesel shortfall at ~1.6M b/d, so if it all materializes this plugs ~3 weeks of the gap; traders call it too little, too late.",
-    "FX read-through: mild USD relief via the fuel-inflation channel — takes pressure off the Dec-hike premium priced into the dollar, but DXY barely budged (+0.1% to 102.24). Gold +1.5% to $4,220 on the softer dollar + lower oil."
-   ],
-   "sources": [
-    {
-     "label": "Reuters: Trump says Russia to immediately supply 300,000 tons of diesel fuel",
-     "url": "https://www.reuters.com/business/energy/trump-says-russia-immediately-supply-300000-tons-diesel-fuel-2026-10-09/"
+      "ts": "2026-10-10T11:35:00-05:00",
+      "headline": "Houthis strike Riyadh airport again — Terminal 3 hit, evacuated; arrivals canceled",
+      "bullets": [
+        "Houthi missiles hit Terminal 3 of Riyadh's King Khalid International Airport on Saturday: direct hit, terminal evacuated, injuries reported; arrivals canceled or delayed Saturday afternoon, inbound flights diverted to Dammam (WSJ).",
+        "Canada, Germany and Ireland warned citizens to avoid the airport — the fourth day of strikes on Saudi aviation this week, one day after the Saudi coalition's 136-target retaliation in Yemen.",
+        "The Houthis are answering the coalition's 'large-scale operation' with a capital-city strike — the tit-for-tat on airports is the live risk arc; WSJ flags the month-end FII summit in Riyadh as now in the crosshairs."
+      ],
+      "sources": [
+        {
+          "label": "WSJ: Iran-Backed Houthis Hit Saudi Capital's Airport in Damaging New Attack",
+          "url": "https://www.wsj.com/world/middle-east/iran-backed-houthis-hit-saudi-capitals-airport-in-damaging-new-attack-d4c12236"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY"
+      ],
+      "pillar": "risk",
+      "next": "Next: whether the coalition escalates its Yemen campaign beyond the 136 targets; and whether the 'Saudi airspace is the battlefield' doctrine extends to Aramco or shipping."
     },
     {
-     "label": "WSJ: Trump says he has struck deal with Putin for Russian diesel",
-     "url": "https://www.wsj.com/politics/policy/trump-strikes-deal-with-putin-for-russian-diesel-15751436"
-    }
-   ],
-   "thread": "us-russia-diesel-20261009",
-   "ccy": [
-    "USD",
-    "GBP"
-   ],
-   "pillar": "inflation",
-   "next": "Whether the volumes materialize (refinery-dependent); any OPEC+/Iran response before Oct 14 CPI"
-  },
-  {
-   "ts": "2026-10-09T15:38:00-05:00",
-   "headline": "U Mich misses again: 46.3 vs 47.5 — but rising inflation expectations are the real read",
-   "bullets": [
-    "Numbers: Oct prelim 46.3 (fcst 47.5, Sep 48.1) — third straight monthly decline; current conditions 44.7, a record low.",
-    "Meaning: consumers gloomier, but the Fed's line item moved the wrong way — 1y inflation expectations up to 4.7% (from 4.6%), 5y to 3.5% (from 3.4%), the second straight monthly rise to the highest since May.",
-    "FX read-through: stagflationary tint — softer growth expectations argue for a softer dollar, but stickier inflation expectations keep Dec hike odds alive. Net: mild USD support via the policy channel."
-   ],
-   "sources": [
+      "ts": "2026-10-10T10:34:00-05:00",
+      "headline": "Saudi coalition retaliates: 136 Houthi targets destroyed after the airport strikes",
+      "bullets": [
+        "The Saudi-led coalition says it is carrying out a 'large-scale operation' against the Iran-backed Houthis, claiming 136 military targets destroyed — framed explicitly as retaliation for this week's Houthi missile/drone strikes on Riyadh and Abha airports (6 killed).",
+        "Parallel arc: the campaign aims to push the Houthis from the Bab el-Mandeb strait — Saudi Arabia's workaround oil-export route while Hormuz is disrupted (AP).",
+        "This was the coalition-retaliation trigger the desk was waiting for after the Riyadh strikes; the watch now is whether the Houthis answer with more airport or infrastructure strikes."
+      ],
+      "sources": [
+        {
+          "label": "MENA Today: Saudi-led coalition launches large-scale operation against Houthis",
+          "url": "https://menatoday.info/news/saudi-led-coalition-launches-large-scale-operation-against-houthis"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY"
+      ],
+      "pillar": "risk",
+      "next": "Next: Houthi response (more airport strikes?) and the next phase of the coalition's Yemen campaign."
+    },
     {
-     "label": "Reuters: US consumer sentiment deteriorates further in October",
-     "url": "https://www.reuters.com/business/us-consumer-sentiment-deteriorates-further-october-2026-10-09/"
-    }
-   ],
-   "thread": "us-consumer-20261009",
-   "ccy": [
-    "USD"
-   ],
-   "pillar": "inflation",
-   "next": "US CPI Wed Oct 14, 7:30am CT — the real inflation test"
-  },
-  {
-   "ts": "2026-10-09T14:06:00-05:00",
-   "headline": "Loonie sinks to 18-month low as jobs shock kills BoC hike bets",
-   "bullets": [
-    "Numbers: USD/CAD 1.4275 (-0.4% Friday); touched 1.4298 intraday — weakest since April 2025; fifth straight weekly loss.",
-    "Meaning: the -68.3K jobs print keeps biting — Oct 28 hike odds down to 25% from 40%; Canada 2Y -6.8bp to 3.183%, ~161bp below the US 2Y (widest since Feb 2025).",
-    "FX read-through: market now prices BoC on hold at best — any CAD rally fights a widening rate gap. Oil softer (WTI $91.19) isn't helping."
-   ],
-   "sources": [
+      "ts": "2026-10-10T10:33:00-05:00",
+      "headline": "Trump re-threatens Iran at Friday rally — 'either they give us everything, or they don't exist any longer'",
+      "bullets": [
+        "At a Syracuse, NY rally Friday, Trump said Iran will be 'very quick one way or the other' — 'either they give us everything, or they don't exist any longer' — and when asked about strikes before Nov 3: 'We may. I mean, we'll see.' (AP)",
+        "That undercuts his own Thursday Truth Social pledge ('we will not be attacking Iran at any time prior to the Midterm Elections') — one day old; the strike-option timetable is back on the table rhetorically.",
+        "Diplomacy alive underneath: Trump calls talks 'productive'; Iran's FM says Tehran will reply to the US counterproposal within days. Rhetoric says escalation, talks say engagement — the same tension running all week."
+      ],
+      "sources": [
+        {
+          "label": "AP: Trump and Iran agree the election calendar isn't driving the war",
+          "url": "https://www.ghanamma.com/2026/10/10/trump-and-iran-agree-on-one-thing-the-us-election-calendar-isnt-driving-their-decisions-on-the-war/"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF"
+      ],
+      "pillar": "risk",
+      "next": "Next: whether the no-strike pledge survives the weekend; US CPI Wed 8:30am ET."
+    },
     {
-     "label": "Reuters: Canadian dollar hits 18-month low as jobs data clips rate hike bets",
-     "url": "https://www.reuters.com/business/canadian-dollar-hits-18-month-low-jobs-data-clips-rate-hike-bets-2026-10-09/"
-    }
-   ],
-   "thread": "canada-jobs-20261009",
-   "ccy": [
-    "CAD",
-    "USD"
-   ],
-   "pillar": "policy",
-   "next": "Canada CPI Oct 21, then BoC decision Oct 28"
-  },
-  {
-   "bullets": [
-    "Numbers: -68,300 jobs in September (consensus +9,200); unemployment 6.5% (from 6.4%); second straight monthly loss after -41,700 in August; 2026 YTD now -41,200; participation 64.8%, lowest in 29 years outside the pandemic; wages +2.3% y/y.",
-    "Meaning: losses led by public sector (education + healthcare -58,400), not tariffs — but this was the last jobs print before the Oct 28 BoC decision, and it kills the creeping December-hike pricing. Canada 2Y fell 8bp to ~3.20%.",
-    "FX read-through: USD/CAD up to ~1.4275 (from ~1.4225), near 52-week highs — the market is trading the miss. CAD's oil tailwind now fights a weak domestic story; the ~160bp US-Canada 2Y gap is the anchor.",
-    "Next: Canada CPI Oct 21, then BoC decision Oct 28."
-   ],
-   "ccy": [
-    "CAD",
-    "USD"
-   ],
-   "headline": "Canada jobs shock: -68.3K in September vs +9.2K expected",
-   "next": "Canada CPI Oct 21, then BoC decision Oct 28",
-   "pillar": "policy",
-   "sources": [
+      "ts": "2026-10-09T22:36:00-05:00",
+      "headline": "OFAC paperwork lands: General License 135 permits Russian diesel imports through April 7, 2027",
+      "bullets": [
+        "OFAC General License No. 135 (dated Oct 9, signed by Director Bradley T. Smith) authorizes sale, delivery, offloading and importation of Russian-origin diesel through 12:01am EDT April 7, 2027 — the formal license behind Trump's 300k-ton diesel deal with Putin.",
+        "Narrow, not a reset: the license does not lift broader Russia sanctions, and paragraph (b) excludes debits to US accounts of the Central Bank of Russia, the National Wealth Fund and the Finance Ministry — payments must route around the blocked state institutions.",
+        "First Russian energy imports into the US since 2022 now have legal cover; the market reaction was already priced on the Truth Social announcement, so the watch is first cargoes, not more paperwork."
+      ],
+      "sources": [
+        {
+          "label": "Indian Economic Observer: OFAC issues licence for Russian diesel imports",
+          "url": "https://www.indianeconomicobserver.com/news/us-treasurys-ofac-issues-licence-permitting-russian-origin-diesel-fuel-imports-until-april-7-202720261010064417//"
+        }
+      ],
+      "thread": "us-russia-diesel-20261009",
+      "ccy": [
+        "USD",
+        "CAD"
+      ],
+      "pillar": "inflation",
+      "next": "Next: first Russian diesel cargo arrivals + whether Trump confirms barrels beyond the announced 4.3M-ton sequence."
+    },
     {
-     "label": "Reuters: Canada's employment surprisingly shrinks in September",
-     "url": "https://www.reuters.com/world/americas/canadas-employment-surprisingly-shrinks-september-jobless-rate-inches-up-2026-10-09/"
+      "ts": "2026-10-09T22:35:00-05:00",
+      "headline": "IRGC officially claims NV Sunshine strike, warns ships face 'punishment' across the region",
+      "bullets": [
+        "The IRGC Navy issued a formal Friday statement: its forces struck the LPG carrier NV Sunshine (NatWit-owned) for using an 'illegal route' south of the strait — claiming a massive fire in the engine room and propulsion system. This upgrades the earlier unconfirmed claim to an official Tehran claim; still no independent verification.",
+        "Same statement claims the IRGC has 'taken control of the administration of the strait' and warns vessels on unauthorized routes will be 'pursued... and definitely punished' anywhere in the region — the formal version of the widening threat from this morning.",
+        "Separately, UKMTO confirms a distinct projectile strike ~13 nm off Al Jazeera Al Hamra, UAE (fire aboard, crew/damage unknown); Vanguard IDs the vessel as Panama-flagged crude tanker GEM NO.2. No link established between the two incidents."
+      ],
+      "sources": [
+        {
+          "label": "Mint: Iran claims strike on LPG tanker taking illegal route through Hormuz",
+          "url": "https://www.livemint.com/news/world/iran-says-it-hit-lpg-tanker-taking-illegal-route-through-hormuz-what-we-know-about-nv-sunshine-and-ship-fire-off-uae-11791561482963.html"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: Sunday 5pm ET FX reopen — risk-off gap wider (JPY/CHF bid, oil up) or hold; any fresh Tehran move over the weekend."
+    },
+    {
+      "ts": "2026-10-09T22:05:00-05:00",
+      "headline": "Iran hits Trafigura-chartered VLCC near Hormuz — strikes widening across the Gulf",
+      "bullets": [
+        "Gem No 2 (302,800-dwt VLCC, Trafigura-chartered, Taiwan-owned) struck by a projectile ~13 nm off the UAE; fire on board was extinguished, crew/ship status unclear — UKMTO via TradeWinds.",
+        "Iran also claims a hit on Vietnamese VLGC NV Sunshine (not confirmed by UKMTO) and says attacks will no longer be limited to the narrow strait — widening across the Middle East Gulf and Gulf of Oman. Comes a day after the US told shippers the strait is 'open' under US protection.",
+        "Brent closed ~$104.43 (+0.55%); risk-off context into the weekend — first test is Sunday 5pm ET FX reopen."
+      ],
+      "sources": [
+        {
+          "label": "TradeWinds: Iran hits Trafigura-chartered VLCC",
+          "url": "https://www.tradewindsnews.com/casualties/iran-hits-trafigura-chartered-vlcc-after-us-insists-the-strait-of-hormuz-is-open/2-1-2056734"
+        },
+        {
+          "label": "Straits daily brief Oct 9",
+          "url": "https://straits.live/briefs/2026-10-09"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: Sunday 5pm ET FX reopen — risk-off gap wider (JPY/CHF bid, oil up) or hold; any fresh Tehran move over the weekend."
+    },
+    {
+      "ts": "2026-10-09T16:35:00-05:00",
+      "headline": "Treasury hits Iran's 'shadow fleet' — 22 vessels, 27 firms, 6 individuals designated",
+      "bullets": [
+        "Numbers: Treasury (Oct 8) designated 17 shadow-fleet vessels + associated firms moving Iranian crude/petrochemicals to South and East Asia; State added 5 more ships, 10 entities, 6 individuals — framed as the biggest blow yet to Iran's illicit oil logistics ('Operation Economic Outcast').",
+        "Meaning: maximum pressure continues even as the strike option comes off the table — but the market doubts the bite: Treasury says Iran already halted loading/unloading under the blockade, and analysts say much of the flagged cargo was delivered before the sanctions hit.",
+        "FX read-through: no direct currency move — oil settled modestly higher on the no-strike news, not the sanctions (Brent $104.72, WTI $91.85). The premium that matters for the dollar stays the energy-driven inflation floor under Fed Dec-hike pricing."
+      ],
+      "sources": [
+        {
+          "label": "Wesal TV (Reuters): US imposes new sanctions on Iranian oil networks, 17 ships",
+          "url": "https://wesaltv.com/2026/10/09/us-imposes-new-sanctions-on-iranian-oil-networks-17-ships-3/"
+        },
+        {
+          "label": "Export Compliance Daily: US targets Iran's shadow fleet, issues license",
+          "url": "https://exportcompliancedaily.com/article/2026/10/09/us-targets-irans-shadow-fleet-issues-license-2610080040?BC=bc_6ac82623a5e4a"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "US-Iran talks on reopening Hormuz within 7 days; Iran oil ~$104 Brent keeps the risk premium bid"
+    },
+    {
+      "ts": "2026-10-09T16:05:00-05:00",
+      "headline": "Trump strikes diesel deal with Putin — Treasury pauses Russian oil sanctions",
+      "bullets": [
+        "Numbers: Trump says Russia will supply 300k tons of diesel immediately, 500k in November, 1M after — plus 3M 'within a short period' (~4.8M tons total, ≈36M barrels). Diesel fell 3% on the news; crude barely moved (WTI ~$91.20, Brent ~$104).",
+        "Meaning: U-turn just weeks after the new Russia sanctions law — Treasury issued a temporary general license, the first Russian energy imports since 2022. IEA puts the global diesel shortfall at ~1.6M b/d, so if it all materializes this plugs ~3 weeks of the gap; traders call it too little, too late.",
+        "FX read-through: mild USD relief via the fuel-inflation channel — takes pressure off the Dec-hike premium priced into the dollar, but DXY barely budged (+0.1% to 102.24). Gold +1.5% to $4,220 on the softer dollar + lower oil."
+      ],
+      "sources": [
+        {
+          "label": "Reuters: Trump says Russia to immediately supply 300,000 tons of diesel fuel",
+          "url": "https://www.reuters.com/business/energy/trump-says-russia-immediately-supply-300000-tons-diesel-fuel-2026-10-09/"
+        },
+        {
+          "label": "WSJ: Trump says he has struck deal with Putin for Russian diesel",
+          "url": "https://www.wsj.com/politics/policy/trump-strikes-deal-with-putin-for-russian-diesel-15751436"
+        }
+      ],
+      "thread": "us-russia-diesel-20261009",
+      "ccy": [
+        "USD",
+        "GBP"
+      ],
+      "pillar": "inflation",
+      "next": "Whether the volumes materialize (refinery-dependent); any OPEC+/Iran response before Oct 14 CPI"
+    },
+    {
+      "ts": "2026-10-09T15:38:00-05:00",
+      "headline": "U Mich misses again: 46.3 vs 47.5 — but rising inflation expectations are the real read",
+      "bullets": [
+        "Numbers: Oct prelim 46.3 (fcst 47.5, Sep 48.1) — third straight monthly decline; current conditions 44.7, a record low.",
+        "Meaning: consumers gloomier, but the Fed's line item moved the wrong way — 1y inflation expectations up to 4.7% (from 4.6%), 5y to 3.5% (from 3.4%), the second straight monthly rise to the highest since May.",
+        "FX read-through: stagflationary tint — softer growth expectations argue for a softer dollar, but stickier inflation expectations keep Dec hike odds alive. Net: mild USD support via the policy channel."
+      ],
+      "sources": [
+        {
+          "label": "Reuters: US consumer sentiment deteriorates further in October",
+          "url": "https://www.reuters.com/business/us-consumer-sentiment-deteriorates-further-october-2026-10-09/"
+        }
+      ],
+      "thread": "us-consumer-20261009",
+      "ccy": [
+        "USD"
+      ],
+      "pillar": "inflation",
+      "next": "US CPI Wed Oct 14, 7:30am CT — the real inflation test"
+    },
+    {
+      "ts": "2026-10-09T14:06:00-05:00",
+      "headline": "Loonie sinks to 18-month low as jobs shock kills BoC hike bets",
+      "bullets": [
+        "Numbers: USD/CAD 1.4275 (-0.4% Friday); touched 1.4298 intraday — weakest since April 2025; fifth straight weekly loss.",
+        "Meaning: the -68.3K jobs print keeps biting — Oct 28 hike odds down to 25% from 40%; Canada 2Y -6.8bp to 3.183%, ~161bp below the US 2Y (widest since Feb 2025).",
+        "FX read-through: market now prices BoC on hold at best — any CAD rally fights a widening rate gap. Oil softer (WTI $91.19) isn't helping."
+      ],
+      "sources": [
+        {
+          "label": "Reuters: Canadian dollar hits 18-month low as jobs data clips rate hike bets",
+          "url": "https://www.reuters.com/business/canadian-dollar-hits-18-month-low-jobs-data-clips-rate-hike-bets-2026-10-09/"
+        }
+      ],
+      "thread": "canada-jobs-20261009",
+      "ccy": [
+        "CAD",
+        "USD"
+      ],
+      "pillar": "policy",
+      "next": "Canada CPI Oct 21, then BoC decision Oct 28"
+    },
+    {
+      "bullets": [
+        "Numbers: -68,300 jobs in September (consensus +9,200); unemployment 6.5% (from 6.4%); second straight monthly loss after -41,700 in August; 2026 YTD now -41,200; participation 64.8%, lowest in 29 years outside the pandemic; wages +2.3% y/y.",
+        "Meaning: losses led by public sector (education + healthcare -58,400), not tariffs — but this was the last jobs print before the Oct 28 BoC decision, and it kills the creeping December-hike pricing. Canada 2Y fell 8bp to ~3.20%.",
+        "FX read-through: USD/CAD up to ~1.4275 (from ~1.4225), near 52-week highs — the market is trading the miss. CAD's oil tailwind now fights a weak domestic story; the ~160bp US-Canada 2Y gap is the anchor.",
+        "Next: Canada CPI Oct 21, then BoC decision Oct 28."
+      ],
+      "ccy": [
+        "CAD",
+        "USD"
+      ],
+      "headline": "Canada jobs shock: -68.3K in September vs +9.2K expected",
+      "next": "Canada CPI Oct 21, then BoC decision Oct 28",
+      "pillar": "policy",
+      "sources": [
+        {
+          "label": "Reuters: Canada's employment surprisingly shrinks in September",
+          "url": "https://www.reuters.com/world/americas/canadas-employment-surprisingly-shrinks-september-jobless-rate-inches-up-2026-10-09/"
+        }
+      ],
+      "thread": "canada-jobs-20261009",
+      "ts": "2026-10-09T09:32:00-05:00"
     }
-   ],
-   "thread": "canada-jobs-20261009",
-   "ts": "2026-10-09T09:32:00-05:00"
-  }
- ]
+  ]
 }
