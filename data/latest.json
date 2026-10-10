@@ -1,6 +1,52 @@
 {
   "items": [
     {
+      "ts": "2026-10-09T22:36:00-05:00",
+      "headline": "OFAC paperwork lands: General License 135 permits Russian diesel imports through April 7, 2027",
+      "bullets": [
+        "OFAC General License No. 135 (dated Oct 9, signed by Director Bradley T. Smith) authorizes sale, delivery, offloading and importation of Russian-origin diesel through 12:01am EDT April 7, 2027 — the formal license behind Trump's 300k-ton diesel deal with Putin.",
+        "Narrow, not a reset: the license does not lift broader Russia sanctions, and paragraph (b) excludes debits to US accounts of the Central Bank of Russia, the National Wealth Fund and the Finance Ministry — payments must route around the blocked state institutions.",
+        "First Russian energy imports into the US since 2022 now have legal cover; the market reaction was already priced on the Truth Social announcement, so the watch is first cargoes, not more paperwork."
+      ],
+      "sources": [
+        {
+          "label": "Indian Economic Observer: OFAC issues licence for Russian diesel imports",
+          "url": "https://www.indianeconomicobserver.com/news/us-treasurys-ofac-issues-licence-permitting-russian-origin-diesel-fuel-imports-until-april-7-202720261010064417//"
+        }
+      ],
+      "thread": "us-russia-diesel-20261009",
+      "ccy": [
+        "USD",
+        "CAD"
+      ],
+      "pillar": "inflation",
+      "next": "Next: first Russian diesel cargo arrivals + whether Trump confirms barrels beyond the announced 4.3M-ton sequence."
+    },
+    {
+      "ts": "2026-10-09T22:35:00-05:00",
+      "headline": "IRGC officially claims NV Sunshine strike, warns ships face 'punishment' across the region",
+      "bullets": [
+        "The IRGC Navy issued a formal Friday statement: its forces struck the LPG carrier NV Sunshine (NatWit-owned) for using an 'illegal route' south of the strait — claiming a massive fire in the engine room and propulsion system. This upgrades the earlier unconfirmed claim to an official Tehran claim; still no independent verification.",
+        "Same statement claims the IRGC has 'taken control of the administration of the strait' and warns vessels on unauthorized routes will be 'pursued... and definitely punished' anywhere in the region — the formal version of the widening threat from this morning.",
+        "Separately, UKMTO confirms a distinct projectile strike ~13 nm off Al Jazeera Al Hamra, UAE (fire aboard, crew/damage unknown); Vanguard IDs the vessel as Panama-flagged crude tanker GEM NO.2. No link established between the two incidents."
+      ],
+      "sources": [
+        {
+          "label": "Mint: Iran claims strike on LPG tanker taking illegal route through Hormuz",
+          "url": "https://www.livemint.com/news/world/iran-says-it-hit-lpg-tanker-taking-illegal-route-through-hormuz-what-we-know-about-nv-sunshine-and-ship-fire-off-uae-11791561482963.html"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF",
+        "CAD"
+      ],
+      "pillar": "risk",
+      "next": "Next: Sunday 5pm ET FX reopen — risk-off gap wider (JPY/CHF bid, oil up) or hold; any fresh Tehran move over the weekend."
+    },
+    {
       "ts": "2026-10-09T22:05:00-05:00",
       "headline": "Iran hits Trafigura-chartered VLCC near Hormuz — strikes widening across the Gulf",
       "bullets": [
