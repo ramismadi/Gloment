@@ -1,6 +1,51 @@
 {
   "items": [
     {
+      "ts": "2026-10-10T10:34:00-05:00",
+      "headline": "Saudi coalition retaliates: 136 Houthi targets destroyed after the airport strikes",
+      "bullets": [
+        "The Saudi-led coalition says it is carrying out a 'large-scale operation' against the Iran-backed Houthis, claiming 136 military targets destroyed — framed explicitly as retaliation for this week's Houthi missile/drone strikes on Riyadh and Abha airports (6 killed).",
+        "Parallel arc: the campaign aims to push the Houthis from the Bab el-Mandeb strait — Saudi Arabia's workaround oil-export route while Hormuz is disrupted (AP).",
+        "This was the coalition-retaliation trigger the desk was waiting for after the Riyadh strikes; the watch now is whether the Houthis answer with more airport or infrastructure strikes."
+      ],
+      "sources": [
+        {
+          "label": "MENA Today: Saudi-led coalition launches large-scale operation against Houthis",
+          "url": "https://menatoday.info/news/saudi-led-coalition-launches-large-scale-operation-against-houthis"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY"
+      ],
+      "pillar": "risk",
+      "next": "Next: Houthi response (more airport strikes?) and the next phase of the coalition's Yemen campaign."
+    },
+    {
+      "ts": "2026-10-10T10:33:00-05:00",
+      "headline": "Trump re-threatens Iran at Friday rally — 'either they give us everything, or they don't exist any longer'",
+      "bullets": [
+        "At a Syracuse, NY rally Friday, Trump said Iran will be 'very quick one way or the other' — 'either they give us everything, or they don't exist any longer' — and when asked about strikes before Nov 3: 'We may. I mean, we'll see.' (AP)",
+        "That undercuts his own Thursday Truth Social pledge ('we will not be attacking Iran at any time prior to the Midterm Elections') — one day old; the strike-option timetable is back on the table rhetorically.",
+        "Diplomacy alive underneath: Trump calls talks 'productive'; Iran's FM says Tehran will reply to the US counterproposal within days. Rhetoric says escalation, talks say engagement — the same tension running all week."
+      ],
+      "sources": [
+        {
+          "label": "AP: Trump and Iran agree the election calendar isn't driving the war",
+          "url": "https://www.ghanamma.com/2026/10/10/trump-and-iran-agree-on-one-thing-the-us-election-calendar-isnt-driving-their-decisions-on-the-war/"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF"
+      ],
+      "pillar": "risk",
+      "next": "Next: whether the no-strike pledge survives the weekend; US CPI Wed 8:30am ET."
+    },
+    {
       "ts": "2026-10-09T22:36:00-05:00",
       "headline": "OFAC paperwork lands: General License 135 permits Russian diesel imports through April 7, 2027",
       "bullets": [
