@@ -1,6 +1,33 @@
 {
   "items": [
     {
+      "ts": "2026-10-10T16:04:00-05:00",
+      "headline": "Putin relayed Iran's position to Trump in Friday call, offers to broker end to the war",
+      "bullets": [
+        "Kremlin spokesman Dmitry Peskov said Saturday that Putin conveyed Iran's position on a possible resolution of the US-Iran conflict to Trump in a Friday phone call — done 'in coordination with' Iranian President Masoud Pezeshkian after Putin met him twice in Turkmenistan on Thursday and offered Russia as a broker.",
+        "Terms undisclosed and Trump's response undisclosed; Kremlin says most of the call was actually about Ukraine. The White House has not confirmed the call — treat the relay as a diplomatic channel opening, not a breakthrough.",
+        "First sign Russia wants a mediator seat in this conflict — sits against Trump's fresh 'could join' rhetoric on Saudi/Houthi strikes. Watch the Sunday oil/FX open: a credible brokered channel would soften the geopolitical premium (Brent ~$104.43, DXY ~102.2); a rejection would harden it."
+      ],
+      "sources": [
+        {
+          "label": "Mint (Reuters/Interfax): Putin tells Trump Iran's position on peace deal",
+          "url": "https://www.livemint.com/news/world/putin-tells-trump-irans-position-on-peace-deal-says-kremlin-what-has-tehran-proposed-11791644793307.html"
+        },
+        {
+          "label": "Newsmax: Kremlin: Putin Relayed Iran Peace Position to Trump",
+          "url": "https://www.newsmax.com/newsfront/kremlin-putin-peace/2026/10/10/id/1272354"
+        }
+      ],
+      "thread": "us-iran-20261008",
+      "ccy": [
+        "USD",
+        "JPY",
+        "CHF"
+      ],
+      "pillar": "risk",
+      "next": "Next: whether Trump accepts the broker channel; Iran's reply on talks due within days; Sunday open in oil and FX."
+    },
+    {
       "ts": "2026-10-10T14:36:00-05:00",
       "headline": "RBI opens dollar window for oil companies as rupee tests record low",
       "bullets": [
