@@ -4,37 +4,37 @@
   "policy": {
    "title": "Policy divergence",
    "body": "Central banks moving in different directions. It is the gap between them that moves currencies: money flows toward higher rates.",
-   "live": "Fed 3.75–4.00% and still hiking vs SNB pinned at 0% — that gap underpins USD/CHF."
+   "live": "Fed 3.75\u20134.00% with Dec ~82% priced vs SNB pinned at 0% and ECB on hold \u2014 the gap still underpins the dollar."
   },
   "growth": {
    "title": "Growth differentials",
    "body": "Who is accelerating, who is stalling (GDP, jobs, PMIs). Always comparative. Stronger growth pulls in capital and raises hike expectations.",
-   "live": "US resilient (claims 197k, 4th straight week near 57-yr lows) but consumers gloomier (U Mich 46.3, third straight decline); Canada cracked — -68.3K jobs, second straight monthly loss."
+   "live": "US resilient (claims 197k, 4th straight week near 57-yr lows) but consumers gloomier (U Mich 46.3, third straight decline); Canada cracked \u2014 -68.3K jobs, second straight monthly loss; China reopened soft."
   },
   "inflation": {
    "title": "Inflation",
-   "body": "CPI/PCE vs the central bank's target. High inflation alone strengthens nothing — what matters is what the bank does about it.",
-   "live": "U Mich 1y expectations 4.7% (from 4.6%), 5y 3.5% (from 3.4%) — second straight monthly rise; UK 3.1% is why the BoE is talking hikes; CPI Wednesday Oct 14 is the real test."
+   "body": "CPI/PCE vs the central bank's target. High inflation alone strengthens nothing \u2014 what matters is what the bank does about it.",
+   "live": "U Mich 1y expectations 4.7% (from 4.6%), 5y 3.5% \u2014 second straight monthly rise; the Trump-Putin diesel deal (~4.8M tons, diesel -3%) is a mild offset through the fuel channel; CPI Wednesday Oct 14 is the real test."
   },
   "risk": {
    "title": "Risk sentiment",
    "body": "Risk-on vs risk-off. Fear bids USD, JPY, CHF (havens) and sells AUD, NZD, GBP (risk proxies).",
-   "live": "Trump took new Iran strikes off the table before the Nov 3 midterms — the haven bid in JPY/CHF is leaking out as oil gives back ~$2."
+   "live": "Friday evening reversed the leak: Iran struck a Trafigura VLCC off the UAE and the IRGC claimed the NV Sunshine hit \u2014 the haven bid in JPY/CHF is back on; the Sunday 5pm ET reopen is the test."
   },
   "tot": {
    "title": "Terms of trade",
-   "body": "Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways — say which and why.",
-   "live": "Brent $103.30, WTI ~$91 — the ~$12.10 spread is the geopolitical premium; CAD's oil bid now fights the -68.3K jobs miss, JPY/EUR get importer relief."
+   "body": "Export prices vs import prices: oil, metals. The same price moves two currencies opposite ways \u2014 say which and why.",
+   "live": "Brent settled $104.72, WTI ~$90.9 \u2014 the ~$14 spread (~4x normal) is the Hormuz risk premium; CAD's oil bid fights the -68.3K jobs miss, JPY/EUR pay the Brent import price."
   },
   "positioning": {
    "title": "Positioning",
-   "body": "Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens — where would a surprise hurt most.",
-   "live": "Euro shorts at a 343-report CFTC extreme (Oct 2) — the squeeze risk sits against the dollar."
+   "body": "Where speculators already stand (CFTC COT, Fridays). Crowded trades are fragile: if everyone is long dollars, nobody is left to buy. The contrarian lens \u2014 where would a surprise hurt most.",
+   "live": "Specs rebuilt JPY longs to 62,325 (wk to Oct 6); euro shorts at a 343-report extreme (Oct 2) \u2014 squeeze risk against the dollar on any dovish Fed surprise."
   },
   "fiscal": {
    "title": "Fiscal & sovereign risk",
    "body": "Deficits, debt sustainability, sovereign spreads. Funds stress leaks into the currency.",
-   "live": "French 10y spread over Bunds ~140–146bp, off the >150bp wides — a euro headwind until the budget passes late Nov."
+   "live": "French 10y spread over Bunds ~140\u2013146bp, off the >150bp wides; budget plenary starts Tuesday Oct 13 \u2014 a euro headwind until the budget process clears."
   }
  }
 }
