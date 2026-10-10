@@ -1,6 +1,28 @@
 {
  "items": [
   {
+   "ts": "2026-10-10T14:05:00-05:00",
+   "headline": "Trump: US 'could join' Saudi strikes on the Houthis; Riyadh airport toll rises",
+   "bullets": [
+    "Trump told reporters Saturday the US could join Saudi strikes on the Houthis after the airport attack — a reversal from Thursday/Friday, when WSJ reported the Trump administration had declined the kingdom's plea to intervene directly; US involvement was limited to intel and targeting support for the coalition's Yemen campaign.",
+    "The strike was worse than first reported: Saudi officials say Terminals 3 AND 4 of King Khalid airport took direct missile hits, with dozens of injuries, some critical — airport closed for damage assessment; arrivals canceled across the board, inbound flights diverted to Dammam.",
+    "US kinetic entry would put the fight on two fronts (Yemen + Hormuz shipping). Watch the Sunday oil open — Brent closed Friday ~$104.43; a confirmed US strike decision would reprice the geopolitical premium."
+   ],
+   "sources": [
+    {
+     "label": "WSJ: Iran-Backed Houthis Hit Saudi Capital's Airport in Damaging New Attack (updated)",
+     "url": "https://www.wsj.com/world/middle-east/iran-backed-houthis-hit-saudi-capitals-airport-in-damaging-new-attack-d4c12236"
+    }
+   ],
+   "thread": "us-iran-20261008",
+   "ccy": [
+    "USD",
+    "JPY"
+   ],
+   "pillar": "risk",
+   "next": "Next: whether Trump commits to actual strikes or holds to intel support; Sunday Brent open; any Houthi or Iranian reply to the coalition campaign."
+  },
+  {
    "ts": "2026-10-10T11:35:00-05:00",
    "headline": "Houthis strike Riyadh airport again — Terminal 3 hit, evacuated; arrivals canceled",
    "bullets": [
